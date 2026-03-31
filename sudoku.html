@@ -52,23 +52,51 @@
     }
 
     .diff-btn {
-      padding: 10px 24px;
+      padding: 10px 20px;
       border: 2px solid #555;
       background: #0d1b2a;
       color: #ccc;
       border-radius: 6px;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s;
-      letter-spacing: 1px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      min-width: 90px;
     }
+
+    .diff-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid #555;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    /* Easy: 1 filled dot */
+    .diff-btn[data-level="easy"] .dot:nth-child(1) { background: #6bffb8; border-color: #6bffb8; }
+
+    /* Medium: 2 filled dots */
+    .diff-btn[data-level="medium"] .dot:nth-child(1),
+    .diff-btn[data-level="medium"] .dot:nth-child(2) { background: #ffd166; border-color: #ffd166; }
+
+    /* Hard: 3 filled dots */
+    .diff-btn[data-level="hard"] .dot { background: #e94560; border-color: #e94560; }
 
     .diff-btn:hover { border-color: #fff; color: #fff; background: #1e2f45; }
 
-    .diff-btn.active-easy   { border-color: #6bffb8; color: #fff; background: #1a6644; }
-    .diff-btn.active-medium { border-color: #ffd166; color: #fff; background: #7a5c00; }
-    .diff-btn.active-hard   { border-color: #e94560; color: #fff; background: #7a1a2a; }
+    .diff-btn.active-easy   { border-color: #6bffb8; color: #6bffb8; background: #1a6644; }
+    .diff-btn.active-medium { border-color: #ffd166; color: #ffd166; background: #7a5c00; }
+    .diff-btn.active-hard   { border-color: #e94560; color: #e94560; background: #7a1a2a; }
 
     #board {
       display: grid;
@@ -173,9 +201,18 @@
   <div class="difficulty-wrap">
     <span class="difficulty-label">Select Difficulty</span>
     <div class="difficulty">
-      <button class="diff-btn" onclick="setDifficulty('easy')">Easy</button>
-      <button class="diff-btn" onclick="setDifficulty('medium')">Medium</button>
-      <button class="diff-btn" onclick="setDifficulty('hard')">Hard</button>
+      <button class="diff-btn" data-level="easy" onclick="setDifficulty('easy')">
+        <div class="diff-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        Easy
+      </button>
+      <button class="diff-btn" data-level="medium" onclick="setDifficulty('medium')">
+        <div class="diff-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        Medium
+      </button>
+      <button class="diff-btn" data-level="hard" onclick="setDifficulty('hard')">
+        <div class="diff-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        Hard
+      </button>
     </div>
   </div>
 
