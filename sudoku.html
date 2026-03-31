@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Outside - Sudoku</title>
+  <title>Sudoku</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -40,23 +40,30 @@
     }
 
     .cell {
-      border: 1px solid #444;
+      border: 1px solid #555;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: clamp(14px, 3vw, 22px);
       font-weight: bold;
-      cursor: pointer;
       background: #16213e;
       transition: background 0.15s;
     }
 
-    .cell:nth-child(3n+1):not(:nth-child(9n+1)) { border-left: 2px solid #888; }
-    .cell:nth-child(n+19):nth-child(-n+27),
-    .cell:nth-child(n+46):nth-child(-n+54) { border-top: 2px solid #888; }
+    /* thick right border after columns 3 and 6 */
+    .cell:nth-child(9n+3),
+    .cell:nth-child(9n+6) {
+      border-right: 3px solid #e94560;
+    }
 
-    .cell.given { color: #e94560; cursor: default; }
-    .cell.selected { background: #0f3460; }
+    /* thick bottom border after rows 3 and 6 */
+    .cell:nth-child(n+19):nth-child(-n+27),
+    .cell:nth-child(n+46):nth-child(-n+54) {
+      border-bottom: 3px solid #e94560;
+    }
+
+    .cell.given     { color: #e94560; }
+    .cell.selected  { background: #0f3460; }
     .cell.highlight { background: #1a2a4a; }
 
     input.cell-input {
@@ -68,18 +75,28 @@
       font-size: clamp(14px, 3vw, 22px);
       font-weight: bold;
       color: #aed6f1;
-      cursor: pointer;
       outline: none;
       caret-color: transparent;
+      cursor: pointer;
     }
 
-    input.cell-input.error { color: #ff6b6b; }
+    input.cell-input.error   { color: #ff6b6b; }
     input.cell-input.correct { color: #6bffb8; }
+
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 6px;
+      margin-top: 16px;
+      width: min(450px, 95vw);
+    }
+
+    .numpad button { padding: 8px 0; font-size: 1rem; }
 
     .controls {
       display: flex;
       gap: 12px;
-      margin-top: 20px;
+      margin-top: 14px;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -99,30 +116,20 @@
     button:hover { background: #e94560; color: #fff; }
 
     #message {
-      margin-top: 18px;
+      margin-top: 16px;
       font-size: 1rem;
       min-height: 24px;
       letter-spacing: 1px;
     }
 
-    .win { color: #6bffb8; }
+    .win  { color: #6bffb8; }
     .info { color: #aaa; }
-
-    .numpad {
-      display: grid;
-      grid-template-columns: repeat(9, 1fr);
-      gap: 6px;
-      margin-top: 16px;
-      width: min(450px, 95vw);
-    }
-
-    .numpad button { padding: 8px 0; font-size: 1rem; }
   </style>
 </head>
 <body>
 
   <h1>SUDOKU</h1>
-  <p class="subtitle">Fill the grid so every row, column and 3×3 box contains 1–9</p>
+  <p class="subtitle">Fill every row, column and 3×3 box with numbers 1–9</p>
 
   <div id="board"></div>
   <div class="numpad" id="numpad"></div>
@@ -210,7 +217,7 @@
         const cr = Math.floor(ci / 9), cc = ci % 9;
         if (ci === idx) c.classList.add('selected');
         else if (cr === row || cc === col ||
-          (Math.floor(cr/3) === boxR && Math.floor(cc/3) === boxC))
+          (Math.floor(cr / 3) === boxR && Math.floor(cc / 3) === boxC))
           c.classList.add('highlight');
       });
       const inp = document.querySelector(`input[data-idx="${idx}"]`);
