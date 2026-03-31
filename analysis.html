@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image Analysis — 파란버스.jpg</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      color: #222;
+      padding: 40px 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+    }
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 36px;
+    }
+    .image-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .image-wrap img {
+      max-width: 420px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #444;
+    }
+    canvas { width: 100% !important; }
+
+    /* Colour palette swatches */
+    .palette {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .swatch-info { font-size: 0.85rem; line-height: 1.5; }
+    .swatch-name { font-weight: 600; }
+    .swatch-hex { color: #888; font-size: 0.78rem; }
+    .swatch-bar-wrap {
+      flex: 1;
+      background: #eee;
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .swatch-bar {
+      height: 100%;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Image Analysis</h1>
+  <p class="subtitle">파란버스.jpg — Object count · Person count · Colour palette</p>
+
+  <div class="image-wrap">
+    <img src="파란버스.jpg" alt="파란버스" />
+  </div>
+
+  <div class="grid">
+
+    <!-- Objects Chart -->
+    <div class="card">
+      <h2>Object Count</h2>
+      <canvas id="objectChart"></canvas>
+    </div>
+
+    <!-- Person Chart -->
+    <div class="card">
+      <h2>Person Count</h2>
+      <canvas id="personChart"></canvas>
+    </div>
+
+    <!-- Colour Palette -->
+    <div class="card">
+      <h2>Colour Palette</h2>
+      <div class="palette">
+
+        <div class="swatch-row">
+          <div class="swatch" style="background:#4A90D9;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Selective Blue</div>
+            <div class="swatch-hex">#4A90D9 — Bus body</div>
+          </div>
+          <div class="swatch-bar-wrap">
+            <div class="swatch-bar" style="width:15%;background:#4A90D9;"></div>
+          </div>
+        </div>
+
+        <div class="swatch-row">
+          <div class="swatch" style="background:#B0B0B0;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Mid Gray</div>
+            <div class="swatch-hex">#B0B0B0 — Road, building walls</div>
+          </div>
+          <div class="swatch-bar-wrap">
+            <div class="swatch-bar" style="width:35%;background:#B0B0B0;"></div>
+          </div>
+        </div>
+
+        <div class="swatch-row">
+          <div class="swatch" style="background:#6E6E6E;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Dark Gray</div>
+            <div class="swatch-hex">#6E6E6E — Trees, building</div>
+          </div>
+          <div class="swatch-bar-wrap">
+            <div class="swatch-bar" style="width:25%;background:#6E6E6E;"></div>
+          </div>
+        </div>
+
+        <div class="swatch-row">
+          <div class="swatch" style="background:#E8E8E8;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Light Gray</div>
+            <div class="swatch-hex">#E8E8E8 — Sky, clothing</div>
+          </div>
+          <div class="swatch-bar-wrap">
+            <div class="swatch-bar" style="width:20%;background:#E8E8E8;"></div>
+          </div>
+        </div>
+
+        <div class="swatch-row">
+          <div class="swatch" style="background:#1A1A1A;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Near Black</div>
+            <div class="swatch-hex">#1A1A1A — Shadows, hair</div>
+          </div>
+          <div class="swatch-bar-wrap">
+            <div class="swatch-bar" style="width:5%;background:#1A1A1A;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Object Count Bar Chart
+    new Chart(document.getElementById('objectChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Bus', 'Building', 'Trees / Shrubs', 'Sign / Pole', 'Phone', 'Crosswalk'],
+        datasets: [{
+          label: 'Count',
+          data: [1, 1, 7, 1, 1, 1],
+          backgroundColor: [
+            '#4A90D9',
+            '#7B7B7B',
+            '#5A8A5A',
+            '#AAAAAA',
+            '#C0C0C0',
+            '#D4D4D4'
+          ],
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 },
+            grid: { color: '#f0f0f0' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Person Doughnut Chart
+    new Chart(document.getElementById('personChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Person', 'No person'],
+        datasets: [{
+          data: [1, 11],
+          backgroundColor: ['#4A90D9', '#ECECEC'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: '65%',
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${ctx.label}: ${ctx.parsed}`
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
