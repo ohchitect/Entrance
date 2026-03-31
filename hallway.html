@@ -1,1 +1,54 @@
-<p1> hallway </p1>
+<!DOCTYPE html>
+<script>if(!localStorage.getItem('entrance_auth')){window.location.replace('login.html?redirect='+encodeURIComponent('hallway.html'));}</script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hallway</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #0d0d0d;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    h1 { font-size: 2rem; letter-spacing: 0.2em; text-transform: uppercase; }
+    nav { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    nav a {
+      padding: 12px 28px;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    nav a:hover { border-color: #e94560; color: #e94560; }
+    .logout {
+      margin-top: 16px;
+      background: none;
+      border: none;
+      color: #444;
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .logout:hover { color: #888; }
+  </style>
+</head>
+<body>
+  <h1>Hallway</h1>
+  <nav>
+    <a href="analysis.html">Analysis</a>
+    <a href="sudoku.html">Sudoku</a>
+  </nav>
+  <button class="logout" onclick="localStorage.removeItem('entrance_auth');window.location.href='login.html'">Log out</button>
+</body>
+</html>

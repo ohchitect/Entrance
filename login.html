@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Entrance — Login</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0d0d0d;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 52px 44px;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .lock-icon {
+      font-size: 2.4rem;
+      margin-bottom: 20px;
+      opacity: 0.7;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    p.hint {
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 32px;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      background: transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .dot.filled {
+      background: #e94560;
+      border-color: #e94560;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .key {
+      background: #242424;
+      border: none;
+      border-radius: 10px;
+      color: #eee;
+      font-size: 1.3rem;
+      font-weight: 500;
+      padding: 18px 0;
+      cursor: pointer;
+      transition: background 0.12s, transform 0.08s;
+      user-select: none;
+    }
+
+    .key:hover { background: #2e2e2e; }
+    .key:active { background: #383838; transform: scale(0.96); }
+
+    .key.del {
+      font-size: 1rem;
+      color: #888;
+    }
+
+    .key.empty {
+      background: transparent;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .error {
+      font-size: 0.78rem;
+      color: #e94560;
+      min-height: 18px;
+      transition: opacity 0.2s;
+    }
+
+    .shake {
+      animation: shake 0.35s ease;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-5px); }
+      80%      { transform: translateX(5px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="lock-icon">&#128274;</div>
+    <h1>Entrance</h1>
+    <p class="hint">Enter your access code</p>
+
+    <div class="dots" id="dots">
+      <div class="dot" id="d0"></div>
+      <div class="dot" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+    </div>
+
+    <div class="keypad">
+      <button class="key" data-n="1">1</button>
+      <button class="key" data-n="2">2</button>
+      <button class="key" data-n="3">3</button>
+      <button class="key" data-n="4">4</button>
+      <button class="key" data-n="5">5</button>
+      <button class="key" data-n="6">6</button>
+      <button class="key" data-n="7">7</button>
+      <button class="key" data-n="8">8</button>
+      <button class="key" data-n="9">9</button>
+      <button class="key empty"></button>
+      <button class="key" data-n="0">0</button>
+      <button class="key del" id="delKey">&#9003;</button>
+    </div>
+
+    <div class="error" id="errMsg"></div>
+  </div>
+
+  <script>
+    const CODE = '1111';
+    let entered = '';
+
+    function updateDots() {
+      for (let i = 0; i < 4; i++) {
+        document.getElementById('d' + i).classList.toggle('filled', i < entered.length);
+      }
+    }
+
+    function shake() {
+      const card = document.getElementById('card');
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errMsg');
+      el.textContent = msg;
+      setTimeout(() => { el.textContent = ''; }, 2000);
+    }
+
+    function submit() {
+      if (entered === CODE) {
+        localStorage.setItem('entrance_auth', 'true');
+        const params = new URLSearchParams(window.location.search);
+        const dest = params.get('redirect') || 'hallway.html';
+        window.location.href = dest;
+      } else {
+        shake();
+        showError('Wrong code — try again');
+        entered = '';
+        updateDots();
+      }
+    }
+
+    document.querySelectorAll('.key[data-n]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (entered.length >= 4) return;
+        entered += btn.dataset.n;
+        updateDots();
+        if (entered.length === 4) setTimeout(submit, 120);
+      });
+    });
+
+    document.getElementById('delKey').addEventListener('click', () => {
+      entered = entered.slice(0, -1);
+      updateDots();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key >= '0' && e.key <= '9' && entered.length < 4) {
+        entered += e.key;
+        updateDots();
+        if (entered.length === 4) setTimeout(submit, 120);
+      } else if (e.key === 'Backspace') {
+        entered = entered.slice(0, -1);
+        updateDots();
+      }
+    });
+  </script>
+</body>
+</html>
