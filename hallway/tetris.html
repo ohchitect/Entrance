@@ -218,6 +218,84 @@
       [[0,0,7],[7,7,7],[0,0,0]],                    // L
     ];
 
+    // ── Audio ────────────────────────────────────────────────────────────────
+    let _ac = null;
+    function getAC() {
+      if (!_ac) _ac = new (window.AudioContext || window.webkitAudioContext)();
+      if (_ac.state === 'suspended') _ac.resume();
+      return _ac;
+    }
+    const sounds = {
+      move() {
+        const ac = getAC(), t = ac.currentTime;
+        const osc = ac.createOscillator(), g = ac.createGain();
+        osc.connect(g); g.connect(ac.destination);
+        osc.type = 'sine'; osc.frequency.value = 200;
+        g.gain.setValueAtTime(0.08, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+        osc.start(t); osc.stop(t + 0.04);
+      },
+      rotate() {
+        const ac = getAC(), t = ac.currentTime;
+        const osc = ac.createOscillator(), g = ac.createGain();
+        osc.connect(g); g.connect(ac.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, t);
+        osc.frequency.exponentialRampToValueAtTime(560, t + 0.07);
+        g.gain.setValueAtTime(0.1, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+        osc.start(t); osc.stop(t + 0.08);
+      },
+      land() {
+        const ac = getAC(), t = ac.currentTime;
+        // low-pass noise burst
+        const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * 0.14), ac.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        const noise = ac.createBufferSource(); noise.buffer = buf;
+        const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 160;
+        const gn = ac.createGain();
+        gn.gain.setValueAtTime(0.35, t);
+        gn.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+        noise.connect(lp); lp.connect(gn); gn.connect(ac.destination);
+        noise.start(t); noise.stop(t + 0.14);
+        // sub tone
+        const osc = ac.createOscillator(), go = ac.createGain();
+        osc.connect(go); go.connect(ac.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(90, t);
+        osc.frequency.exponentialRampToValueAtTime(42, t + 0.13);
+        go.gain.setValueAtTime(0.28, t);
+        go.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+        osc.start(t); osc.stop(t + 0.13);
+      },
+      drop() {
+        const ac = getAC(), t = ac.currentTime;
+        const osc = ac.createOscillator(), g = ac.createGain();
+        osc.connect(g); g.connect(ac.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, t);
+        osc.frequency.exponentialRampToValueAtTime(38, t + 0.22);
+        g.gain.setValueAtTime(0.55, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+        osc.start(t); osc.stop(t + 0.22);
+      },
+      clear(n) {
+        const ac = getAC();
+        [523, 659, 784, 1047].slice(0, n).forEach((freq, i) => {
+          const t = ac.currentTime + i * 0.07;
+          const osc = ac.createOscillator(), g = ac.createGain();
+          osc.connect(g); g.connect(ac.destination);
+          osc.type = 'triangle'; osc.frequency.value = freq;
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(0.18, t + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+          osc.start(t); osc.stop(t + 0.18);
+        });
+      },
+    };
+    // ─────────────────────────────────────────────────────────────────────────
+
     // Responsive cell size
     function calcCell() {
       const maxH = Math.floor((window.innerHeight - 220) / ROWS);
@@ -312,22 +390,25 @@
       const kicks = [0, -1, 1, -2, 2];
       for (const kick of kicks) {
         if (!collides(rotated, pieceX + kick, pieceY)) {
-          piece = rotated; pieceX += kick; return;
+          piece = rotated; pieceX += kick; sounds.rotate(); return;
         }
       }
     }
 
-    function moveLeft()  { if (!collides(piece, pieceX - 1, pieceY)) pieceX--; }
-    function moveRight() { if (!collides(piece, pieceX + 1, pieceY)) pieceX++; }
+    function moveLeft()  { if (!collides(piece, pieceX - 1, pieceY)) { pieceX--; sounds.move(); } }
+    function moveRight() { if (!collides(piece, pieceX + 1, pieceY)) { pieceX++; sounds.move(); } }
     function moveDown()  {
       if (!collides(piece, pieceX, pieceY + 1)) { pieceY++; return true; }
       lock(); return false;
     }
+    let _hardDropping = false;
     function hardDrop() {
       let dropped = 0;
       while (!collides(piece, pieceX, pieceY + 1)) { pieceY++; dropped++; }
       score += dropped * 2;
+      _hardDropping = true;
       lock();
+      _hardDropping = false;
     }
     function doHold() {
       if (holdUsed) return;
@@ -353,6 +434,7 @@
         for (let c = 0; c < piece[r].length; c++)
           if (piece[r][c] && pieceY + r >= 0)
             board[pieceY + r][pieceX + c] = piece[r][c];
+      if (_hardDropping) sounds.drop(); else sounds.land();
       clearLines();
       holdUsed = false;
       spawnPiece(nextPiece);
@@ -375,6 +457,7 @@
         level = Math.floor(lines / 10) + 1;
         dropInterval = Math.max(100, 800 - (level - 1) * 70);
         updateHUD();
+        sounds.clear(cleared);
       }
     }
 
