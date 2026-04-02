@@ -418,10 +418,6 @@
             margin-bottom: var(--spacing-lg);
             font-weight: 700;
             font-size: clamp(0.9em, 3vw, 1.05em);
-            background: linear-gradient(135deg, var(--beige-light) 0%, var(--beige) 100%);
-            padding: var(--spacing-md);
-            border-radius: var(--radius-md);
-            border: 2px solid var(--navy);
         }
         
         .stat-section {
@@ -518,23 +514,18 @@
         #player::before { left: 22px; }
         #player::after { right: 22px; }
         
-        /* ===== ENEMY SHAPES ===== */
+        /* Enemy - Simple rounded rectangle that changes color per level */
         #enemy { 
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        /* Beginner: Red Blob */
-        #enemy.slime {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            border-radius: 50%;
-            box-shadow: 0 8px 24px rgba(192, 57, 43, 0.4);
-            border: 3px solid #922b1e;
+            border-radius: 20%;
+            position: relative;
+            transition: background-color 0.5s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(0, 0, 0, 0.2);
         }
-
-        #enemy.slime::before, #enemy.slime::after {
+        
+        #enemy::before, #enemy::after { 
             content: '';
             position: absolute;
             background: white;
@@ -543,275 +534,9 @@
             border-radius: 50%;
             top: 36px;
         }
-        #enemy.slime::before { left: 28px; }
-        #enemy.slime::after { right: 28px; }
-
-        /* Intermediate: Star */
-        #enemy.star {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            box-shadow: 0 8px 24px rgba(243, 156, 18, 0.4);
-            border: none;
-        }
-
-        /* Hard: Bird */
-        #enemy.bird {
-            width: 100px;
-            height: 90px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            box-shadow: 0 8px 24px rgba(52, 152, 219, 0.4);
-            border: 3px solid #1f618d;
-        }
-
-        #enemy.bird::before {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            border-radius: 50%;
-            top: -10px;
-            right: -15px;
-            border: 2px solid #922b1e;
-            transform: rotate(45deg);
-        }
-
-        #enemy.bird::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 0px solid transparent;
-            border-top: 12px solid #e74c3c;
-            top: 5px;
-            right: -8px;
-            transform: rotate(45deg);
-        }
-
-        /* Tourist: Onion */
-        #enemy.onion {
-            width: 85px;
-            height: 110px;
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            box-shadow: 0 8px 24px rgba(155, 89, 182, 0.4);
-            border: 3px solid #6c3483;
-            position: relative;
-        }
-
-        #enemy.onion::before {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 25px;
-            background: linear-gradient(135deg, #16a085 0%, #117a65 100%);
-            border-radius: 50%;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 1px solid #0d5d4f;
-        }
-
-        #enemy.onion::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 3px;
-            background: linear-gradient(135deg, #16a085 0%, #117a65 100%);
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 50%;
-            opacity: 0.6;
-        }
-
-        /* Child: Triangle */
-        #enemy.triangle {
-            width: 0;
-            height: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 100px solid #e67e22;
-            filter: drop-shadow(0 8px 24px rgba(230, 126, 34, 0.4));
-            position: relative;
-        }
-
-        /* Elementary: Pentagon */
-        #enemy.pentagon {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-            box-shadow: 0 8px 24px rgba(26, 188, 156, 0.4);
-            border: none;
-        }
-
-        /* Middle School: Pentagon with Hat */
-        #enemy.pentagon-hat {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #d35400 0%, #ba4a00 100%);
-            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-            box-shadow: 0 8px 24px rgba(211, 84, 0, 0.4);
-            border: none;
-            position: relative;
-        }
-
-        #enemy.pentagon-hat::before {
-            content: '';
-            position: absolute;
-            width: 120px;
-            height: 25px;
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-            top: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 0 0 8px 8px;
-            border: 2px solid #1a252f;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        #enemy.pentagon-hat::after {
-            content: '';
-            position: absolute;
-            width: 110px;
-            height: 8px;
-            background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 50%;
-        }
-
-        /* High School: Octopus */
-        #enemy.octopus {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
-            border-radius: 50%;
-            box-shadow: 0 8px 24px rgba(233, 30, 99, 0.4);
-            border: 3px solid #880e4f;
-            position: relative;
-        }
-
-        #enemy.octopus::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 40px;
-            top: 100%;
-            left: 0;
-            background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
-            clip-path: polygon(
-                10% 0%, 15% 100%,
-                25% 0%, 30% 100%,
-                40% 0%, 45% 100%,
-                55% 0%, 60% 100%,
-                70% 0%, 75% 100%,
-                85% 0%, 90% 100%
-            );
-            border: 3px solid #880e4f;
-            border-top: none;
-        }
-
-        #enemy.octopus::after {
-            content: '';
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            background: white;
-            border-radius: 50%;
-            top: 26px;
-            left: 50%;
-            transform: translateX(-18px);
-            border: 2px solid #880e4f;
-            box-shadow: 36px 0 0 white, 36px 0 0 0 2px #880e4f;
-        }
-
-        /* University: Building */
-        #enemy.building {
-            width: 80px;
-            height: 120px;
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-            box-shadow: 0 8px 24px rgba(52, 73, 94, 0.4);
-            border: 3px solid #1a252f;
-            position: relative;
-            border-radius: 8px 8px 0 0;
-        }
-
-        #enemy.building::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(90deg, transparent 10%, #f39c12 10%, #f39c12 20%, transparent 20%),
-                linear-gradient(90deg, transparent 30%, #f39c12 30%, #f39c12 40%, transparent 40%),
-                linear-gradient(90deg, transparent 50%, #f39c12 50%, #f39c12 60%, transparent 60%),
-                linear-gradient(90deg, transparent 70%, #f39c12 70%, #f39c12 80%, transparent 80%),
-                linear-gradient(180deg, transparent 20%, #e67e22 20%, #e67e22 35%, transparent 35%),
-                linear-gradient(180deg, transparent 45%, #e67e22 45%, #e67e22 60%, transparent 60%),
-                linear-gradient(180deg, transparent 70%, #e67e22 70%, #e67e22 85%, transparent 85%);
-            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
-        }
-
-        #enemy.building::after {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 40px;
-            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
-            top: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-            border: 2px solid #7b241c;
-        }
-
-        /* Business: Angel */
-        #enemy.angel {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
-            border-radius: 50%;
-            box-shadow: 0 8px 24px rgba(241, 196, 15, 0.4);
-            border: 3px solid #d68910;
-            position: relative;
-        }
-
-        #enemy.angel::before {
-            content: '';
-            position: absolute;
-            width: 130px;
-            height: 130px;
-            border: 3px solid rgba(241, 196, 15, 0.4);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotateX(75deg);
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        #enemy.angel::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 8px;
-            background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 50%;
-            box-shadow: 
-                -50px 0 0 0 #f1c40f,
-                50px 0 0 0 #f1c40f;
-            border: 2px solid #d68910;
-        }
+        
+        #enemy::before { left: 28px; }
+        #enemy::after { right: 28px; }
 
         @keyframes attackRight { 
             0% { transform: translateX(0); }
@@ -836,10 +561,6 @@
             margin: var(--spacing-lg) 0 var(--spacing-md) 0;
             font-weight: 700;
             color: var(--navy-dark);
-            background: linear-gradient(135deg, var(--beige-light) 0%, var(--beige) 100%);
-            padding: var(--spacing-md);
-            border-radius: var(--radius-md);
-            border: 2px solid var(--navy);
         }
         
         #options { 
@@ -850,7 +571,7 @@
         }
         
         button.option-btn { 
-            background: linear-gradient(135deg, var(--beige-light) 0%, var(--beige) 100%);
+            background: white;
             border: 2px solid var(--navy);
             border-radius: var(--radius-md);
             padding: var(--spacing-md);
@@ -863,7 +584,7 @@
         }
         
         button.option-btn:hover:not(:disabled) { 
-            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            background: var(--navy);
             color: var(--text-light);
             border-color: var(--accent-gold);
             box-shadow: 0 6px 16px rgba(26, 44, 74, 0.3);
@@ -871,14 +592,14 @@
         }
         
         .correct-btn { 
-            background: linear-gradient(135deg, var(--success) 0%, #1e8449 100%) !important;
+            background: var(--success) !important;
             border-color: var(--success) !important;
             color: var(--text-light) !important;
             box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4) !important;
         }
         
         .wrong-btn { 
-            background: linear-gradient(135deg, var(--danger) 0%, #a93226 100%) !important;
+            background: var(--danger) !important;
             border-color: var(--danger) !important;
             color: var(--text-light) !important;
             box-shadow: 0 6px 16px rgba(192, 57, 43, 0.4) !important;
@@ -1028,32 +749,19 @@
 <script src="vocab.js"></script>
 <script>
 const tiers = [
-    { name: "Beginner", start: 1, end: 10, enemy: "slime" }, 
-    { name: "Intermediate", start: 11, end: 20, enemy: "star" },
-    { name: "Hard", start: 21, end: 30, enemy: "bird" }, 
-    { name: "Tourist", start: 31, end: 40, enemy: "onion" },
-    { name: "Child", start: 41, end: 50, enemy: "triangle" }, 
-    { name: "Elementary", start: 51, end: 60, enemy: "pentagon" },
-    { name: "Middle School", start: 61, end: 70, enemy: "pentagon-hat" }, 
-    { name: "High School", start: 71, end: 80, enemy: "octopus" },
-    { name: "University", start: 81, end: 90, enemy: "building" }, 
-    { name: "Business", start: 91, end: 100, enemy: "angel" }
+    { name: "Beginner", start: 1, end: 10 }, 
+    { name: "Intermediate", start: 11, end: 20 },
+    { name: "Hard", start: 21, end: 30 }, 
+    { name: "Tourist", start: 31, end: 40 },
+    { name: "Child", start: 41, end: 50 }, 
+    { name: "Elementary", start: 51, end: 60 },
+    { name: "Middle School", start: 61, end: 70 }, 
+    { name: "High School", start: 71, end: 80 },
+    { name: "University", start: 81, end: 90 }, 
+    { name: "Business", start: 91, end: 100 }
 ];
 
-const enemyNames = ["Slime", "Star Knight", "Phoenix", "Onion Beast", "Crystal Prism", "Pentagon Sprite", "Scholar", "Octopus Master", "Ancient Tower", "Celestial Angel"];
-
-const enemyColors = [
-    { class: "slime", colors: ["#e74c3c", "#c0392b"] },      // Red
-    { class: "star", colors: ["#f39c12", "#e67e22"] },        // Orange
-    { class: "bird", colors: ["#3498db", "#2980b9"] },        // Blue
-    { class: "onion", colors: ["#9b59b6", "#8e44ad"] },       // Purple
-    { class: "triangle", colors: ["#e67e22", "#d35400"] },    // Dark Orange
-    { class: "pentagon", colors: ["#1abc9c", "#16a085"] },    // Teal
-    { class: "pentagon-hat", colors: ["#d35400", "#ba4a00"] }, // Orange-brown
-    { class: "octopus", colors: ["#e91e63", "#c2185b"] },     // Pink
-    { class: "building", colors: ["#34495e", "#2c3e50"] },    // Dark Gray
-    { class: "angel", colors: ["#f1c40f", "#f39c12"] }        // Gold
-];
+const enemyNames = ["Slime", "Goblin", "Orc", "Troll", "Bandit", "Golem", "Dark Knight", "Dragon", "Demon", "Titan"];
 
 let save = JSON.parse(localStorage.getItem('cantoRPG_save')) || { maxLevel: 1, coins: 0, upgHp: 0, upgDmg: 0 };
 let currentLevel = 1; let currentQuestion = null; let currentOptions = []; let buttonsLocked = false;
@@ -1166,10 +874,9 @@ function startBattle() {
     const tierIndex = tiers.findIndex(t => currentLevel >= t.start && currentLevel <= t.end);
     document.getElementById('enemy-name').textContent = `${enemyNames[tierIndex]} (Lv ${currentLevel})`;
     
-    // Remove all enemy shape classes and add the correct one
-    const enemyEl = document.getElementById('enemy');
-    enemyEl.className = '';
-    enemyEl.classList.add(tiers[tierIndex].enemy);
+    // Set enemy color based on level
+    const enemyColor = getEnemyColor(currentLevel);
+    document.getElementById('enemy').style.backgroundColor = enemyColor;
 
     updateBattleUI(); generateQuestion();
 }
@@ -1205,7 +912,7 @@ function checkAnswer(index) {
     const msg = document.getElementById('message');
 
     if (isCorrect) {
-        btn.classList.add("correct-btn"); msg.textContent = "Correct! 💥"; msg.style.color = "var(--success)";
+        btn.classList.add("correct-btn"); msg.textContent = "Correct! 💥"; msg.style.color = "#27ae60";
         document.getElementById('player').classList.add('anim-attack');
         setTimeout(() => {
             document.getElementById('player').classList.remove('anim-attack');
@@ -1219,7 +926,7 @@ function checkAnswer(index) {
     } else {
         btn.classList.add("wrong-btn");
         document.getElementById(`btn${currentOptions.findIndex(o => o.eng === currentQuestion.eng)}`).classList.add("correct-btn");
-        msg.textContent = `Wrong! It is ${currentQuestion.cantonese}`; msg.style.color = "var(--danger)";
+        msg.textContent = `Wrong! It is ${currentQuestion.cantonese}`; msg.style.color = "#c0392b";
         document.getElementById('enemy').style.transform = "translateX(-20px) scale(1.05)";
         setTimeout(() => {
             document.getElementById('enemy').style.transform = "none";
