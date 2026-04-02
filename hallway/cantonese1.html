@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Vocab RPG</title>
+    <style>
+        :root {
+            --bg-color: #f0f8ff;
+            --player-color: #87ceeb;
+            --hp-green: #32cd32;
+            --hp-red: #ff4500;
+            --xp-blue: #1e90ff;
+            --text-dark: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4682b4;
+            margin-bottom: 10px;
+        }
+
+        #game-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .bar-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 10px;
+            margin-top: 5px;
+            height: 15px;
+            overflow: hidden;
+        }
+
+        .hp-bar-fill {
+            height: 100%;
+            background-color: var(--hp-green);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .enemy-hp-bar-fill {
+            height: 100%;
+            background-color: var(--hp-red);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background-color: var(--xp-blue);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Arena */
+        #arena {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 200px;
+            border-bottom: 3px solid #ccc;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .entity-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 45%;
+        }
+
+        /* The Cute Dot Character */
+        #player {
+            width: 80px;
+            height: 80px;
+            background-color: var(--player-color);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        #player::before, #player::after {
+            content: '';
+            position: absolute;
+            background: white;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            top: 25px;
+        }
+
+        #player::before { left: 20px; }
+        #player::after { right: 20px; }
+
+        /* The Enemy Character */
+        #enemy {
+            width: 90px;
+            height: 90px;
+            background-color: #ff6347;
+            border-radius: 20%; /* Slightly blocky */
+            position: relative;
+            box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.5s;
+        }
+
+        #enemy::before, #enemy::after {
+            content: '';
+            position: absolute;
+            background: #333;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            top: 30px;
+        }
+
+        #enemy::before { left: 25px; }
+        #enemy::after { right: 25px; }
+
+        /* Animations */
+        @keyframes attackRight {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(50px) scale(1.1); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes takeDamage {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); background-color: white;}
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .anim-attack { animation: attackRight 0.3s ease; }
+        .anim-damage { animation: takeDamage 0.4s ease; }
+
+        /* Question Area */
+        #question-box {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Options Area */
+        #options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button.option-btn {
+            background-color: #fff;
+            border: 2px solid #4682b4;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+        button.option-btn:hover {
+            background-color: #e6f2ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        button.option-btn:disabled {
+            background-color: #eee;
+            border-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .correct-btn { background-color: #98fb98 !important; border-color: #2e8b57 !important; }
+        .wrong-btn { background-color: #ffb6c1 !important; border-color: #dc143c !important; }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cantonese RPG</h1>
+    
+    <div id="game-container">
+        <div class="stats-bar">
+            <div>
+                <div>Player Level: <span id="player-level">1</span></div>
+                <div style="font-size: 0.8em; color: #666;">XP: <span id="player-xp-text">0/150</span></div>
+                <div class="bar-container"><div id="xp-bar" class="xp-bar-fill"></div></div>
+            </div>
+            <div style="text-align: right;">
+                <div id="enemy-name">Slime (Lv 1)</div>
+            </div>
+        </div>
+
+        <div id="arena">
+            <div class="entity-container">
+                <div class="bar-container" style="margin-bottom:10px;"><div id="player-hp-bar" class="hp-bar-fill"></div></div>
+                <div id="player"></div>
+            </div>
+            <div class="entity-container">
+                <div class="bar-container" style="margin-bottom:10px;"><div id="enemy-hp-bar" class="enemy-hp-bar-fill"></div></div>
+                <div id="enemy"></div>
+            </div>
+        </div>
+
+        <div id="question-box">Loading...</div>
+        
+        <div id="options">
+            <button class="option-btn" onclick="checkAnswer(0)" id="btn0"></button>
+            <button class="option-btn" onclick="checkAnswer(1)" id="btn1"></button>
+            <button class="option-btn" onclick="checkAnswer(2)" id="btn2"></button>
+            <button class="option-btn" onclick="checkAnswer(3)" id="btn3"></button>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+<script>
+/* =============================================================================
+VOCABULARY DATABASE
+To add more words up to 1000, simply continue adding objects to this array.
+Ensure you group them by 'level' so the enemy difficulty scales properly.
+=============================================================================
+*/
+const vocabData = [
+    // LEVEL 1: Basics (15 words)
+    { eng: "Hello", cantonese: "你好 (nei5 hou2)", level: 1 },
+    { eng: "Thank you (for a service)", cantonese: "唔該 (m4 goi1)", level: 1 },
+    { eng: "Thank you (for a gift)", cantonese: "多謝 (do1 ze6)", level: 1 },
+    { eng: "Yes / To be", cantonese: "係 (hai6)", level: 1 },
+    { eng: "No / Not to be", cantonese: "唔係 (m4 hai6)", level: 1 },
+    { eng: "I / Me", cantonese: "我 (ngo5)", level: 1 },
+    { eng: "You", cantonese: "你 (nei5)", level: 1 },
+    { eng: "He / She / It", cantonese: "佢 (keoi5)", level: 1 },
+    { eng: "Eat", cantonese: "食 (sik6)", level: 1 },
+    { eng: "Drink", cantonese: "飲 (jam2)", level: 1 },
+    { eng: "Water", cantonese: "水 (seoi2)", level: 1 },
+    { eng: "Tea", cantonese: "茶 (caa4)", level: 1 },
+    { eng: "Friend", cantonese: "朋友 (pang4 jau5)", level: 1 },
+    { eng: "Good", cantonese: "好 (hou2)", level: 1 },
+    { eng: "Goodbye", cantonese: "拜拜 (baai1 baai3)", level: 1 },
+
+    // LEVEL 2: Numbers & Time (15 words)
+    { eng: "One", cantonese: "一 (jat1)", level: 2 },
+    { eng: "Two", cantonese: "二 (ji6)", level: 2 },
+    { eng: "Three", cantonese: "三 (saam1)", level: 2 },
+    { eng: "Four", cantonese: "四 (sei3)", level: 2 },
+    { eng: "Five", cantonese: "五 (ng5)", level: 2 },
+    { eng: "Six", cantonese: "六 (luk6)", level: 2 },
+    { eng: "Seven", cantonese: "七 (cat1)", level: 2 },
+    { eng: "Eight", cantonese: "八 (baat3)", level: 2 },
+    { eng: "Nine", cantonese: "九 (gau2)", level: 2 },
+    { eng: "Ten", cantonese: "十 (sap6)", level: 2 },
+    { eng: "Now", cantonese: "而家 (ji4 gaa1)", level: 2 },
+    { eng: "Morning", cantonese: "朝早 (ziu1 zou2)", level: 2 },
+    { eng: "Night", cantonese: "夜晚 (je6 maan5)", level: 2 },
+    { eng: "Tomorrow", cantonese: "聽日 (ting1 jat6)", level: 2 },
+    { eng: "Yesterday", cantonese: "尋日 (cam4 jat6)", level: 2 },
+
+    // LEVEL 3: Places & Food (15 words)
+    { eng: "Restaurant", cantonese: "餐廳 (caan1 teng1)", level: 3 },
+    { eng: "School", cantonese: "學校 (hok6 gaau3)", level: 3 },
+    { eng: "Home", cantonese: "屋企 (uk1 kei2)", level: 3 },
+    { eng: "Work / Go to work", cantonese: "返工 (faan1 gung1)", level: 3 },
+    { eng: "Buy", cantonese: "買 (maai5)", level: 3 },
+    { eng: "Sell", cantonese: "賣 (maai6)", level: 3 },
+    { eng: "Apple", cantonese: "蘋果 (ping4 guo2)", level: 3 },
+    { eng: "Rice", cantonese: "飯 (faan6)", level: 3 },
+    { eng: "Noodles", cantonese: "麵 (min6)", level: 3 },
+    { eng: "Delicious", cantonese: "好食 (hou2 sik6)", level: 3 },
+    { eng: "Hot (Temperature)", cantonese: "熱 (jit6)", level: 3 },
+    { eng: "Cold", cantonese: "凍 (dung3)", level: 3 },
+    { eng: "Big", cantonese: "大 (daai6)", level: 3 },
+    { eng: "Small", cantonese: "細 (sai3)", level: 3 },
+    { eng: "Money", cantonese: "錢 (cin2)", level: 3 }
+];
+
+// Game State
+let player = {
+    hp: 100,
+    maxHp: 100,
+    level: 1,
+    xp: 0,
+    xpToNext: 150 // 15 correct answers to level up
+};
+
+let enemy = {
+    hp: 30,
+    maxHp: 30,
+    name: "Slime",
+    colors: ["#ff6347", "#8a2be2", "#3cb371", "#ffd700", "#ff1493"]
+};
+
+const enemyNames = ["Slime", "Goblin", "Orc", "Troll", "Dragon", "Demon Lord"];
+
+let currentQuestion = null;
+let currentOptions = [];
+let buttonsLocked = false;
+
+// DOM Elements
+const elPlayerHp = document.getElementById('player-hp-bar');
+const elEnemyHp = document.getElementById('enemy-hp-bar');
+const elXpBar = document.getElementById('xp-bar');
+const elPlayerLevel = document.getElementById('player-level');
+const elXpText = document.getElementById('player-xp-text');
+const elEnemyName = document.getElementById('enemy-name');
+const elQuestion = document.getElementById('question-box');
+const elMessage = document.getElementById('message');
+const playerSprite = document.getElementById('player');
+const enemySprite = document.getElementById('enemy');
+
+function initGame() {
+    updateUI();
+    generateQuestion();
+}
+
+function updateUI() {
+    elPlayerHp.style.width = `${(player.hp / player.maxHp) * 100}%`;
+    elEnemyHp.style.width = `${(enemy.hp / enemy.maxHp) * 100}%`;
+    elXpBar.style.width = `${(player.xp / player.xpToNext) * 100}%`;
+    
+    elPlayerLevel.textContent = player.level;
+    elXpText.textContent = `${player.xp}/${player.xpToNext}`;
+    elEnemyName.textContent = `${enemy.name} (Lv ${player.level})`;
+    
+    enemySprite.style.backgroundColor = enemy.colors[(player.level - 1) % enemy.colors.length];
+}
+
+function getWordsForCurrentLevel() {
+    // Get words up to the player's current level
+    let words = vocabData.filter(v => v.level <= player.level);
+    // Fallback if user hasn't added enough words yet
+    if (words.length < 4) words = vocabData; 
+    return words;
+}
+
+function generateQuestion() {
+    buttonsLocked = false;
+    elMessage.textContent = "";
+    elMessage.style.color = "var(--text-dark)";
+    
+    // Reset button styles
+    for(let i=0; i<4; i++) {
+        let btn = document.getElementById(`btn${i}`);
+        btn.className = "option-btn";
+        btn.disabled = false;
+    }
+
+    const availableWords = getWordsForCurrentLevel();
+    
+    // Pick correct answer
+    currentQuestion = availableWords[Math.floor(Math.random() * availableWords.length)];
+    
+    // Pick 3 wrong answers
+    let wrongAnswers = [];
+    while(wrongAnswers.length < 3) {
+        let randomWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+        if(randomWord.eng !== currentQuestion.eng && !wrongAnswers.includes(randomWord)) {
+            wrongAnswers.push(randomWord);
+        }
+    }
+
+    // Combine and shuffle
+    currentOptions = [...wrongAnswers, currentQuestion];
+    currentOptions.sort(() => Math.random() - 0.5);
+
+    // Render to UI
+    elQuestion.textContent = currentQuestion.eng;
+    for(let i=0; i<4; i++) {
+        document.getElementById(`btn${i}`).textContent = currentOptions[i].cantonese;
+    }
+}
+
+function checkAnswer(index) {
+    if (buttonsLocked) return;
+    buttonsLocked = true;
+
+    const selectedWord = currentOptions[index];
+    const isCorrect = (selectedWord.eng === currentQuestion.eng);
+    const btn = document.getElementById(`btn${index}`);
+
+    if (isCorrect) {
+        // Player attacks
+        btn.classList.add("correct-btn");
+        elMessage.textContent = "Correct! 💥";
+        elMessage.style.color = "green";
+        
+        playerSprite.classList.add('anim-attack');
+        setTimeout(() => {
+            playerSprite.classList.remove('anim-attack');
+            enemySprite.classList.add('anim-damage');
+            enemy.hp -= 2; // Damage per hit
+            gainXP(10); // 10 XP per correct answer
+            
+            setTimeout(() => {
+                enemySprite.classList.remove('anim-damage');
+                checkCombatState();
+            }, 400);
+        }, 150);
+
+    } else {
+        // Enemy attacks
+        btn.classList.add("wrong-btn");
+        
+        // Highlight correct answer
+        const correctIndex = currentOptions.findIndex(o => o.eng === currentQuestion.eng);
+        document.getElementById(`btn${correctIndex}`).classList.add("correct-btn");
+
+        elMessage.textContent = `Wrong! It is ${currentQuestion.cantonese}`;
+        elMessage.style.color = "red";
+
+        // Simple enemy attack animation (moves left)
+        enemySprite.style.transform = "translateX(-50px) scale(1.1)";
+        setTimeout(() => {
+            enemySprite.style.transform = "none";
+            playerSprite.classList.add('anim-damage');
+            player.hp -= 15; // Penalty for wrong answer
+            updateUI();
+            
+            setTimeout(() => {
+                playerSprite.classList.remove('anim-damage');
+                checkCombatState();
+            }, 400);
+        }, 300);
+    }
+}
+
+function gainXP(amount) {
+    player.xp += amount;
+    if (player.xp >= player.xpToNext) {
+        levelUp();
+    }
+    updateUI();
+}
+
+function levelUp() {
+    player.level++;
+    player.xp = player.xp - player.xpToNext;
+    player.xpToNext = Math.floor(player.xpToNext * 1.5); // Increase XP requirement
+    player.hp = player.maxHp; // Heal on level up
+    
+    // Spawn new enemy
+    enemy.maxHp = Math.floor(enemy.maxHp * 1.3);
+    enemy.hp = enemy.maxHp;
+    enemy.name = enemyNames[Math.min(player.level - 1, enemyNames.length - 1)];
+    
+    alert(`Level Up! You are now Level ${player.level}. Enemy evolved into ${enemy.name}!`);
+}
+
+function checkCombatState() {
+    if (player.hp <= 0) {
+        alert("Game Over! The enemy defeated you. Reloading...");
+        location.reload();
+        return;
+    }
+    
+    if (enemy.hp <= 0) {
+        // Force level up if enemy dies before XP triggers it
+        if (player.xp < player.xpToNext) {
+            player.xp = player.xpToNext; 
+            gainXP(0); 
+        }
+    }
+
+    updateUI();
+    
+    // Slight delay before next question
+    setTimeout(generateQuestion, 1000);
+}
+
+// Start Game
+initGame();
+</script>
+</body>
+</html>
