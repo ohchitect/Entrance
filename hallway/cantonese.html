@@ -870,30 +870,32 @@
         .tones-content {
             background: white;
             margin: auto;
-            padding: var(--spacing-lg);
+            padding: 10px 12px;
             border-radius: var(--radius-lg);
-            width: 92%;
+            width: 94%;
             max-width: 580px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             border: 3px solid #9b59b6;
         }
+        .tones-content .modal-header { margin-bottom: 6px; padding-bottom: 6px; }
+        .tones-content .modal-header h2 { font-size: 1.05em; }
         .tone-tip {
             text-align: center;
-            font-size: 0.88em;
-            color: #666;
-            margin: var(--spacing-sm) 0 var(--spacing-md);
+            font-size: 0.75em;
+            color: #888;
+            margin: 4px 0 6px;
             font-style: italic;
         }
         .tone-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: var(--spacing-md);
+            gap: 6px;
+            margin-top: 6px;
         }
         .tone-card {
-            border: 2.5px solid;
+            border: 2px solid;
             border-radius: var(--radius-md);
-            padding: 10px 6px;
+            padding: 5px 4px;
             text-align: center;
             cursor: pointer;
             background: #fafafa;
@@ -905,34 +907,34 @@
         }
         .tone-card:active { transform: scale(0.96); }
         .tone-num {
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: 900;
             line-height: 1;
         }
         .tone-name {
-            font-size: 0.72em;
+            font-size: 0.65em;
             font-weight: 700;
             color: #444;
-            margin: 3px 0;
+            margin: 2px 0;
             line-height: 1.2;
         }
         .tone-char {
-            font-size: 1.7em;
-            margin: 4px 0 0;
+            font-size: 1.2em;
+            margin: 2px 0 0;
             line-height: 1;
         }
         .tone-roman {
-            font-size: 0.8em;
+            font-size: 0.65em;
             color: #555;
-            margin: 2px 0 0;
+            margin: 1px 0 0;
         }
         .tone-play {
-            margin-top: 8px;
+            margin-top: 5px;
             background: none;
             border: 1.5px solid currentColor;
             border-radius: 20px;
-            padding: 3px 0;
-            font-size: 0.8em;
+            padding: 2px 0;
+            font-size: 0.7em;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
@@ -1077,7 +1079,7 @@
             </div>
 
             <!-- Pitch contour diagram -->
-            <svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:10px;background:#f8f9fa;margin:10px 0;">
+            <svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:80px;border-radius:8px;background:#f8f9fa;margin:6px 0;">
                 <!-- Grid lines -->
                 <line x1="46" y1="16" x2="294" y2="16" stroke="#ddd" stroke-width="1"/>
                 <line x1="46" y1="52" x2="294" y2="52" stroke="#ddd" stroke-width="1"/>
@@ -1115,7 +1117,7 @@
                 <!-- Tone 1 -->
                 <div class="tone-card" style="border-color:#e74c3c;" onclick="playToneDemo('詩')">
                     <div class="tone-num" style="color:#e74c3c;">1</div>
-                    <svg viewBox="0 0 50 42" width="50" height="42" style="display:block;margin:4px auto;">
+                    <svg viewBox="0 0 50 42" width="36" height="30" style="display:block;margin:2px auto;">
                         <line x1="5" y1="8" x2="45" y2="8" stroke="#e74c3c" stroke-width="3" stroke-linecap="round"/>
                         <text x="25" y="26" font-size="18" text-anchor="middle" fill="#333">ā</text>
                     </svg>
@@ -1127,7 +1129,7 @@
                 <!-- Tone 2 -->
                 <div class="tone-card" style="border-color:#9b59b6;" onclick="playToneDemo('史')">
                     <div class="tone-num" style="color:#9b59b6;">2</div>
-                    <svg viewBox="0 0 50 42" width="50" height="42" style="display:block;margin:4px auto;">
+                    <svg viewBox="0 0 50 42" width="36" height="30" style="display:block;margin:2px auto;">
                         <line x1="5" y1="34" x2="45" y2="8" stroke="#9b59b6" stroke-width="3" stroke-linecap="round"/>
                         <text x="25" y="26" font-size="18" text-anchor="middle" fill="#333">á</text>
                     </svg>
@@ -1139,7 +1141,7 @@
                 <!-- Tone 3 -->
                 <div class="tone-card" style="border-color:#3498db;" onclick="playToneDemo('試')">
                     <div class="tone-num" style="color:#3498db;">3</div>
-                    <svg viewBox="0 0 50 42" width="50" height="42" style="display:block;margin:4px auto;">
+                    <svg viewBox="0 0 50 42" width="36" height="30" style="display:block;margin:2px auto;">
                         <line x1="5" y1="18" x2="45" y2="18" stroke="#3498db" stroke-width="3" stroke-linecap="round"/>
                         <text x="25" y="36" font-size="18" text-anchor="middle" fill="#333">a</text>
                     </svg>
@@ -1151,7 +1153,7 @@
                 <!-- Tone 4 -->
                 <div class="tone-card" style="border-color:#1abc9c;" onclick="playToneDemo('時')">
                     <div class="tone-num" style="color:#1abc9c;">4</div>
-                    <svg viewBox="0 0 50 42" width="50" height="42" style="display:block;margin:4px auto;">
+                    <svg viewBox="0 0 50 42" width="36" height="30" style="display:block;margin:2px auto;">
                         <line x1="5" y1="14" x2="45" y2="34" stroke="#1abc9c" stroke-width="3" stroke-linecap="round"/>
                         <text x="25" y="14" font-size="18" text-anchor="middle" fill="#333">à</text>
                     </svg>
@@ -1163,7 +1165,7 @@
                 <!-- Tone 5 -->
                 <div class="tone-card" style="border-color:#e67e22;" onclick="playToneDemo('市')">
                     <div class="tone-num" style="color:#e67e22;">5</div>
-                    <svg viewBox="0 0 50 42" width="50" height="42" style="display:block;margin:4px auto;">
+                    <svg viewBox="0 0 50 42" width="36" height="30" style="display:block;margin:2px auto;">
                         <line x1="5" y1="34" x2="45" y2="18" stroke="#e67e22" stroke-width="3" stroke-linecap="round"/>
                         <text x="25" y="16" font-size="18" text-anchor="middle" fill="#333">ǎ</text>
                     </svg>
@@ -1175,7 +1177,7 @@
                 <!-- Tone 6 -->
                 <div class="tone-card" style="border-color:#7d8c2a;" onclick="playToneDemo('事')">
                     <div class="tone-num" style="color:#7d8c2a;">6</div>
-                    <svg viewBox="0 0 50 42" width="50" height="42" style="display:block;margin:4px auto;">
+                    <svg viewBox="0 0 50 42" width="36" height="30" style="display:block;margin:2px auto;">
                         <line x1="5" y1="28" x2="45" y2="28" stroke="#7d8c2a" stroke-width="3" stroke-linecap="round"/>
                         <text x="25" y="22" font-size="18" text-anchor="middle" fill="#333">a̤</text>
                     </svg>
@@ -1186,7 +1188,6 @@
                 </div>
             </div>
 
-            <button class="help-close-btn" style="margin-top:20px;" onclick="closeTonesModal()">Got it! Close</button>
         </div>
     </div>
 
