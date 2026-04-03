@@ -3,280 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantonese RPG Menu</title>
+    <title>Cantonese Lesson: Tim Hortons</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             padding: 20px;
             margin: 0;
-            color: #111;
+            color: #333;
         }
         .container {
             background-color: white;
             width: 100%;
-            max-width: 400px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            padding: 20px;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 20px;
             box-sizing: border-box;
         }
-        .header-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
+        .header {
+            text-align: center;
             margin-bottom: 20px;
-            font-size: 1.1rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
         }
-        .stat-right {
-            display: flex;
-            gap: 15px;
+        .header h1 {
+            font-size: 1.5rem;
+            margin: 0 0 5px 0;
+            color: #1a1a1a;
         }
-        .main-btn {
-            background: linear-gradient(180deg, #ff9a22, #ff7a00);
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 12px;
+        .header p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+        .news-image {
             width: 100%;
-            font-weight: bold;
-            font-size: 1rem;
-            color: #111;
-            margin-bottom: 10px;
+            height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            background-color: #ddd;
+        }
+        .action-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            font-weight: 600;
+            font-size: 1.1rem;
             cursor: pointer;
-            box-shadow: 0 4px 0 #333;
+            transition: transform 0.1s, background 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-        }
-        .main-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #333;
-        }
-        .upgrade-row {
-            display: flex;
             gap: 10px;
             margin-bottom: 20px;
         }
-        .upgrade-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            text-align: center;
-            border: 1px solid #ccc;
+        .action-btn:active {
+            transform: scale(0.98);
         }
-        .btn-hp {
-            background-color: #1a237e;
-            color: white;
-            border: 2px solid #333;
+        .action-btn:hover {
+            background: #b71c1c;
         }
-        .btn-dmg {
-            background-color: #e0e0e0;
-            color: #999;
-            border: 2px solid #bbb;
+        .script-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #d32f2f;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
         }
-        .mission-header {
-            text-align: center;
-            font-weight: bold;
+        .cantonese-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+        .jyutping {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .preposition {
+            color: #1976d2;
+            text-decoration: underline;
+        }
+        .prep-section {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 {
+            margin-top: 0;
+            color: #1565c0;
             font-size: 1.1rem;
-            margin: 25px 0 15px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 10px;
         }
-        .grid-container {
+        .prep-section p {
+            font-size: 0.95rem;
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        .vocab-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+            margin-top: 10px;
         }
-        .mission-btn {
-            background-color: white;
-            border: 2px solid #2c3e50;
-            border-radius: 8px;
-            padding: 12px 5px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #2c3e50;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.2s;
-        }
-        .mission-btn:hover {
-            background-color: #f0f4f8;
-        }
-        .lesson-list {
-            display: none;
-            margin-top: 20px;
-            border-top: 2px dashed #ccc;
-            padding-top: 15px;
-        }
-        .lesson-item {
-            background: #f8f9fa;
-            border-left: 4px solid #ff7a00;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
+        .vocab-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
             font-size: 0.9rem;
+            border: 1px solid #bbdefb;
         }
-        .lesson-item:hover {
-            background: #e9ecef;
+        .quiz-section {
+            border-top: 2px dashed #ddd;
+            padding-top: 20px;
+        }
+        .quiz-question {
+            margin-bottom: 25px;
+        }
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            border-color: #bbb;
+        }
+        .option-btn.correct {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .option-btn.wrong {
+            background-color: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+        .translation-box {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #555;
+            background: #eee;
+            padding: 15px;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-stats">
-        <span>🎮 Cantonese RPG</span>
-        <div class="stat-right">
-            <span>👹 Lv.22</span>
-            <span>💰 84</span>
+    <div class="header">
+        <h1>☕ Beginner Mission 2</h1>
+        <p>Ordering Tim Hortons Coffee (Location Prepositions)</p>
+    </div>
+
+    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80" alt="Cafe Counter" class="news-image">
+
+    <button class="action-btn" onclick="playNews()">
+        🔊 Play Cantonese Audio
+    </button>
+
+    <div class="script-box">
+        <div class="cantonese-text">
+            今日，溫哥華天氣好凍。<br>
+            好多人<span class="preposition">喺</span> Tim Hortons <span class="preposition">入面</span>買咖啡。<br>
+            我<span class="preposition">喺</span>櫃檯<span class="preposition">前面</span>等。
+        </div>
+        <div class="jyutping">
+            Gam1 jat6, Wan1 go1 waa4 tin1 hei3 hou2 dung3.<br>
+            Hou2 do1 jan4 <strong>hai2</strong> Tim Hortons <strong>jap6 min6</strong> maai5 gaa3 fe1.<br>
+            Ngo5 <strong>hai2</strong> gwai6 toi2 <strong>cin4 min6</strong> dang2.
         </div>
     </div>
 
-    <button class="main-btn">🎵 Tone Guide</button>
-    <button class="main-btn">❓ Help - Cannot hear Cantonese</button>
-    <button class="main-btn">🛍️ Character Shop</button>
-
-    <div class="upgrade-row">
-        <div class="upgrade-btn btn-hp">❤️ +HP (Cost: 50)</div>
-        <div class="upgrade-btn btn-dmg">⚔️ +DMG (Cost: 225)</div>
+    <div class="prep-section">
+        <h3>📚 Grammar & Vocabulary Prep</h3>
+        <p><strong>Prepositions (介詞):</strong> Expressing where things are.</p>
+        <ul>
+            <li><strong>喺 (hai2):</strong> At / In / On (general location marker).</li>
+            <li><strong>入面 (jap6 min6):</strong> Inside.</li>
+            <li><strong>前面 (cin4 min6):</strong> In front of.</li>
+        </ul>
+        <p><strong>10 Key Vocabulary Words:</strong></p>
+        <div class="vocab-grid">
+            <div class="vocab-item"><strong>1. 天氣</strong> (tin1 hei3) - Weather</div>
+            <div class="vocab-item"><strong>2. 凍</strong> (dung3) - Cold</div>
+            <div class="vocab-item"><strong>3. 買</strong> (maai5) - To buy</div>
+            <div class="vocab-item"><strong>4. 咖啡</strong> (gaa3 fe1) - Coffee</div>
+            <div class="vocab-item"><strong>5. 櫃檯</strong> (gwai6 toi2) - Counter</div>
+            <div class="vocab-item"><strong>6. 等</strong> (dang2) - To wait</div>
+            <div class="vocab-item"><strong>7. 好多人</strong> (hou2 do1 jan4) - Many people</div>
+            <div class="vocab-item"><strong>8. 今日</strong> (gam1 jat6) - Today</div>
+            <div class="vocab-item"><strong>9. 入面</strong> (jap6 min6) - Inside</div>
+            <div class="vocab-item"><strong>10. 前面</strong> (cin4 min6) - In front of</div>
+        </div>
     </div>
 
-    <div class="mission-header">
-        🎯 Select Mission
-    </div>
-
-    <div class="grid-container" id="categoryGrid">
+    <div class="quiz-section">
+        <h3>📝 Knowledge Check</h3>
+        
+        <div class="quiz-question">
+            <div class="question-text">1. Context: Why are there many people at Tim Hortons?</div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(this, false)">A. They are waiting for the Skytrain.</button>
+                <button class="option-btn" onclick="checkAnswer(this, true)">B. They are buying coffee because it is cold.</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">C. They work behind the counter.</button>
+            </div>
         </div>
 
-    <div id="lessonContainer" class="lesson-list">
-        <h3 id="lessonTitle" style="margin-top: 0; color: #2c3e50;"></h3>
-        <div id="lessonItems"></div>
+        <div class="quiz-question">
+            <div class="question-text">2. Context: Where is the narrator waiting?</div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(this, false)">A. Outside in the cold</button>
+                <button class="option-btn" onclick="checkAnswer(this, true)">B. In front of the counter</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">C. Inside the washroom</button>
+            </div>
+        </div>
+
+        <div class="quiz-question">
+            <div class="question-text">3. Grammar: Which preposition specifically means "inside"?</div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(this, false)">A. 前面 (cin4 min6)</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">B. 喺 (hai2)</button>
+                <button class="option-btn" onclick="checkAnswer(this, true)">C. 入面 (jap6 min6)</button>
+            </div>
+        </div>
+
+        <div class="quiz-question">
+            <div class="question-text">4. Grammar: "我喺櫃檯___等" (I am waiting ___ the counter). Which word completes the sentence to mean "in front of"?</div>
+            <div class="options">
+                <button class="option-btn" onclick="checkAnswer(this, true)">A. 前面 (cin4 min6 - in front of)</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">B. 後面 (hau6 min6 - behind)</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">C. 出面 (ceot1 min6 - outside)</button>
+            </div>
+        </div>
     </div>
+
+    <div class="translation-box">
+        <strong>English Translation:</strong><br>
+        Today, Vancouver's weather is very cold.<br>
+        Many people are buying coffee <strong>inside (入面)</strong> Tim Hortons.<br>
+        I am waiting <strong>in front of (前面)</strong> the counter.
+    </div>
+
 </div>
 
 <script>
-    // Database of 150 Articles/News Topics categorized by difficulty
-    const curriculumDB = {
-        "Beginner": [
-            "Basic Greetings in Vancouver", "Ordering Tim Hortons Coffee", "Numbers 1-10", 
-            "Buying a Compass Card", "Asking for Washroom Locations", "Saying Thank You & Sorry",
-            "Days of the Week", "Basic Colors", "Ordering Dim Sum", "Identifying Family Members",
-            "Telling Time", "Common Action Verbs", "Basic Weather Words", "Body Parts", "Introducing Your Name"
-        ],
-        "Intermediate": [
-            "Booking a Table at a Restaurant", "Describing Weekend Plans", "Renting an Apartment in Burnaby",
-            "Calling a Plumber", "Shopping at T&T Supermarket", "Discussing Vancouver Weather",
-            "Giving Directions to a Taxi Driver", "Describing Physical Appearance", "Talking About Hobbies",
-            "Making Small Talk with Neighbors", "Returning an Item at a Store", "Discussing Dietary Restrictions",
-            "Describing Symptoms to a Pharmacist", "Setting up a Bank Account", "Discussing Holiday Plans"
-        ],
-        "Hard": [
-            "Analyzing BC Housing Market Trends", "Debating Carbon Tax Policies", "Discussing Metro Vancouver Traffic",
-            "Understanding Construction Permits", "Climate Change Impacts on BC", "Reviewing Political Elections",
-            "Analyzing Economic Inflation", "Healthcare System Challenges", "Artificial Intelligence in Daily Life",
-            "Discussing Local Tech Startup Culture", "Analyzing Global Trade News", "Philosophy of Modern Art",
-            "Debating Public Transit Expansions", "Legal Terminology in Contracts", "Historical Events of Gastown"
-        ],
-        "Tourist": [
-            "Navigating YVR Airport", "Buying Tickets for Capilano Suspension Bridge", "Taking the Seabus to Lonsdale",
-            "Ordering Seafood at Granville Island", "Asking for Photo Help at Stanley Park", "Checking into a Downtown Hotel",
-            "Renting a Bike at the Seawall", "Finding Souvenirs in Gastown", "Understanding Tipping Culture",
-            "Taking the Whistler Shuttle", "Emergency Numbers and Safety", "Booking a Whale Watching Tour",
-            "Navigating the Skytrain Map", "Asking for Free Wi-Fi", "Understanding Currency Exchange Rates"
-        ],
-        "Child": [
-            "Animal Names at the Aquarium", "Colors of the Rainbow", "Counting Toys", "My Favorite Fruits",
-            "Singing the ABCs in Cantonese", "Parts of the Face", "Playground Vocabulary", "My Pet Dog and Cat",
-            "Clothes I Wear", "Shapes and Sizes", "Types of Vehicles", "My Bedtime Routine",
-            "Feeling Happy and Sad", "Insects in the Garden", "Snack Time Words"
-        ],
-        "Elementary": [
-            "My School Backpack", "Playing Tag with Friends", "Favorite Subjects at School", "Riding the School Bus",
-            "Visiting the Library", "Weekend Cartoons", "My Lunchbox", "Learning to Ride a Bike",
-            "Summer Camp Activities", "My Birthday Party", "Helping Parents Clean", "Visiting Grandparents",
-            "Halloween Costumes", "Snow Days in Winter", "Drawing and Painting"
-        ],
-        "Middle School": [
-            "Homework Assignments", "Joining a Sports Team", "Listening to Pop Music", "Taking the Bus to the Mall",
-            "Playing Video Games", "Studying for Math Tests", "School Field Trips", "Hanging out at the Community Center",
-            "Learning to Cook Basic Meals", "Saving Allowance Money", "Using Social Media", "Choosing Elective Classes",
-            "Science Fair Projects", "Reading Comic Books", "Discussing Movies with Friends"
-        ],
-        "High School": [
-            "Getting a Learner's Driving License", "Applying for Part-time Jobs", "Preparing for Provincial Exams",
-            "Going to the School Prom", "Choosing University Programs", "Volunteering at Local Charities",
-            "Dating and Relationships", "Managing a Budget", "Attending Concerts", "Peer Pressure and Mental Health",
-            "Joining School Clubs", "Summer Jobs in Retail", "Discussing Future Careers", "Buying First Car",
-            "High School Graduation"
-        ],
-        "University": [
-            "Navigating the UBC Campus", "Registering for Semester Classes", "Living in Student Dorms",
-            "Writing a Thesis Paper", "Attending Networking Events", "Applying for Co-op Internships",
-            "Paying Tuition Fees", "Joining a Fraternity/Sorority", "Late Night Study Sessions",
-            "Cooking on a Student Budget", "Applying for Scholarships", "Attending Office Hours",
-            "Using the Academic Library", "Graduation Ceremony Logistics", "Moving to a New City for Work"
-        ],
-        "Business": [
-            "Leading a Project Meeting", "Writing Formal Emails", "Reviewing Construction Schedules",
-            "Negotiating Contracts", "Requesting Budget Approvals", "Conducting a Job Interview",
-            "Presenting Quarterly Reports", "Discussing Employee Benefits", "Resolving Workplace Conflicts",
-            "Networking at Industry Events", "Understanding Corporate Tax", "Pitching to New Clients",
-            "Managing Tenant Improvements", "Performance Review Appraisals", "Resigning from a Position"
-        ]
+    function playNews() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+
+            // English words are stripped for TTS to sound natural in Cantonese engine
+            const textToRead = "今日，溫哥華天氣好凍。好多人喺Tim Hortons入面買咖啡。我喺櫃檯前面等。";
+            const utterance = new SpeechSynthesisUtterance(textToRead);
+            utterance.lang = 'zh-HK';
+
+            const voices = window.speechSynthesis.getVoices();
+            const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+            
+            if (hkVoice) {
+                utterance.voice = hkVoice;
+            } else {
+                const zhVoice = voices.find(voice => voice.lang.includes('zh'));
+                if (zhVoice) utterance.voice = zhVoice;
+            }
+
+            utterance.rate = 0.85; 
+            utterance.pitch = 1.0;
+
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("Text-to-Speech is not supported in this browser.");
+        }
+    }
+
+    window.speechSynthesis.onvoiceschanged = function() {
+        window.speechSynthesis.getVoices();
     };
 
-    const categories = [
-        "Beginner", "Intermediate", "Hard", "Tourist", "Child", 
-        "Elementary", "Middle School", "High School", "University", "Business"
-    ];
-
-    const gridContainer = document.getElementById('categoryGrid');
-    const lessonContainer = document.getElementById('lessonContainer');
-    const lessonTitle = document.getElementById('lessonTitle');
-    const lessonItems = document.getElementById('lessonItems');
-
-    // Generate Mission Buttons
-    categories.forEach(category => {
-        const btn = document.createElement('button');
-        btn.className = 'mission-btn';
-        btn.textContent = category;
-        btn.onclick = () => loadLessons(category);
-        gridContainer.appendChild(btn);
-    });
-
-    // Load corresponding 15 lessons when clicked
-    function loadLessons(category) {
-        lessonTitle.textContent = `${category} Missions (15)`;
-        lessonItems.innerHTML = ''; // Clear previous
-        
-        curriculumDB[category].forEach((topic, index) => {
-            const div = document.createElement('div');
-            div.className = 'lesson-item';
-            div.innerHTML = `<strong>Mission ${index + 1}:</strong> ${topic}`;
-            
-            // In a real app, clicking this would open the news template we built earlier
-            div.onclick = () => alert(`Loading lesson module for: ${topic}`);
-            
-            lessonItems.appendChild(div);
+    function checkAnswer(buttonElement, isCorrect) {
+        const optionsContainer = buttonElement.parentElement;
+        const allButtons = optionsContainer.querySelectorAll('.option-btn');
+        allButtons.forEach(btn => {
+            btn.style.pointerEvents = 'none';
         });
 
-        lessonContainer.style.display = 'block';
-        
-        // Scroll to the list smoothly
-        setTimeout(() => {
-            lessonContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 100);
+        if (isCorrect) {
+            buttonElement.classList.add('correct');
+            buttonElement.innerHTML += ' ✅ Correct!';
+        } else {
+            buttonElement.classList.add('wrong');
+            buttonElement.innerHTML += ' ❌ Incorrect';
+            
+            allButtons.forEach(btn => {
+                if (btn.getAttribute('onclick').includes('true')) {
+                    btn.classList.add('correct');
+                }
+            });
+        }
     }
 </script>
 
