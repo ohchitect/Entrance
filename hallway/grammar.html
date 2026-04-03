@@ -152,6 +152,24 @@
             margin-bottom: 10px;
             font-size: 1.1rem;
             color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .play-btn-small {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 5px;
+            transition: transform 0.1s;
+        }
+        .play-btn-small:hover {
+            transform: scale(1.15);
+        }
+        .play-btn-small:active {
+            transform: scale(0.9);
         }
         .options {
             display: flex;
@@ -188,6 +206,7 @@
             color: #666;
             font-weight: normal;
             display: block;
+            width: 100%;
             margin-top: 4px;
         }
         .translation-box {
@@ -286,6 +305,7 @@
         <div class="quiz-question">
             <div class="question-text">
                 1. 點解好多人買咖啡？
+                <button class="play-btn-small" onclick="playText('點解好多人買咖啡？')">🔊</button>
                 <span class="eng-trans">(Why are many people buying coffee?)</span>
             </div>
             <div class="options">
@@ -307,6 +327,7 @@
         <div class="quiz-question">
             <div class="question-text">
                 2. 我喺邊度等？
+                <button class="play-btn-small" onclick="playText('我喺邊度等？')">🔊</button>
                 <span class="eng-trans">(Where am I waiting?)</span>
             </div>
             <div class="options">
@@ -328,6 +349,7 @@
         <div class="quiz-question">
             <div class="question-text">
                 3. "Inside" 點講？
+                <button class="play-btn-small" onclick="playText('Inside 點講？')">🔊</button>
                 <span class="eng-trans">(How to say "inside"?)</span>
             </div>
             <div class="options">
@@ -346,6 +368,7 @@
         <div class="quiz-question">
             <div class="question-text">
                 4. "In front of" 點講？
+                <button class="play-btn-small" onclick="playText('In front of 點講？')">🔊</button>
                 <span class="eng-trans">(How to say "in front of"?)</span>
             </div>
             <div class="options">
