@@ -51,7 +51,7 @@ function initApp() {
 function updateShopUI() {
     document.getElementById('coin-count').textContent = save.coins;
     let costHp = 50 + (save.upgHp * 25); 
-    let costDmg = 75 + (save.upgDmg * 50);
+    let costDmg = 225 + (save.upgDmg * 150);
     document.getElementById('cost-hp').textContent = costHp;
     document.getElementById('cost-dmg').textContent = costDmg;
     document.getElementById('btn-upg-hp').disabled = save.coins < costHp;
@@ -59,7 +59,7 @@ function updateShopUI() {
 }
 
 function buyUpgrade(type) {
-    let cost = type === 'hp' ? 50 + (save.upgHp * 25) : 75 + (save.upgDmg * 50);
+    let cost = type === 'hp' ? 50 + (save.upgHp * 25) : 225 + (save.upgDmg * 150);
     if (save.coins >= cost) {
         save.coins -= cost;
         if (type === 'hp') save.upgHp++; else save.upgDmg++;
