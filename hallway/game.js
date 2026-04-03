@@ -250,7 +250,7 @@ function checkCombatState() {
         return;
     }
     if (enemy.hp <= 0) {
-        let coinReward = 10 + (currentLevel * 2);
+        let coinReward = 5 + Math.floor(currentLevel / 2);
         save.coins += coinReward;
         alert(`Victory! You earned ${coinReward} coins.`);
         if (currentLevel === save.maxLevel && save.maxLevel < 100) save.maxLevel++;
