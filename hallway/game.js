@@ -173,6 +173,7 @@ function startBattle() {
     setPlayerShape(save.playerColor, save.playerShape);
     const enemyColor = getEnemyColor(currentLevel);
     setEnemyShape(tierIndex, enemyColor);
+    applyBattleBackground(tierIndex);
 
     updateBattleUI();
     generateQuestion();
