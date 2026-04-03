@@ -702,27 +702,21 @@
         #question-box {
             text-align: center;
             font-size: clamp(1.2em, 4vw, 1.6em);
-            margin: var(--spacing-sm) 0 var(--spacing-xs) 0;
+            margin: var(--spacing-xs) 0 var(--spacing-xs) 0;
             font-weight: 700;
             color: var(--navy-dark);
-            position: relative;
         }
 
         #answer-timer {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.65em;
-            font-weight: 800;
-            min-width: 28px;
-            height: 28px;
-            line-height: 28px;
+            display: block;
             text-align: center;
-            border-radius: 50%;
-            background: rgba(230,126,34,0.12);
-            border: 2px solid currentColor;
+            font-size: 1.1em;
+            font-weight: 800;
+            height: 36px;
+            line-height: 36px;
+            letter-spacing: 1px;
             transition: color 0.3s;
+            margin: var(--spacing-xs) 0 2px 0;
         }
 
         #options {
@@ -1047,7 +1041,8 @@
                 </div>
             </div>
 
-            <div id="question-box">Loading...<span id="answer-timer"></span></div>
+            <div id="answer-timer"></div>
+            <div id="question-box">Loading...</div>
             <div id="options">
                 <button class="option-btn" onclick="checkAnswer(0)" id="btn0"></button>
                 <button class="option-btn" onclick="checkAnswer(1)" id="btn1"></button>
@@ -1289,7 +1284,7 @@
 <script src="colors.js?v=3"></script>
 <script src="shop.js?v=4"></script>
 <script src="vocab.js?v=3"></script>
-<script src="game.js?v=6"></script>
+<script src="game.js?v=7"></script>
 
 <script>
 function playCantoneseVoice(text) {

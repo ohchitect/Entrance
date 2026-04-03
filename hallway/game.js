@@ -185,17 +185,23 @@ function updateBattleUI() {
     document.getElementById('player-xp-text').textContent = `${player.xp}/${player.requiredXp}`;
 }
 
+function renderTimerDots(remaining) {
+    const timerEl = document.getElementById('answer-timer');
+    if (!timerEl) return;
+    const filled = '⬤';
+    const empty = '○';
+    const dots = Array.from({length: ANSWER_TIME}, (_, i) => i < remaining ? filled : empty).join(' ');
+    timerEl.textContent = dots;
+    timerEl.style.color = remaining <= 2 ? '#e74c3c' : '#e67e22';
+}
+
 function startAnswerTimer() {
     clearAnswerTimer();
     let remaining = ANSWER_TIME;
-    const timerEl = document.getElementById('answer-timer');
-    if (timerEl) { timerEl.textContent = remaining; timerEl.style.color = '#e67e22'; }
+    renderTimerDots(remaining);
     timerInterval = setInterval(() => {
         remaining--;
-        if (timerEl) {
-            timerEl.textContent = remaining;
-            timerEl.style.color = remaining <= 2 ? '#e74c3c' : '#e67e22';
-        }
+        renderTimerDots(remaining);
         if (remaining <= 0) {
             clearAnswerTimer();
             timeOut();
