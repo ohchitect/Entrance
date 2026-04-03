@@ -71,13 +71,13 @@
             color: var(--navy-dark);
         }
         
-        .main-container { 
+        .main-container {
             background: var(--text-light);
             border-radius: var(--radius-lg);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 900px;
-            padding: var(--spacing-xl);
+            padding: var(--spacing-md);
             box-sizing: border-box;
             border: 1px solid #e5e7eb;
         }
@@ -85,7 +85,7 @@
         #level-select-screen {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-sm);
+            gap: 6px;
         }
 
         .header-buttons {
@@ -135,11 +135,11 @@
             transform: translateY(-2px);
         }
         
-        .shop-container { 
+        .shop-container {
             background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
             border: 2px solid var(--navy);
             border-radius: var(--radius-md);
-            padding: var(--spacing-md);
+            padding: 8px 10px;
             display: flex;
             flex-direction: column;
             gap: var(--spacing-md);
@@ -188,10 +188,10 @@
             opacity: 0.6;
         }
         
-        .mission-section { 
+        .mission-section {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-md);
+            gap: 6px;
         }
         
         .mission-title { 
@@ -205,14 +205,14 @@
         .tier-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-sm);
+            gap: 6px;
             width: 100%;
         }
-        
-        .tier-btn { 
+
+        .tier-btn {
             background: white;
             border: 2px solid var(--navy);
-            padding: var(--spacing-md) var(--spacing-sm);
+            padding: 10px var(--spacing-sm);
             border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 700;
@@ -942,7 +942,7 @@
         }
 
         @media (max-width: 768px) {
-            .main-container { padding: var(--spacing-lg); }
+            .main-container { padding: var(--spacing-md); }
             #vocab-list { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
             .tier-buttons { grid-template-columns: 1fr 1fr; }
             #options { grid-template-columns: 1fr 1fr; }
@@ -950,10 +950,10 @@
             .header-buttons { flex-direction: column; }
             .help-btn { width: 100%; }
         }
-        
+
         @media (max-width: 480px) {
             body { padding: var(--spacing-sm); }
-            .main-container { padding: var(--spacing-lg); }
+            .main-container { padding: var(--spacing-md); }
             #vocab-list { grid-template-columns: 1fr; max-height: 50vh; }
             .tier-buttons { grid-template-columns: 1fr 1fr; }
             .upgrade-buttons { grid-template-columns: 1fr 1fr; }
