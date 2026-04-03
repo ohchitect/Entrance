@@ -53,10 +53,13 @@
         }
         .cantonese-text {
             font-weight: 700;
-            color: #d32f2f;
             font-size: 1.6rem;
             display: block;
             margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+        .grammar-highlight {
+            color: #d32f2f;
         }
         .jyutping {
             color: #666;
@@ -110,6 +113,8 @@
             line-height: 1.4;
             display: flex;
             flex-direction: column;
+            border-left: 3px solid #d32f2f;
+            padding-left: 10px;
         }
         .translation-list li:last-child {
             margin-bottom: 0;
@@ -117,7 +122,7 @@
         .t-term {
             font-weight: 600;
             color: #333;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
         .t-def {
             color: #555;
@@ -129,53 +134,53 @@
 <div class="container">
     <div class="header">
         <h1>🎮 Cantonese Grammar</h1>
-        <p>Mission: Classifiers Story (Lv.1)</p>
+        <p>Mission: Classifiers & Conjunctions</p>
     </div>
 
     <div class="lesson-content">
         <div class="phrase-group">
-            <span class="cantonese-text">從前有一個人。</span>
-            <span class="jyutping">(Cung4 cin4 jau5 jat1 go3 jan4.)</span>
+            <span class="cantonese-text">我見到一<span class="grammar-highlight">個</span>人。</span>
+            <span class="jyutping">(Ngo5 gin3 dou2 jat1 go3 jan4.)</span>
         </div>
         
         <div class="phrase-group">
-            <span class="cantonese-text">佢有一隻狗。</span>
-            <span class="jyutping">(Keoi5 jau5 jat1 zek3 gau2.)</span>
+            <span class="cantonese-text">佢拖住一<span class="grammar-highlight">隻</span>狗。</span>
+            <span class="jyutping">(Keoi5 to1 zyu6 jat1 zek3 gau2.)</span>
         </div>
 
         <div class="phrase-group">
-            <span class="cantonese-text">個人同隻狗係好朋友。</span>
-            <span class="jyutping">(Go3 jan4 tung4 zek3 gau2 hai6 hou2 pang4 jau5.)</span>
+            <span class="cantonese-text">一<span class="grammar-highlight">個</span>人<span class="grammar-highlight">同</span>一<span class="grammar-highlight">隻</span>狗喺溫哥華散步。</span>
+            <span class="jyutping">(Jat1 go3 jan4 tung4 jat1 zek3 gau2 hai2 Wan1 go1 waa4 saan3 bou6.)</span>
         </div>
 
         <div class="phrase-group">
-            <span class="cantonese-text">今日，一個人同隻狗返屋企。</span>
-            <span class="jyutping">(Gam1 jat6, jat1 go3 jan4 tung4 zek3 gau2 faan1 uk1 kei2.)</span>
+            <span class="cantonese-text">然後，一<span class="grammar-highlight">個</span>人<span class="grammar-highlight">同</span><span class="grammar-highlight">隻</span>狗一齊返屋企。</span>
+            <span class="jyutping">(Jin4 hau6, jat1 go3 jan4 tung4 zek3 gau2 jat1 cai4 faan1 uk1 kei2.)</span>
         </div>
     </div>
 
     <button class="action-btn" onclick="readLyrics()">
-        🔊 Play Cantonese Story
+        🔊 Play Grammar Story
     </button>
 
     <div class="translation-box">
-        <h4>Translations</h4>
+        <h4>Grammar Breakdown</h4>
         <ul class="translation-list">
             <li>
-                <span class="t-term">從前有一個人。</span> 
-                <span class="t-def">Once upon a time, there was one person (個 - classifier for people).</span>
+                <span class="t-term">我見到一個人。</span> 
+                <span class="t-def">I see one person. <strong>(個 / go3 = Classifier for people)</strong></span>
             </li>
             <li>
-                <span class="t-term">佢有一隻狗。</span> 
-                <span class="t-def">He has one dog (隻 - classifier for animals).</span>
+                <span class="t-term">佢拖住一隻狗。</span> 
+                <span class="t-def">He is walking one dog. <strong>(隻 / zek3 = Classifier for animals)</strong></span>
             </li>
             <li>
-                <span class="t-term">個人同隻狗係好朋友。</span> 
-                <span class="t-def">The person and (同) the dog are good friends.</span>
+                <span class="t-term">一個人同一隻狗喺溫哥華散步。</span> 
+                <span class="t-def">One person <strong>and (同 / tung4)</strong> one dog take a walk in Vancouver.</span>
             </li>
             <li>
-                <span class="t-term">今日，一個人同隻狗返屋企。</span> 
-                <span class="t-def">Today, a person and a dog return home.</span>
+                <span class="t-term">然後，一個人同隻狗一齊返屋企。</span> 
+                <span class="t-def">Then, a person and a dog go home together.</span>
             </li>
         </ul>
     </div>
@@ -187,10 +192,10 @@
             window.speechSynthesis.cancel();
 
             const phrases = [
-                "從前有一個人",
-                "佢有一隻狗",
-                "個人同隻狗係好朋友",
-                "今日，一個人同隻狗返屋企"
+                "我見到一個人",
+                "佢拖住一隻狗",
+                "一個人同一隻狗喺溫哥華散步",
+                "然後，一個人同隻狗一齊返屋企"
             ];
 
             let delay = 0;
@@ -216,7 +221,8 @@
                     window.speechSynthesis.speak(utterance);
                 }, delay);
                 
-                delay += 3000; // 3-second pause between each sentence for pacing
+                // 3.5 second pause between each sentence
+                delay += 3500; 
             });
 
         } else {
