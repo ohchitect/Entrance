@@ -130,9 +130,10 @@
             margin-bottom: 25px;
         }
         .question-text {
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 10px;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            color: #1a1a1a;
         }
         .options {
             display: flex;
@@ -144,10 +145,12 @@
             border: 2px solid #ddd;
             border-radius: 8px;
             padding: 12px;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
             text-align: left;
             transition: all 0.2s;
+            color: #333;
         }
         .option-btn:hover {
             border-color: #bbb;
@@ -156,12 +159,18 @@
             background-color: #e8f5e9;
             border-color: #4caf50;
             color: #2e7d32;
-            font-weight: bold;
         }
         .option-btn.wrong {
             background-color: #ffebee;
             border-color: #f44336;
             color: #c62828;
+        }
+        .eng-trans {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: normal;
+            display: block;
+            margin-top: 4px;
         }
         .translation-box {
             margin-top: 30px;
@@ -204,9 +213,9 @@
         <h3>📚 Grammar & Vocabulary Prep</h3>
         <p><strong>Prepositions (介詞):</strong> Expressing where things are.</p>
         <ul>
-            <li><strong>喺 (hai2):</strong> At / In / On (general location marker).</li>
-            <li><strong>入面 (jap6 min6):</strong> Inside.</li>
-            <li><strong>前面 (cin4 min6):</strong> In front of.</li>
+            <li><strong>喺 (hai2):</strong> At / In / On</li>
+            <li><strong>入面 (jap6 min6):</strong> Inside</li>
+            <li><strong>前面 (cin4 min6):</strong> In front of</li>
         </ul>
         <p><strong>10 Key Vocabulary Words:</strong></p>
         <div class="vocab-grid">
@@ -227,44 +236,88 @@
         <h3>📝 Knowledge Check</h3>
         
         <div class="quiz-question">
-            <div class="question-text">1. Context: Why are there many people at Tim Hortons?</div>
+            <div class="question-text">
+                1. 點解好多人買咖啡？
+                <span class="eng-trans">(Why are many people buying coffee?)</span>
+            </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, false)">A. They are waiting for the Skytrain.</button>
-                <button class="option-btn" onclick="checkAnswer(this, true)">B. They are buying coffee because it is cold.</button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">C. They work behind the counter.</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    A. 等天車 
+                    <span class="eng-trans">(Waiting for Skytrain)</span>
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, true)">
+                    B. 天氣好凍 
+                    <span class="eng-trans">(Weather is very cold)</span>
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    C. 買麵包 
+                    <span class="eng-trans">(Buying bread)</span>
+                </button>
             </div>
         </div>
 
         <div class="quiz-question">
-            <div class="question-text">2. Context: Where is the narrator waiting?</div>
+            <div class="question-text">
+                2. 我喺邊度等？
+                <span class="eng-trans">(Where am I waiting?)</span>
+            </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, false)">A. Outside in the cold</button>
-                <button class="option-btn" onclick="checkAnswer(this, true)">B. In front of the counter</button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">C. Inside the washroom</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    A. 喺出面 
+                    <span class="eng-trans">(Outside)</span>
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, true)">
+                    B. 櫃檯前面 
+                    <span class="eng-trans">(In front of the counter)</span>
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    C. 洗手間 
+                    <span class="eng-trans">(In the washroom)</span>
+                </button>
             </div>
         </div>
 
         <div class="quiz-question">
-            <div class="question-text">3. Grammar: Which preposition specifically means "inside"?</div>
+            <div class="question-text">
+                3. "Inside" 點講？
+                <span class="eng-trans">(How to say "inside"?)</span>
+            </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, false)">A. 前面 (cin4 min6)</button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">B. 喺 (hai2)</button>
-                <button class="option-btn" onclick="checkAnswer(this, true)">C. 入面 (jap6 min6)</button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    A. 前面 (cin4 min6)
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    B. 喺 (hai2)
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, true)">
+                    C. 入面 (jap6 min6)
+                </button>
             </div>
         </div>
 
         <div class="quiz-question">
-            <div class="question-text">4. Grammar: "我喺櫃檯___等" (I am waiting ___ the counter). Which word completes the sentence to mean "in front of"?</div>
+            <div class="question-text">
+                4. "In front of" 點講？
+                <span class="eng-trans">(How to say "in front of"?)</span>
+            </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, true)">A. 前面 (cin4 min6 - in front of)</button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">B. 後面 (hau6 min6 - behind)</button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">C. 出面 (ceot1 min6 - outside)</button>
+                <button class="option-btn" onclick="checkAnswer(this, true)">
+                    A. 前面 (cin4 min6)
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    B. 後面 (hau6 min6)
+                    <span class="eng-trans">(Behind)</span>
+                </button>
+                <button class="option-btn" onclick="checkAnswer(this, false)">
+                    C. 出面 (ceot1 min6)
+                    <span class="eng-trans">(Outside)</span>
+                </button>
             </div>
         </div>
     </div>
 
     <div class="translation-box">
-        <strong>English Translation:</strong><br>
+        <strong>English Story Translation:</strong><br>
         Today, Vancouver's weather is very cold.<br>
         Many people are buying coffee <strong>inside (入面)</strong> Tim Hortons.<br>
         I am waiting <strong>in front of (前面)</strong> the counter.
@@ -277,7 +330,6 @@
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
 
-            // English words are stripped for TTS to sound natural in Cantonese engine
             const textToRead = "今日，溫哥華天氣好凍。好多人喺Tim Hortons入面買咖啡。我喺櫃檯前面等。";
             const utterance = new SpeechSynthesisUtterance(textToRead);
             utterance.lang = 'zh-HK';
@@ -314,10 +366,10 @@
 
         if (isCorrect) {
             buttonElement.classList.add('correct');
-            buttonElement.innerHTML += ' ✅ Correct!';
+            buttonElement.innerHTML = buttonElement.innerHTML.split('<span')[0] + ' ✅ <span' + buttonElement.innerHTML.split('<span')[1];
         } else {
             buttonElement.classList.add('wrong');
-            buttonElement.innerHTML += ' ❌ Incorrect';
+            buttonElement.innerHTML = buttonElement.innerHTML.split('<span')[0] + ' ❌ <span' + buttonElement.innerHTML.split('<span')[1];
             
             allButtons.forEach(btn => {
                 if (btn.getAttribute('onclick').includes('true')) {
