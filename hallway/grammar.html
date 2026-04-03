@@ -57,18 +57,26 @@
         }
         .lesson-title {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.1rem;
         }
         .lyrics {
-            line-height: 1.6;
-            margin-bottom: 15px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            text-align: center;
         }
         .cantonese-text {
             font-weight: bold;
             color: #d32f2f;
+            font-size: 1.3rem;
+        }
+        .jyutping {
+            color: #555;
+            font-size: 0.9rem;
         }
         .audio-controls {
             margin-bottom: 15px;
@@ -78,10 +86,27 @@
             background-color: #f0f0f0;
             border: 2px solid #333;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
             font-weight: bold;
             cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        .action-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .translation-box {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px dashed #ccc;
+            font-size: 0.9rem;
+            color: #444;
+            line-height: 1.6;
+        }
+        .translation-box h4 {
+            margin: 0 0 10px 0;
+            color: #333;
         }
     </style>
 </head>
@@ -100,36 +125,54 @@
         <audio id="bgm" class="audio-controls" controls loop>
             <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
         </audio>
-        <p style="font-size: 0.8rem; color: #666; margin-top: 0;">(Using an external MP3 link keeps your app file size near 0MB)</p>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 0; text-align: center;">(Using an external MP3 link keeps your app file size near 0MB)</p>
     </div>
 
     <div class="lesson-box">
-        <div class="lesson-title">🎯 Mission: Classifiers (量詞)</div>
+        <div class="lesson-title">🎯 Mission: Classifiers & Story</div>
+        
         <div class="lyrics" id="song-lyrics">
-            Classifiers come before the noun,<br>
-            When you count, let's break it down!<br><br>
-            Use <span class="cantonese-text" data-text="個">個 (go)</span> for people:<br>
-            One person is <span class="cantonese-text" data-text="一個人">一個人 (jat1 go3 jan4)</span>.<br><br>
-            Use <span class="cantonese-text" data-text="隻">隻 (zek)</span> for animals:<br>
-            One dog is <span class="cantonese-text" data-text="一隻狗">一隻狗 (jat1 zek3 gau2)</span>.
+            <span class="cantonese-text">個</span> <span class="jyutping">(go3)</span><br>
+            <span class="cantonese-text">一個人</span> <span class="jyutping">(jat1 go3 jan4)</span><br><br>
+
+            <span class="cantonese-text">隻</span> <span class="jyutping">(zek3)</span><br>
+            <span class="cantonese-text">一隻狗</span> <span class="jyutping">(jat1 zek3 gau2)</span><br><br>
+
+            <span class="cantonese-text">同</span> <span class="jyutping">(tung4)</span><br><br>
+
+            <span class="cantonese-text">一個人同隻狗返屋企</span><br>
+            <span class="jyutping">(jat1 go3 jan4 tung4 zek3 gau2 faan1 uk1 kei2)</span>
         </div>
-        <button class="action-btn" onclick="readLyrics()">🔊 Play Voice Reading</button>
+
+        <button class="action-btn" onclick="readLyrics()">🔊 Play Cantonese Voice</button>
+
+        <div class="translation-box">
+            <h4>English Translations</h4>
+            <ul>
+                <li><strong>個 (go3):</strong> Classifier for people</li>
+                <li><strong>一個人:</strong> One person</li>
+                <li><strong>隻 (zek3):</strong> Classifier for animals</li>
+                <li><strong>一隻狗:</strong> One dog</li>
+                <li><strong>同 (tung4):</strong> And / With</li>
+                <li><strong>一個人同隻狗返屋企:</strong> A person and a dog go home.</li>
+            </ul>
+        </div>
     </div>
 </div>
 
 <script>
-    // Web Speech API for Text-to-Speech
     function readLyrics() {
-        // Check if browser supports speech synthesis
         if ('speechSynthesis' in window) {
-            // Cancel any ongoing speech
             window.speechSynthesis.cancel();
 
-            // The phrases to read
+            // Array containing ONLY the Cantonese text
             const phrases = [
-                "Classifiers come before the noun, When you count, let's break it down!",
-                "Use go for people. One person is, 一個人",
-                "Use zek for animals. One dog is, 一隻狗"
+                "個",
+                "一個人",
+                "隻",
+                "一隻狗",
+                "同",
+                "一個人同隻狗返屋企"
             ];
 
             let delay = 0;
@@ -138,28 +181,28 @@
                 setTimeout(() => {
                     const utterance = new SpeechSynthesisUtterance(phrase);
                     
-                    // Attempt to set a voice that supports Chinese/Cantonese for better pronunciation
-                    // Note: Exact voice availability depends entirely on the user's operating system
+                    // Force the language attribute to Cantonese/Traditional Chinese
+                    utterance.lang = 'zh-HK';
+
                     const voices = window.speechSynthesis.getVoices();
                     const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
                     
                     if (hkVoice) {
                         utterance.voice = hkVoice;
                     } else {
-                        // Fallback to Mandarin if Cantonese is not installed on the user's device
                         const zhVoice = voices.find(voice => voice.lang.includes('zh'));
                         if (zhVoice) utterance.voice = zhVoice;
                     }
 
-                    // Adjust rate for a "rhythmic" feel
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1.1;
+                    // Slower rate for clear pronunciation of single words
+                    utterance.rate = 0.8; 
+                    utterance.pitch = 1.0;
 
                     window.speechSynthesis.speak(utterance);
                 }, delay);
                 
-                // Add a pause between lines
-                delay += 4000; 
+                // Add a 2.5-second pause between each Cantonese phrase to match a beat
+                delay += 2500; 
             });
 
         } else {
@@ -167,7 +210,7 @@
         }
     }
 
-    // Ensure voices are loaded (Required for some browsers like Chrome)
+    // Ensure voices are loaded
     window.speechSynthesis.onvoiceschanged = function() {
         window.speechSynthesis.getVoices();
     };
