@@ -187,10 +187,10 @@
             margin: 0;
         }
         
-        .tier-buttons { 
+        .tier-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: var(--spacing-md);
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
             width: 100%;
         }
         
@@ -927,7 +927,7 @@
         @media (max-width: 768px) {
             .main-container { padding: var(--spacing-lg); }
             #vocab-list { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-            .tier-buttons { grid-template-columns: repeat(2, 1fr); }
+            .tier-buttons { grid-template-columns: 1fr 1fr; }
             #options { grid-template-columns: 1fr 1fr; }
             #arena { height: 160px; }
             .header-buttons { flex-direction: column; }
@@ -938,7 +938,7 @@
             body { padding: var(--spacing-sm); }
             .main-container { padding: var(--spacing-lg); }
             #vocab-list { grid-template-columns: 1fr; max-height: 50vh; }
-            .tier-buttons { grid-template-columns: 1fr; }
+            .tier-buttons { grid-template-columns: 1fr 1fr; }
             .upgrade-buttons { grid-template-columns: 1fr; }
             #options { grid-template-columns: 1fr; }
             #arena { height: 120px; padding: var(--spacing-md); }
