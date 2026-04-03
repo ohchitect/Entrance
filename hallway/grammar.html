@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Grammar RPG</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        .menu-btn {
+            background: linear-gradient(180deg, #ff9a22, #ff7a00);
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #111;
+            margin-bottom: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #333;
+            transition: all 0.1s;
+        }
+        .menu-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #333;
+        }
+        .lesson-box {
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff8f0;
+        }
+        .lesson-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .lyrics {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .cantonese-text {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        .audio-controls {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .action-btn {
+            background-color: #f0f0f0;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <span>🎮 Cantonese Grammar</span>
+        <span>🎧 Lv.1</span>
+    </div>
+
+    <button class="menu-btn">🎵 Select Background Beat</button>
+
+    <div class="lesson-box">
+        <div class="lesson-title">🎧 K-Pop Beat Player</div>
+        <audio id="bgm" class="audio-controls" controls loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 0;">(Using an external MP3 link keeps your app file size near 0MB)</p>
+    </div>
+
+    <div class="lesson-box">
+        <div class="lesson-title">🎯 Mission: Classifiers (量詞)</div>
+        <div class="lyrics" id="song-lyrics">
+            Classifiers come before the noun,<br>
+            When you count, let's break it down!<br><br>
+            Use <span class="cantonese-text" data-text="個">個 (go)</span> for people:<br>
+            One person is <span class="cantonese-text" data-text="一個人">一個人 (jat1 go3 jan4)</span>.<br><br>
+            Use <span class="cantonese-text" data-text="隻">隻 (zek)</span> for animals:<br>
+            One dog is <span class="cantonese-text" data-text="一隻狗">一隻狗 (jat1 zek3 gau2)</span>.
+        </div>
+        <button class="action-btn" onclick="readLyrics()">🔊 Play Voice Reading</button>
+    </div>
+</div>
+
+<script>
+    // Web Speech API for Text-to-Speech
+    function readLyrics() {
+        // Check if browser supports speech synthesis
+        if ('speechSynthesis' in window) {
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            // The phrases to read
+            const phrases = [
+                "Classifiers come before the noun, When you count, let's break it down!",
+                "Use go for people. One person is, 一個人",
+                "Use zek for animals. One dog is, 一隻狗"
+            ];
+
+            let delay = 0;
+
+            phrases.forEach((phrase, index) => {
+                setTimeout(() => {
+                    const utterance = new SpeechSynthesisUtterance(phrase);
+                    
+                    // Attempt to set a voice that supports Chinese/Cantonese for better pronunciation
+                    // Note: Exact voice availability depends entirely on the user's operating system
+                    const voices = window.speechSynthesis.getVoices();
+                    const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+                    
+                    if (hkVoice) {
+                        utterance.voice = hkVoice;
+                    } else {
+                        // Fallback to Mandarin if Cantonese is not installed on the user's device
+                        const zhVoice = voices.find(voice => voice.lang.includes('zh'));
+                        if (zhVoice) utterance.voice = zhVoice;
+                    }
+
+                    // Adjust rate for a "rhythmic" feel
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.1;
+
+                    window.speechSynthesis.speak(utterance);
+                }, delay);
+                
+                // Add a pause between lines
+                delay += 4000; 
+            });
+
+        } else {
+            alert("Text-to-Speech is not supported in this browser.");
+        }
+    }
+
+    // Ensure voices are loaded (Required for some browsers like Chrome)
+    window.speechSynthesis.onvoiceschanged = function() {
+        window.speechSynthesis.getVoices();
+    };
+</script>
+
+</body>
+</html>
