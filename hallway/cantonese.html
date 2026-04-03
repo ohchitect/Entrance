@@ -88,62 +88,36 @@
             gap: 6px;
         }
 
+        /* ===== UNIFIED MAIN PAGE BUTTONS ===== */
         .header-buttons {
             display: flex;
-            gap: var(--spacing-sm);
-            margin-bottom: 0;
-            justify-content: flex-end;
+            flex-direction: column;
+            gap: 6px;
         }
 
-        .help-btn {
+        /* Single shared style for all top action buttons */
+        .help-btn, .shop-btn {
+            width: 100%;
+            padding: 13px var(--spacing-md);
             background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
             border: 2px solid var(--navy);
-            padding: 10px 15px;
             border-radius: var(--radius-md);
-            font-size: 0.95em;
+            font-size: 1em;
             font-weight: 700;
             color: var(--navy-dark);
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            text-align: center;
+            box-sizing: border-box;
         }
 
-        .help-btn:hover {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
+        .help-btn:active, .shop-btn:active {
+            transform: scale(0.97);
         }
-        
-        .shop-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            border: 2px solid var(--navy);
-            border-radius: var(--radius-md);
-            font-size: 1.1em;
-            font-weight: 700;
-            color: var(--navy-dark);
-            cursor: pointer;
-            margin-bottom: 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .shop-btn:hover {
-            background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
-        
+
         .shop-container {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            border: 2px solid var(--navy);
-            border-radius: var(--radius-md);
-            padding: 8px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-md);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: contents;
         }
         
         .coins-display { 
@@ -153,38 +127,35 @@
             text-align: center;
         }
         
-        .upgrade-buttons { 
+        .upgrade-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
+            gap: 6px;
         }
-        
-        .upgrade-btn { 
+
+        .upgrade-btn {
+            padding: 13px var(--spacing-md);
             background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
             border: 2px solid var(--accent-gold);
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 700;
-            font-size: clamp(0.9em, 3.5vw, 1.05em);
+            font-size: 1em;
             color: var(--text-light);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(26, 44, 74, 0.2);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(26, 44, 74, 0.2);
+            text-align: center;
         }
-        
-        .upgrade-btn:hover:not(:disabled) { 
-            background: linear-gradient(135deg, var(--navy-dark) 0%, #0a1420 100%);
-            box-shadow: 0 6px 16px rgba(26, 44, 74, 0.3);
-            transform: translateY(-2px);
-            border-color: #ffffff;
+
+        .upgrade-btn:active:not(:disabled) {
+            transform: scale(0.97);
         }
-        
-        .upgrade-btn:disabled { 
+
+        .upgrade-btn:disabled {
             background: linear-gradient(135deg, #b0b0b0 0%, #a0a0a0 100%);
-            color: #ffffff;
-            border-color: #999999;
+            color: #fff;
+            border-color: #999;
             cursor: not-allowed;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
             opacity: 0.6;
         }
         
@@ -194,14 +165,14 @@
             gap: 6px;
         }
         
-        .mission-title { 
+        .mission-title {
             color: var(--navy-dark);
-            font-size: clamp(1.3em, 4vw, 1.6em);
+            font-size: 1.15em;
             font-weight: 700;
             text-align: center;
             margin: 0;
         }
-        
+
         .tier-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -212,22 +183,19 @@
         .tier-btn {
             background: white;
             border: 2px solid var(--navy);
-            padding: 10px var(--spacing-sm);
+            padding: 13px var(--spacing-sm);
             border-radius: var(--radius-md);
             cursor: pointer;
             font-weight: 700;
-            font-size: clamp(0.95em, 3.5vw, 1.05em);
+            font-size: 1em;
             color: var(--navy-dark);
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(26, 44, 74, 0.1);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(26, 44, 74, 0.08);
         }
-        
-        .tier-btn:hover { 
+
+        .tier-btn:active {
             background: var(--navy);
             color: var(--text-light);
-            border-color: var(--accent-gold);
-            box-shadow: 0 6px 16px rgba(26, 44, 74, 0.2);
-            transform: translateY(-2px);
         }
         
         /* ===== SHOP MODAL ===== */
@@ -959,8 +927,7 @@
             .tier-buttons { grid-template-columns: 1fr 1fr; }
             #options { grid-template-columns: 1fr 1fr; }
             #arena { height: 140px; }
-            .header-buttons { flex-direction: column; }
-            .help-btn { width: 100%; }
+            /* header-buttons already column, help-btn already 100% */
         }
 
         @media (max-width: 480px) {
@@ -1284,7 +1251,7 @@
 <script src="colors.js?v=3"></script>
 <script src="shop.js?v=4"></script>
 <script src="vocab.js?v=3"></script>
-<script src="game.js?v=10"></script>
+<script src="game.js?v=11"></script>
 
 <script>
 function playCantoneseVoice(text) {
