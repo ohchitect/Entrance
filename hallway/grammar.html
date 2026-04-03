@@ -117,10 +117,28 @@
         }
         .vocab-item {
             background: white;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 10px 8px;
+            border-radius: 8px;
             font-size: 0.9rem;
-            border: 1px solid #bbdefb;
+            border: 2px solid #bbdefb;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .vocab-item:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+        .vocab-item:active {
+            transform: scale(0.96);
+        }
+        .vocab-item span.icon {
+            font-size: 0.8rem;
+            color: #1976d2;
+            margin-bottom: 2px;
         }
         .quiz-section {
             border-top: 2px dashed #ddd;
@@ -192,7 +210,7 @@
 
     <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80" alt="Cafe Counter" class="news-image">
 
-    <button class="action-btn" onclick="playNews()">
+    <button class="action-btn" onclick="playText('今日，溫哥華天氣好凍。好多人喺Tim Hortons入面買咖啡。我喺櫃檯前面等。')">
         🔊 Play Cantonese Audio
     </button>
 
@@ -217,18 +235,48 @@
             <li><strong>入面 (jap6 min6):</strong> Inside</li>
             <li><strong>前面 (cin4 min6):</strong> In front of</li>
         </ul>
-        <p><strong>10 Key Vocabulary Words:</strong></p>
+        <p><strong>10 Key Vocabulary Words (Click to hear):</strong></p>
         <div class="vocab-grid">
-            <div class="vocab-item"><strong>1. 天氣</strong> (tin1 hei3) - Weather</div>
-            <div class="vocab-item"><strong>2. 凍</strong> (dung3) - Cold</div>
-            <div class="vocab-item"><strong>3. 買</strong> (maai5) - To buy</div>
-            <div class="vocab-item"><strong>4. 咖啡</strong> (gaa3 fe1) - Coffee</div>
-            <div class="vocab-item"><strong>5. 櫃檯</strong> (gwai6 toi2) - Counter</div>
-            <div class="vocab-item"><strong>6. 等</strong> (dang2) - To wait</div>
-            <div class="vocab-item"><strong>7. 好多人</strong> (hou2 do1 jan4) - Many people</div>
-            <div class="vocab-item"><strong>8. 今日</strong> (gam1 jat6) - Today</div>
-            <div class="vocab-item"><strong>9. 入面</strong> (jap6 min6) - Inside</div>
-            <div class="vocab-item"><strong>10. 前面</strong> (cin4 min6) - In front of</div>
+            <button class="vocab-item" onclick="playText('天氣')">
+                <span class="icon">🔊</span>
+                <div><strong>1. 天氣</strong> (tin1 hei3) - Weather</div>
+            </button>
+            <button class="vocab-item" onclick="playText('凍')">
+                <span class="icon">🔊</span>
+                <div><strong>2. 凍</strong> (dung3) - Cold</div>
+            </button>
+            <button class="vocab-item" onclick="playText('買')">
+                <span class="icon">🔊</span>
+                <div><strong>3. 買</strong> (maai5) - To buy</div>
+            </button>
+            <button class="vocab-item" onclick="playText('咖啡')">
+                <span class="icon">🔊</span>
+                <div><strong>4. 咖啡</strong> (gaa3 fe1) - Coffee</div>
+            </button>
+            <button class="vocab-item" onclick="playText('櫃檯')">
+                <span class="icon">🔊</span>
+                <div><strong>5. 櫃檯</strong> (gwai6 toi2) - Counter</div>
+            </button>
+            <button class="vocab-item" onclick="playText('等')">
+                <span class="icon">🔊</span>
+                <div><strong>6. 等</strong> (dang2) - To wait</div>
+            </button>
+            <button class="vocab-item" onclick="playText('好多人')">
+                <span class="icon">🔊</span>
+                <div><strong>7. 好多人</strong> (hou2 do1 jan4) - Many people</div>
+            </button>
+            <button class="vocab-item" onclick="playText('今日')">
+                <span class="icon">🔊</span>
+                <div><strong>8. 今日</strong> (gam1 jat6) - Today</div>
+            </button>
+            <button class="vocab-item" onclick="playText('入面')">
+                <span class="icon">🔊</span>
+                <div><strong>9. 入面</strong> (jap6 min6) - Inside</div>
+            </button>
+            <button class="vocab-item" onclick="playText('前面')">
+                <span class="icon">🔊</span>
+                <div><strong>10. 前面</strong> (cin4 min6) - In front of</div>
+            </button>
         </div>
     </div>
 
@@ -326,12 +374,11 @@
 </div>
 
 <script>
-    function playNews() {
+    function playText(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
 
-            const textToRead = "今日，溫哥華天氣好凍。好多人喺Tim Hortons入面買咖啡。我喺櫃檯前面等。";
-            const utterance = new SpeechSynthesisUtterance(textToRead);
+            const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'zh-HK';
 
             const voices = window.speechSynthesis.getVoices();
