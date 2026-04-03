@@ -152,9 +152,9 @@ function startBattle() {
     document.getElementById('player').style.backgroundColor = save.playerColor;
     document.getElementById('player').style.borderRadius = save.playerShape;
     
-    // Set enemy color based on level
+    // Set enemy shape and color based on tier and level
     const enemyColor = getEnemyColor(currentLevel);
-    document.getElementById('enemy').style.backgroundColor = enemyColor;
+    setEnemyShape(tierIndex, enemyColor);
 
     updateBattleUI(); 
     generateQuestion();
@@ -248,6 +248,177 @@ function checkCombatState() {
         return;
     }
     setTimeout(generateQuestion, 800);
+}
+
+function getEnemySVG(tierIndex, color) {
+    const svgs = [
+        // Tier 0: Slime
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <circle cx="30" cy="52" r="22" fill="${color}"/>
+          <circle cx="60" cy="46" r="20" fill="${color}"/>
+          <ellipse cx="50" cy="70" rx="42" ry="26" fill="${color}"/>
+          <circle cx="38" cy="68" r="9" fill="white"/>
+          <circle cx="63" cy="68" r="9" fill="white"/>
+          <circle cx="40" cy="69" r="5" fill="#1a1a1a"/>
+          <circle cx="65" cy="69" r="5" fill="#1a1a1a"/>
+          <circle cx="38" cy="67" r="2" fill="white"/>
+          <circle cx="63" cy="67" r="2" fill="white"/>
+        </svg>`,
+
+        // Tier 1: Goblin
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <ellipse cx="50" cy="80" rx="18" ry="14" fill="${color}"/>
+          <polygon points="20,46 6,14 36,36" fill="${color}"/>
+          <polygon points="80,46 94,14 64,36" fill="${color}"/>
+          <circle cx="50" cy="44" r="24" fill="${color}"/>
+          <circle cx="41" cy="39" r="7" fill="#ffee22"/>
+          <circle cx="59" cy="39" r="7" fill="#ffee22"/>
+          <circle cx="41" cy="39" r="3.5" fill="#111"/>
+          <circle cx="59" cy="39" r="3.5" fill="#111"/>
+          <circle cx="40" cy="38" r="1.2" fill="white"/>
+          <circle cx="58" cy="38" r="1.2" fill="white"/>
+          <path d="M40,58 Q50,63 60,58" stroke="rgba(0,0,0,0.35)" stroke-width="2" fill="none"/>
+          <rect x="45" y="59" width="4" height="7" rx="1" fill="white"/>
+          <rect x="53" y="59" width="4" height="7" rx="1" fill="white"/>
+        </svg>`,
+
+        // Tier 2: Orc
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <rect x="22" y="60" width="56" height="36" rx="10" fill="${color}"/>
+          <ellipse cx="50" cy="44" rx="30" ry="28" fill="${color}"/>
+          <rect x="26" y="28" width="48" height="12" rx="5" fill="rgba(0,0,0,0.3)"/>
+          <circle cx="39" cy="44" r="7" fill="#ff4444"/>
+          <circle cx="61" cy="44" r="7" fill="#ff4444"/>
+          <circle cx="39" cy="44" r="3.5" fill="#111"/>
+          <circle cx="61" cy="44" r="3.5" fill="#111"/>
+          <polygon points="40,60 34,80 47,80" fill="#eee"/>
+          <polygon points="60,60 53,80 66,80" fill="#eee"/>
+          <ellipse cx="50" cy="56" rx="10" ry="6" fill="rgba(0,0,0,0.25)"/>
+        </svg>`,
+
+        // Tier 3: Troll
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <ellipse cx="50" cy="76" rx="38" ry="22" fill="${color}"/>
+          <ellipse cx="50" cy="44" rx="34" ry="32" fill="${color}"/>
+          <ellipse cx="50" cy="50" rx="16" ry="12" fill="rgba(0,0,0,0.18)"/>
+          <circle cx="38" cy="33" r="6" fill="white"/>
+          <circle cx="62" cy="33" r="6" fill="white"/>
+          <circle cx="39" cy="35" r="3" fill="#333"/>
+          <circle cx="63" cy="35" r="3" fill="#333"/>
+          <ellipse cx="50" cy="47" rx="13" ry="9" fill="${color}"/>
+          <path d="M40,57 Q50,63 60,57" stroke="rgba(0,0,0,0.3)" stroke-width="3" fill="none"/>
+          <ellipse cx="50" cy="25" rx="6" ry="4" fill="rgba(0,0,0,0.15)"/>
+        </svg>`,
+
+        // Tier 4: Bandit
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <path d="M28,100 L28,64 Q50,56 72,64 L72,100" fill="${color}"/>
+          <circle cx="50" cy="45" r="22" fill="${color}"/>
+          <path d="M26,24 Q50,10 74,24 Q72,32 50,32 Q28,32 26,24Z" fill="#2a2a2a"/>
+          <rect x="28" y="40" width="44" height="13" rx="4" fill="#1a1a1a"/>
+          <circle cx="40" cy="46" r="5" fill="#ff6600"/>
+          <circle cx="60" cy="46" r="5" fill="#ff6600"/>
+          <circle cx="40" cy="46" r="2.5" fill="#111"/>
+          <circle cx="60" cy="46" r="2.5" fill="#111"/>
+          <path d="M40,60 Q50,67 60,60" stroke="white" stroke-width="2.5" fill="none"/>
+        </svg>`,
+
+        // Tier 5: Golem
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <rect x="18" y="54" width="64" height="44" rx="5" fill="${color}"/>
+          <rect x="24" y="22" width="52" height="44" rx="5" fill="${color}"/>
+          <line x1="24" y1="44" x2="76" y2="44" stroke="rgba(0,0,0,0.3)" stroke-width="3.5"/>
+          <line x1="50" y1="22" x2="50" y2="66" stroke="rgba(0,0,0,0.3)" stroke-width="3.5"/>
+          <line x1="30" y1="22" x2="24" y2="38" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+          <line x1="70" y1="22" x2="76" y2="36" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+          <rect x="31" y="29" width="14" height="10" rx="2" fill="#33aaff"/>
+          <rect x="55" y="29" width="14" height="10" rx="2" fill="#33aaff"/>
+          <circle cx="38" cy="34" r="4.5" fill="#0066ff"/>
+          <circle cx="62" cy="34" r="4.5" fill="#0066ff"/>
+          <rect x="34" y="60" width="14" height="8" rx="2" fill="rgba(0,0,0,0.28)"/>
+          <rect x="52" y="60" width="14" height="8" rx="2" fill="rgba(0,0,0,0.28)"/>
+        </svg>`,
+
+        // Tier 6: Dark Knight
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <rect x="20" y="58" width="60" height="38" rx="6" fill="${color}"/>
+          <rect x="6" y="52" width="18" height="34" rx="4" fill="${color}"/>
+          <rect x="76" y="52" width="18" height="34" rx="4" fill="${color}"/>
+          <path d="M22,58 L22,20 Q22,8 50,6 Q78,8 78,20 L78,58 Q64,50 50,50 Q36,50 22,58Z" fill="${color}"/>
+          <path d="M22,58 Q22,64 50,64 Q78,64 78,58" fill="rgba(0,0,0,0.2)"/>
+          <rect x="27" y="36" width="46" height="13" rx="2" fill="#0a0a0a"/>
+          <circle cx="38" cy="42" r="5.5" fill="#ff3300"/>
+          <circle cx="62" cy="42" r="5.5" fill="#ff3300"/>
+          <line x1="6" y1="58" x2="94" y2="58" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
+          <rect x="42" y="6" width="16" height="16" rx="2" fill="${color}"/>
+        </svg>`,
+
+        // Tier 7: Dragon
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <polygon points="4,32 28,60 12,76" fill="${color}"/>
+          <polygon points="96,32 72,60 88,76" fill="${color}"/>
+          <polygon points="36,12 30,30 46,28" fill="${color}"/>
+          <polygon points="64,12 70,30 54,28" fill="${color}"/>
+          <polygon points="50,5 44,26 56,26" fill="${color}"/>
+          <ellipse cx="50" cy="56" rx="30" ry="32" fill="${color}"/>
+          <circle cx="39" cy="48" r="8" fill="#ffaa00"/>
+          <circle cx="61" cy="48" r="8" fill="#ffaa00"/>
+          <circle cx="39" cy="48" r="4.5" fill="#111"/>
+          <circle cx="61" cy="48" r="4.5" fill="#111"/>
+          <circle cx="37" cy="46" r="1.5" fill="white"/>
+          <circle cx="59" cy="46" r="1.5" fill="white"/>
+          <path d="M34,68 L38,62 L42,68 L46,62 L50,68 L54,62 L58,68 L62,62 L66,68" stroke="white" stroke-width="2" fill="none"/>
+          <polygon points="42,74 50,88 58,74" fill="#ff4400" opacity="0.75"/>
+        </svg>`,
+
+        // Tier 8: Demon
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <polygon points="8,62 32,30 28,76" fill="${color}"/>
+          <polygon points="92,62 68,30 72,76" fill="${color}"/>
+          <ellipse cx="50" cy="60" rx="28" ry="28" fill="${color}"/>
+          <ellipse cx="50" cy="40" rx="24" ry="24" fill="${color}"/>
+          <polygon points="30,28 24,4 42,24" fill="${color}"/>
+          <polygon points="70,28 76,4 58,24" fill="${color}"/>
+          <polygon points="50,20 45,6 55,6" fill="${color}"/>
+          <circle cx="41" cy="38" r="8" fill="#ff0000"/>
+          <circle cx="59" cy="38" r="8" fill="#ff0000"/>
+          <circle cx="41" cy="38" r="4" fill="#660000"/>
+          <circle cx="59" cy="38" r="4" fill="#660000"/>
+          <circle cx="39" cy="36" r="1.5" fill="#ff8888"/>
+          <circle cx="57" cy="36" r="1.5" fill="#ff8888"/>
+          <path d="M36,55 Q50,68 64,55" stroke="#ff2200" stroke-width="3" fill="none"/>
+          <polygon points="40,62 44,72 48,62 52,72 56,62 60,72" fill="white"/>
+        </svg>`,
+
+        // Tier 9: Titan
+        `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <rect x="16" y="56" width="68" height="42" rx="7" fill="${color}"/>
+          <rect x="4" y="46" width="20" height="46" rx="5" fill="${color}"/>
+          <rect x="76" y="46" width="20" height="46" rx="5" fill="${color}"/>
+          <ellipse cx="50" cy="38" rx="34" ry="32" fill="${color}"/>
+          <polygon points="24,18 16,2 36,16" fill="${color}"/>
+          <polygon points="76,18 84,2 64,16" fill="${color}"/>
+          <polygon points="50,12 44,28 56,28" fill="${color}"/>
+          <circle cx="38" cy="34" r="9" fill="white"/>
+          <circle cx="62" cy="34" r="9" fill="white"/>
+          <circle cx="38" cy="34" r="6" fill="#8800ff"/>
+          <circle cx="62" cy="34" r="6" fill="#8800ff"/>
+          <circle cx="38" cy="34" r="3" fill="#330066"/>
+          <circle cx="62" cy="34" r="3" fill="#330066"/>
+          <circle cx="36" cy="32" r="1.5" fill="#cc88ff"/>
+          <circle cx="60" cy="32" r="1.5" fill="#cc88ff"/>
+          <rect x="30" y="50" width="40" height="7" rx="3" fill="rgba(0,0,0,0.3)"/>
+          <line x1="16" y1="56" x2="84" y2="56" stroke="rgba(0,0,0,0.25)" stroke-width="3"/>
+        </svg>`
+    ];
+    return svgs[tierIndex] || svgs[0];
+}
+
+function setEnemyShape(tierIndex, color) {
+    const enemyEl = document.getElementById('enemy');
+    enemyEl.innerHTML = getEnemySVG(tierIndex, color);
+    enemyEl.classList.add('has-svg');
+    enemyEl.style.backgroundColor = 'transparent';
 }
 
 window.onclick = function(event) {
