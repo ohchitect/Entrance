@@ -1,163 +1,283 @@
-// backgrounds.js — Battle arena backgrounds per tier
-// Each entry: { gradient, svgScene }
-// svgScene is injected as an absolute-positioned SVG behind the characters
+// backgrounds.js — Animated battle arena backgrounds per tier
+// Uses SVG SMIL animations (<animate>, <animateTransform>) — no CSS required
+
+function makeBubbles(count, color) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const cx = 20 + Math.floor((i * 73 + 30) % 360);
+        const cy = 90 + (i % 3) * 10;
+        const r = 3 + (i % 4);
+        const dur = (2.5 + (i % 5) * 0.6).toFixed(1);
+        const delay = (i * 0.7 % 3).toFixed(1);
+        const dx = (i % 2 === 0 ? 6 : -5);
+        out += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="0">
+            <animate attributeName="cy" from="${cy}" to="${cy - 95}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="cx" values="${cx};${cx + dx};${cx}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.75;0.6;0" keyTimes="0;0.1;0.8;1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </circle>`;
+    }
+    return out;
+}
+
+function makeRain(count, color) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const x = 10 + Math.floor((i * 41 + 7) % 380);
+        const yStart = -15 - (i % 40);
+        const dur = (0.55 + (i % 6) * 0.07).toFixed(2);
+        const delay = (i * 0.13 % 1.8).toFixed(2);
+        out += `<line x1="${x}" y1="${yStart}" x2="${x - 2}" y2="${yStart + 18}" stroke="${color}" stroke-width="1.2" opacity="0">
+            <animate attributeName="y1" from="${yStart}" to="135" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="y2" from="${yStart + 18}" to="153" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.65;0.65;0" keyTimes="0;0.05;0.9;1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </line>`;
+    }
+    return out;
+}
+
+function makeEmbers(count, color) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const cx = 30 + Math.floor((i * 59 + 20) % 340);
+        const cy = 100 + (i % 3) * 8;
+        const r = 1.5 + (i % 3) * 0.8;
+        const dur = (1.8 + (i % 5) * 0.5).toFixed(1);
+        const delay = (i * 0.45 % 2.5).toFixed(1);
+        const dx = (i % 2 === 0 ? 12 : -10);
+        out += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="0">
+            <animate attributeName="cy" from="${cy}" to="${cy - 100}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="cx" values="${cx};${cx + dx};${cx + dx * 1.5}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.9;0.6;0" keyTimes="0;0.08;0.7;1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="${r};${r * 0.6};0" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </circle>`;
+    }
+    return out;
+}
+
+function makeSnow(count, color) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const cx = 5 + Math.floor((i * 53 + 11) % 390);
+        const dur = (2.5 + (i % 5) * 0.55).toFixed(1);
+        const delay = (i * 0.38 % 3).toFixed(1);
+        const r = 1.5 + (i % 3) * 0.7;
+        const dx = (i % 2 === 0 ? 15 : -12);
+        out += `<circle cx="${cx}" cy="-5" r="${r}" fill="${color}" opacity="0">
+            <animate attributeName="cy" from="-5" to="135" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="cx" values="${cx};${cx + dx};${cx + dx * 0.5}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.8;0.7;0" keyTimes="0;0.1;0.85;1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </circle>`;
+    }
+    return out;
+}
+
+function makeSand(count, color) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const y = 60 + (i % 5) * 12;
+        const dur = (0.9 + (i % 4) * 0.3).toFixed(1);
+        const delay = (i * 0.22 % 1.5).toFixed(1);
+        const r = 1 + (i % 3) * 0.5;
+        out += `<circle cx="-5" cy="${y}" r="${r}" fill="${color}" opacity="0">
+            <animate attributeName="cx" from="-5" to="410" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="${y};${y - 6};${y + 4};${y}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.7;0.6;0" keyTimes="0;0.05;0.9;1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </circle>`;
+    }
+    return out;
+}
+
+function makeSparkles(count, color) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const cx = 15 + Math.floor((i * 67 + 30) % 370);
+        const cy = 10 + Math.floor((i * 43 + 15) % 100);
+        const dur = (1.2 + (i % 5) * 0.4).toFixed(1);
+        const delay = (i * 0.55 % 3.5).toFixed(1);
+        const r = 1 + (i % 3) * 0.6;
+        out += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}">
+            <animate attributeName="opacity" values="0;1;0" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="${r};${r * 1.8};${r}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </circle>`;
+    }
+    return out;
+}
+
+function makeFireflies(count) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const cx = 20 + Math.floor((i * 71 + 25) % 360);
+        const cy = 15 + Math.floor((i * 47 + 20) % 90);
+        const dur = (2 + (i % 4) * 0.7).toFixed(1);
+        const delay = (i * 0.6 % 3).toFixed(1);
+        const dx = (i % 2 === 0 ? 18 : -14);
+        const dy = (i % 3 === 0 ? -12 : 10);
+        out += `<circle cx="${cx}" cy="${cy}" r="2" fill="rgba(255,255,100,0.9)">
+            <animate attributeName="opacity" values="0;0.9;0.2;0.8;0" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="cx" values="${cx};${cx + dx};${cx}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="${cy};${cy + dy};${cy}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </circle>`;
+    }
+    return out;
+}
+
+function makeDrips(count, color) {
+    let out = '';
+    for (let i = 0; i < count; i++) {
+        const x = 20 + Math.floor((i * 61 + 15) % 360);
+        const dur = (1.4 + (i % 4) * 0.4).toFixed(1);
+        const delay = (i * 0.5 % 2.5).toFixed(1);
+        out += `<circle cx="${x}" cy="-4" r="2.5" fill="${color}" opacity="0">
+            <animate attributeName="cy" from="-4" to="130" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.8;0.7;0" keyTimes="0;0.05;0.85;1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="2.5;2;1.5;1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+        </circle>`;
+    }
+    return out;
+}
 
 const tierBackgrounds = [
-    // Tier 0: Slime — swamp bog, green mist, bubbles
+    // Tier 0: Slime — swamp, rising bubbles
     {
-        gradient: 'linear-gradient(180deg, #c8e6c0 0%, #a5d6a7 60%, #81c784 100%)',
+        gradient: 'linear-gradient(180deg, #c8e6c0 0%, #a5d6a7 60%, #66bb6a 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <ellipse cx="60" cy="110" rx="80" ry="18" fill="rgba(56,142,60,0.25)"/>
-            <ellipse cx="300" cy="115" rx="100" ry="16" fill="rgba(56,142,60,0.2)"/>
-            <circle cx="80" cy="95" r="6" fill="rgba(129,199,132,0.5)" stroke="rgba(56,142,60,0.4)" stroke-width="1"/>
-            <circle cx="160" cy="100" r="4" fill="rgba(129,199,132,0.5)" stroke="rgba(56,142,60,0.4)" stroke-width="1"/>
-            <circle cx="310" cy="98" r="5" fill="rgba(129,199,132,0.5)" stroke="rgba(56,142,60,0.4)" stroke-width="1"/>
-            <circle cx="360" cy="105" r="3" fill="rgba(129,199,132,0.5)" stroke="rgba(56,142,60,0.4)" stroke-width="1"/>
-            <ellipse cx="200" cy="118" rx="160" ry="12" fill="rgba(27,94,32,0.15)"/>
-            <rect x="0" y="108" width="400" height="22" fill="rgba(56,142,60,0.3)" rx="4"/>
+            <ellipse cx="200" cy="122" rx="200" ry="12" fill="rgba(27,94,32,0.3)"/>
+            <rect x="0" y="110" width="400" height="20" fill="rgba(56,142,60,0.35)" rx="3"/>
+            ${makeBubbles(10, 'rgba(165,214,167,0.8)')}
+            ${makeBubbles(6, 'rgba(200,230,200,0.6)')}
         </svg>`
     },
-    // Tier 1: Goblin — dark forest, trees, eerie glow
+    // Tier 1: Goblin — dark forest, fireflies drifting
     {
-        gradient: 'linear-gradient(180deg, #1b2f1b 0%, #2e4a2e 50%, #1a3a1a 100%)',
+        gradient: 'linear-gradient(180deg, #1b2f1b 0%, #2e4a2e 55%, #1a3a1a 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <rect x="30" y="30" width="12" height="90" fill="rgba(15,30,15,0.8)" rx="3"/>
-            <ellipse cx="36" cy="35" rx="24" ry="28" fill="rgba(20,50,20,0.7)"/>
-            <rect x="80" y="50" width="9" height="70" fill="rgba(15,30,15,0.8)" rx="2"/>
-            <ellipse cx="84" cy="54" rx="18" ry="22" fill="rgba(20,50,20,0.65)"/>
-            <rect x="330" y="40" width="12" height="80" fill="rgba(15,30,15,0.8)" rx="3"/>
-            <ellipse cx="336" cy="44" rx="22" ry="26" fill="rgba(20,50,20,0.7)"/>
-            <rect x="370" y="55" width="8" height="65" fill="rgba(15,30,15,0.8)" rx="2"/>
-            <ellipse cx="374" cy="58" rx="16" ry="20" fill="rgba(20,50,20,0.65)"/>
-            <circle cx="200" cy="60" r="18" fill="rgba(255,200,50,0.06)"/>
-            <circle cx="200" cy="60" r="10" fill="rgba(255,200,50,0.08)"/>
-            <rect x="0" y="112" width="400" height="18" fill="rgba(10,25,10,0.6)" rx="3"/>
+            <rect x="28" y="35" width="11" height="90" fill="rgba(12,25,12,0.9)" rx="3"/>
+            <ellipse cx="33" cy="38" rx="22" ry="26" fill="rgba(18,45,18,0.8)"/>
+            <rect x="78" y="52" width="8" height="72" fill="rgba(12,25,12,0.9)" rx="2"/>
+            <ellipse cx="82" cy="55" rx="17" ry="20" fill="rgba(18,45,18,0.75)"/>
+            <rect x="328" y="42" width="11" height="82" fill="rgba(12,25,12,0.9)" rx="3"/>
+            <ellipse cx="333" cy="45" rx="20" ry="24" fill="rgba(18,45,18,0.8)"/>
+            <rect x="368" y="58" width="8" height="68" fill="rgba(12,25,12,0.9)" rx="2"/>
+            <ellipse cx="372" cy="61" rx="15" ry="18" fill="rgba(18,45,18,0.7)"/>
+            <rect x="0" y="112" width="400" height="18" fill="rgba(8,20,8,0.65)" rx="3"/>
+            ${makeFireflies(14)}
         </svg>`
     },
-    // Tier 2: Orc — rocky cave, stalagmites
+    // Tier 2: Orc — cave, dripping water
     {
-        gradient: 'linear-gradient(180deg, #3e2a1a 0%, #5c3d25 50%, #2e1e0e 100%)',
+        gradient: 'linear-gradient(180deg, #3e2a1a 0%, #5c3d25 55%, #2e1e0e 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <polygon points="20,130 35,80 50,130" fill="rgba(60,40,20,0.7)"/>
-            <polygon points="55,130 68,75 81,130" fill="rgba(55,35,15,0.75)"/>
-            <polygon points="320,130 335,85 350,130" fill="rgba(60,40,20,0.7)"/>
-            <polygon points="355,130 368,78 381,130" fill="rgba(55,35,15,0.75)"/>
-            <polygon points="160,0 170,40 180,0" fill="rgba(50,30,10,0.5)"/>
-            <polygon points="230,0 240,45 250,0" fill="rgba(50,30,10,0.5)"/>
-            <ellipse cx="200" cy="65" rx="60" ry="10" fill="rgba(200,120,50,0.08)"/>
-            <rect x="0" y="115" width="400" height="15" fill="rgba(30,15,5,0.55)" rx="2"/>
+            <polygon points="18,130 33,75 48,130" fill="rgba(55,35,15,0.75)"/>
+            <polygon points="52,130 65,70 78,130" fill="rgba(60,40,20,0.7)"/>
+            <polygon points="320,130 333,78 346,130" fill="rgba(55,35,15,0.75)"/>
+            <polygon points="352,130 365,72 378,130" fill="rgba(60,40,20,0.7)"/>
+            <polygon points="158,0 168,38 178,0" fill="rgba(48,28,8,0.55)"/>
+            <polygon points="228,0 238,42 248,0" fill="rgba(48,28,8,0.55)"/>
+            <rect x="0" y="115" width="400" height="15" fill="rgba(28,14,4,0.55)" rx="2"/>
+            ${makeDrips(12, 'rgba(120,180,220,0.75)')}
         </svg>`
     },
-    // Tier 3: Troll — misty mountains, purple sky
+    // Tier 3: Troll — mountains, falling snow
     {
-        gradient: 'linear-gradient(180deg, #2d1b4e 0%, #4a2d6e 50%, #3b1f5c 100%)',
+        gradient: 'linear-gradient(180deg, #2d1b4e 0%, #4a2d6e 55%, #3b1f5c 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <polygon points="0,130 60,50 120,130" fill="rgba(80,40,120,0.5)"/>
-            <polygon points="80,130 160,30 240,130" fill="rgba(90,50,130,0.45)"/>
-            <polygon points="200,130 280,40 360,130" fill="rgba(80,40,120,0.5)"/>
-            <polygon points="300,130 360,55 420,130" fill="rgba(70,35,110,0.45)"/>
-            <ellipse cx="200" cy="80" rx="200" ry="25" fill="rgba(180,140,255,0.07)"/>
-            <circle cx="100" cy="25" r="3" fill="rgba(255,255,200,0.7)"/>
-            <circle cx="250" cy="15" r="2" fill="rgba(255,255,200,0.7)"/>
-            <circle cx="340" cy="30" r="2.5" fill="rgba(255,255,200,0.6)"/>
-            <circle cx="50" cy="40" r="2" fill="rgba(255,255,200,0.5)"/>
-            <rect x="0" y="114" width="400" height="16" fill="rgba(30,10,60,0.5)" rx="3"/>
+            <polygon points="0,130 60,48 120,130" fill="rgba(75,38,115,0.5)"/>
+            <polygon points="80,130 160,28 240,130" fill="rgba(85,48,125,0.45)"/>
+            <polygon points="200,130 278,38 356,130" fill="rgba(75,38,115,0.5)"/>
+            <polygon points="295,130 358,52 420,130" fill="rgba(68,32,108,0.45)"/>
+            <rect x="0" y="114" width="400" height="16" fill="rgba(28,8,58,0.5)" rx="3"/>
+            ${makeSnow(20, 'rgba(230,230,255,0.85)')}
         </svg>`
     },
-    // Tier 4: Bandit — dusty desert, sunset orange
+    // Tier 4: Bandit — desert, blowing sand
     {
-        gradient: 'linear-gradient(180deg, #8b3a00 0%, #c0622a 50%, #7a3000 100%)',
+        gradient: 'linear-gradient(180deg, #8b3a00 0%, #c0622a 55%, #7a3000 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <ellipse cx="200" cy="10" rx="60" ry="20" fill="rgba(255,180,60,0.3)"/>
-            <polygon points="0,130 50,90 100,130" fill="rgba(150,80,20,0.5)"/>
-            <polygon points="290,130 340,88 390,130" fill="rgba(150,80,20,0.5)"/>
-            <rect x="120" y="75" width="6" height="55" fill="rgba(100,55,10,0.6)" rx="2"/>
-            <ellipse cx="123" cy="68" rx="14" ry="20" fill="rgba(80,45,5,0.5)"/>
-            <rect x="270" y="80" width="5" height="50" fill="rgba(100,55,10,0.6)" rx="2"/>
-            <ellipse cx="272" cy="73" rx="12" ry="18" fill="rgba(80,45,5,0.5)"/>
-            <ellipse cx="200" cy="120" rx="180" ry="10" fill="rgba(180,90,20,0.35)"/>
-            <rect x="0" y="115" width="400" height="15" fill="rgba(100,45,5,0.5)" rx="2"/>
+            <ellipse cx="200" cy="12" rx="58" ry="18" fill="rgba(255,175,55,0.28)"/>
+            <polygon points="0,130 48,88 96,130" fill="rgba(145,75,18,0.5)"/>
+            <polygon points="292,130 338,86 384,130" fill="rgba(145,75,18,0.5)"/>
+            <rect x="118" y="74" width="5" height="56" fill="rgba(95,50,8,0.6)" rx="2"/>
+            <ellipse cx="120" cy="66" rx="13" ry="18" fill="rgba(75,40,4,0.5)"/>
+            <rect x="268" y="78" width="4" height="52" fill="rgba(95,50,8,0.6)" rx="2"/>
+            <ellipse cx="270" cy="71" rx="11" ry="16" fill="rgba(75,40,4,0.5)"/>
+            <rect x="0" y="115" width="400" height="15" fill="rgba(95,40,4,0.5)" rx="2"/>
+            ${makeSand(22, 'rgba(245,200,120,0.7)')}
         </svg>`
     },
-    // Tier 5: Golem — volcanic lava, dark rock
+    // Tier 5: Golem — volcano, rising embers
     {
         gradient: 'linear-gradient(180deg, #1a0a00 0%, #3d1400 55%, #200800 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <ellipse cx="60" cy="120" rx="55" ry="10" fill="rgba(255,80,0,0.35)"/>
-            <ellipse cx="340" cy="118" rx="50" ry="9" fill="rgba(255,80,0,0.3)"/>
-            <ellipse cx="200" cy="122" rx="80" ry="8" fill="rgba(255,120,0,0.25)"/>
-            <polygon points="0,130 30,95 60,130" fill="rgba(40,15,0,0.8)"/>
-            <polygon points="50,130 80,90 110,130" fill="rgba(35,12,0,0.8)"/>
-            <polygon points="300,130 330,92 360,130" fill="rgba(40,15,0,0.8)"/>
-            <polygon points="350,130 375,95 400,130" fill="rgba(35,12,0,0.8)"/>
-            <circle cx="100" cy="108" r="4" fill="rgba(255,140,0,0.5)"/>
-            <circle cx="300" cy="110" r="3" fill="rgba(255,100,0,0.5)"/>
-            <circle cx="220" cy="106" r="2.5" fill="rgba(255,160,0,0.45)"/>
+            <ellipse cx="55" cy="120" rx="52" ry="10" fill="rgba(255,75,0,0.4)"/>
+            <ellipse cx="345" cy="118" rx="48" ry="9" fill="rgba(255,75,0,0.35)"/>
+            <ellipse cx="200" cy="122" rx="78" ry="8" fill="rgba(255,115,0,0.28)"/>
+            <polygon points="0,130 28,92 56,130" fill="rgba(38,12,0,0.85)"/>
+            <polygon points="48,130 76,88 104,130" fill="rgba(32,10,0,0.85)"/>
+            <polygon points="298,130 326,90 354,130" fill="rgba(38,12,0,0.85)"/>
+            <polygon points="348,130 372,94 396,130" fill="rgba(32,10,0,0.85)"/>
+            ${makeEmbers(16, 'rgba(255,140,20,0.9)')}
+            ${makeEmbers(8, 'rgba(255,80,0,0.8)')}
         </svg>`
     },
-    // Tier 6: Dark Knight — ominous castle, lightning
+    // Tier 6: Dark Knight — castle, falling rain
     {
         gradient: 'linear-gradient(180deg, #0d0d1a 0%, #1a1a2e 55%, #0d0d1a 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <rect x="160" y="20" width="80" height="90" fill="rgba(15,15,35,0.8)" rx="2"/>
-            <rect x="175" y="10" width="16" height="25" fill="rgba(15,15,35,0.85)" rx="1"/>
-            <rect x="209" y="10" width="16" height="25" fill="rgba(15,15,35,0.85)" rx="1"/>
-            <rect x="178" y="55" width="14" height="20" fill="rgba(80,80,180,0.2)" rx="2"/>
-            <rect x="208" y="55" width="14" height="20" fill="rgba(80,80,180,0.2)" rx="2"/>
-            <polyline points="80,0 90,35 82,35 95,65" stroke="rgba(200,200,255,0.6)" stroke-width="2" fill="none"/>
-            <polyline points="310,5 318,38 312,38 322,68" stroke="rgba(200,200,255,0.5)" stroke-width="1.5" fill="none"/>
-            <rect x="0" y="110" width="400" height="20" fill="rgba(8,8,20,0.6)" rx="3"/>
-            <circle cx="60" cy="30" r="2" fill="rgba(180,180,255,0.5)"/>
-            <circle cx="340" cy="20" r="1.5" fill="rgba(180,180,255,0.5)"/>
+            <rect x="162" y="22" width="76" height="88" fill="rgba(14,14,32,0.85)" rx="2"/>
+            <rect x="176" y="12" width="15" height="24" fill="rgba(14,14,32,0.9)" rx="1"/>
+            <rect x="209" y="12" width="15" height="24" fill="rgba(14,14,32,0.9)" rx="1"/>
+            <rect x="179" y="56" width="13" height="18" fill="rgba(75,75,175,0.22)" rx="2"/>
+            <rect x="208" y="56" width="13" height="18" fill="rgba(75,75,175,0.22)" rx="2"/>
+            <rect x="0" y="112" width="400" height="18" fill="rgba(7,7,18,0.6)" rx="3"/>
+            ${makeRain(35, 'rgba(160,170,220,0.7)')}
         </svg>`
     },
-    // Tier 7: Dragon — sky battle, clouds, blue/gold sky
+    // Tier 7: Dragon — sky, drifting clouds
     {
-        gradient: 'linear-gradient(180deg, #0d2b6e 0%, #1a4db5 50%, #0a3580 100%)',
+        gradient: 'linear-gradient(180deg, #0d2b6e 0%, #1a4db5 55%, #0a3580 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <ellipse cx="60" cy="45" rx="55" ry="22" fill="rgba(255,255,255,0.12)"/>
-            <ellipse cx="80" cy="42" rx="40" ry="17" fill="rgba(255,255,255,0.1)"/>
-            <ellipse cx="300" cy="35" rx="65" ry="20" fill="rgba(255,255,255,0.1)"/>
-            <ellipse cx="320" cy="32" rx="45" ry="15" fill="rgba(255,255,255,0.08)"/>
-            <ellipse cx="180" cy="70" rx="45" ry="18" fill="rgba(255,255,255,0.07)"/>
-            <circle cx="200" cy="15" r="12" fill="rgba(255,220,50,0.2)"/>
-            <circle cx="200" cy="15" r="7" fill="rgba(255,220,50,0.15)"/>
-            <rect x="0" y="112" width="400" height="18" fill="rgba(5,20,70,0.45)" rx="3"/>
+            <g opacity="0.18">
+                <ellipse cx="70" cy="42" rx="52" ry="20" fill="white"/>
+                <ellipse cx="90" cy="38" rx="38" ry="15" fill="white"/>
+                <animateTransform attributeName="transform" type="translate" values="0,0;30,2;0,0" dur="8s" repeatCount="indefinite"/>
+            </g>
+            <g opacity="0.14">
+                <ellipse cx="310" cy="32" rx="62" ry="18" fill="white"/>
+                <ellipse cx="330" cy="28" rx="42" ry="14" fill="white"/>
+                <animateTransform attributeName="transform" type="translate" values="0,0;-25,3;0,0" dur="11s" repeatCount="indefinite"/>
+            </g>
+            <g opacity="0.11">
+                <ellipse cx="185" cy="68" rx="44" ry="16" fill="white"/>
+                <animateTransform attributeName="transform" type="translate" values="0,0;20,-2;0,0" dur="14s" repeatCount="indefinite"/>
+            </g>
+            <circle cx="200" cy="16" r="11" fill="rgba(255,220,50,0.22)"/>
+            <circle cx="200" cy="16" r="6" fill="rgba(255,220,50,0.18)"/>
+            <rect x="0" y="112" width="400" height="18" fill="rgba(5,18,68,0.45)" rx="3"/>
         </svg>`
     },
-    // Tier 8: Demon — hellfire, red/black, flames
+    // Tier 8: Demon — hellfire, rising flame particles
     {
-        gradient: 'linear-gradient(180deg, #1a0000 0%, #4a0000 50%, #200000 100%)',
+        gradient: 'linear-gradient(180deg, #1a0000 0%, #4a0000 55%, #200000 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <path d="M0,130 Q20,95 30,110 Q40,85 50,105 Q60,75 70,100 Q80,80 90,130 Z" fill="rgba(200,30,0,0.45)"/>
-            <path d="M50,130 Q70,88 80,108 Q90,78 100,100 Q110,70 120,95 Q130,78 140,130 Z" fill="rgba(220,50,0,0.4)"/>
-            <path d="M280,130 Q300,90 310,108 Q320,80 330,100 Q340,72 350,98 Q360,82 370,130 Z" fill="rgba(200,30,0,0.45)"/>
-            <path d="M330,130 Q350,88 360,105 Q370,78 380,100 Q390,75 400,130 Z" fill="rgba(220,50,0,0.4)"/>
-            <ellipse cx="200" cy="115" rx="160" ry="12" fill="rgba(180,20,0,0.35)"/>
-            <circle cx="200" cy="55" r="20" fill="rgba(255,60,0,0.08)"/>
-            <circle cx="200" cy="55" r="10" fill="rgba(255,80,0,0.1)"/>
+            <path d="M0,130 Q18,92 28,108 Q38,82 48,103 Q58,72 68,98 Q78,78 88,130 Z" fill="rgba(195,28,0,0.5)"/>
+            <path d="M48,130 Q66,86 76,106 Q86,76 96,98 Q106,68 116,94 Q126,76 136,130 Z" fill="rgba(215,48,0,0.42)"/>
+            <path d="M280,130 Q298,88 308,106 Q318,78 328,98 Q338,70 348,96 Q358,80 368,130 Z" fill="rgba(195,28,0,0.5)"/>
+            <path d="M330,130 Q348,86 358,104 Q368,76 378,98 Q388,73 400,130 Z" fill="rgba(215,48,0,0.42)"/>
+            <ellipse cx="200" cy="116" rx="155" ry="12" fill="rgba(175,18,0,0.38)"/>
+            ${makeEmbers(18, 'rgba(255,100,20,0.95)')}
+            ${makeEmbers(10, 'rgba(255,50,0,0.85)')}
         </svg>`
     },
-    // Tier 9: Titan — celestial space, stars, cosmic
+    // Tier 9: Titan — deep space, twinkling stars + drifting particles
     {
-        gradient: 'linear-gradient(180deg, #000010 0%, #0a0a2e 50%, #050515 100%)',
+        gradient: 'linear-gradient(180deg, #000010 0%, #0a0a2e 55%, #050515 100%)',
         svgScene: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice">
-            <circle cx="30" cy="20" r="1.5" fill="rgba(255,255,255,0.9)"/>
-            <circle cx="70" cy="10" r="1" fill="rgba(255,255,255,0.8)"/>
-            <circle cx="120" cy="25" r="2" fill="rgba(255,255,255,0.85)"/>
-            <circle cx="170" cy="8" r="1" fill="rgba(255,255,255,0.75)"/>
-            <circle cx="220" cy="18" r="1.5" fill="rgba(255,255,255,0.9)"/>
-            <circle cx="280" cy="12" r="1" fill="rgba(255,255,255,0.8)"/>
-            <circle cx="330" cy="22" r="2" fill="rgba(255,255,255,0.85)"/>
-            <circle cx="380" cy="9" r="1.5" fill="rgba(255,255,255,0.75)"/>
-            <circle cx="50" cy="50" r="1" fill="rgba(200,180,255,0.7)"/>
-            <circle cx="150" cy="45" r="1.5" fill="rgba(180,200,255,0.65)"/>
-            <circle cx="260" cy="40" r="1" fill="rgba(200,180,255,0.7)"/>
-            <circle cx="360" cy="48" r="1.5" fill="rgba(180,200,255,0.65)"/>
-            <ellipse cx="200" cy="65" rx="90" ry="20" fill="rgba(100,80,255,0.07)"/>
-            <circle cx="200" cy="65" r="28" fill="rgba(120,100,255,0.06)"/>
-            <circle cx="200" cy="65" r="15" fill="rgba(140,120,255,0.08)"/>
-            <rect x="0" y="113" width="400" height="17" fill="rgba(0,0,20,0.55)" rx="3"/>
+            ${makeSparkles(22, 'rgba(255,255,255,0.9)')}
+            ${makeSparkles(10, 'rgba(180,160,255,0.8)')}
+            ${makeSparkles(8, 'rgba(160,200,255,0.75)')}
+            <ellipse cx="200" cy="65" rx="88" ry="20" fill="rgba(95,75,255,0.07)"/>
+            <circle cx="200" cy="65" r="27" fill="rgba(115,95,255,0.06)"/>
+            <rect x="0" y="113" width="400" height="17" fill="rgba(0,0,18,0.55)" rx="3"/>
         </svg>`
     }
 ];
@@ -165,25 +285,20 @@ const tierBackgrounds = [
 function applyBattleBackground(tierIndex) {
     const arena = document.getElementById('arena');
     if (!arena) return;
-
     const bg = tierBackgrounds[Math.min(tierIndex, tierBackgrounds.length - 1)];
     if (!bg) return;
 
-    // Remove old scene
     const old = arena.querySelector('.arena-bg');
     if (old) old.remove();
 
-    // Apply gradient
     arena.style.background = bg.gradient;
 
-    // Inject SVG scene behind characters
     const wrapper = document.createElement('div');
     wrapper.className = 'arena-bg';
     wrapper.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit;z-index:0;';
     wrapper.innerHTML = bg.svgScene;
     arena.insertBefore(wrapper, arena.firstChild);
 
-    // Ensure entity-containers are above background
     arena.querySelectorAll('.entity-container').forEach(el => {
         el.style.position = 'relative';
         el.style.zIndex = '1';
