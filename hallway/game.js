@@ -134,28 +134,36 @@ function openPreview(level) {
 function startBattle() {
     document.getElementById('preview-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'flex';
-    
-    player.maxHp = 100 + (save.upgHp * 20);
-    player.dmg = 2 + save.upgDmg;
-    player.hp = player.maxHp; 
-    player.xp = 0;
-    
+
+    const tierIndex = tiers.findIndex(t => currentLevel >= t.start && currentLevel <= t.end);
+
+    // Enemy HP scales exponentially with level
     enemy.maxHp = Math.floor(30 * Math.pow(1.15, currentLevel - 1));
     enemy.hp = enemy.maxHp;
-    enemy.dmg = 15 + Math.floor((currentLevel - 1) * 2.5);
-    
+
+    // Player DMG: calibrated so base (0 upgrades) takes exactly 15 correct answers to kill
+    const baseDmg = Math.ceil(enemy.maxHp / 15);
+    player.maxHp = 100 + (save.upgHp * 20);
+    player.hp = player.maxHp;
+    player.xp = 0;
+    // Each DMG upgrade adds +15% base damage, making battles shorter
+    player.dmg = baseDmg + Math.floor(baseDmg * save.upgDmg * 0.15);
+    // Progress bar shows exactly how many hits are needed to win
+    player.requiredXp = Math.ceil(enemy.maxHp / player.dmg);
+
+    // Enemy DMG: percentage of player's max HP based on tier difficulty
+    // Higher tiers allow fewer wrong answers before death
+    const wrongsAllowed = Math.max(3, 7 - Math.floor(tierIndex / 2));
+    enemy.dmg = Math.ceil(player.maxHp / wrongsAllowed);
+
     document.getElementById('stat-dmg-disp').textContent = player.dmg;
-    const tierIndex = tiers.findIndex(t => currentLevel >= t.start && currentLevel <= t.end);
     document.getElementById('enemy-name').textContent = `${enemyNames[tierIndex]} (Lv ${currentLevel})`;
-    
-    // Set player appearance
+
     setPlayerShape(save.playerColor, save.playerShape);
-    
-    // Set enemy shape and color based on tier and level
     const enemyColor = getEnemyColor(currentLevel);
     setEnemyShape(tierIndex, enemyColor);
 
-    updateBattleUI(); 
+    updateBattleUI();
     generateQuestion();
 }
 
@@ -238,7 +246,7 @@ function checkCombatState() {
         showLevelSelect(); 
         return;
     }
-    if (enemy.hp <= 0 || player.xp >= player.requiredXp) {
+    if (enemy.hp <= 0) {
         let coinReward = 10 + (currentLevel * 2);
         save.coins += coinReward;
         alert(`Victory! You earned ${coinReward} coins.`);
