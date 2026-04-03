@@ -150,22 +150,21 @@ function startBattle() {
     enemy.maxHp = Math.floor(30 * Math.pow(1.15, currentLevel - 1));
     enemy.hp = enemy.maxHp;
 
-    // Takes exactly 15 correct answers with no upgrades to kill enemy
-    const BASE_HITS = 15;
+    // Always takes exactly 13 correct answers with no upgrades to kill enemy
+    const BASE_HITS = 13;
     const baseDmg = Math.ceil(enemy.maxHp / BASE_HITS);
 
     player.maxHp = 100 + (save.upgHp * 20);
     player.hp = player.maxHp;
     player.xp = 0;
-    player.requiredXp = BASE_HITS; // Fixed at 15 — never changes with upgrades
+    player.requiredXp = BASE_HITS; // Fixed at 13 — never changes with upgrades
 
-    // DMG upgrades add bonus damage — win faster but bar stays at /15
+    // DMG upgrades add bonus damage — win faster but bar stays at /13
     player.dmg = baseDmg + Math.floor(baseDmg * save.upgDmg * 0.2);
 
-    // Enemy DMG: starts aggressive — only 5 wrong answers allowed at tier 0
-    // Gets harder each tier and within each tier as level increases
+    // Enemy DMG: 8 wrong answers allowed at tier 0 level 1, scales harder per tier/level
     const levelInTier = currentLevel - tiers[tierIndex].start; // 0–9
-    const wrongsAllowed = Math.max(2, 5 - tierIndex - Math.floor(levelInTier / 3));
+    const wrongsAllowed = Math.max(3, 8 - tierIndex - Math.floor(levelInTier / 3));
     enemy.dmg = Math.ceil(100 / wrongsAllowed);
 
     document.getElementById('stat-dmg-disp').textContent = player.dmg;
