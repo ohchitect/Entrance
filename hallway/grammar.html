@@ -68,34 +68,11 @@
         .action-btn:hover {
             background: #b71c1c;
         }
-        .script-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid #d32f2f;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-        }
-        .cantonese-text {
-            font-weight: 700;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 10px;
-            color: #1a1a1a;
-        }
-        .jyutping {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        .preposition {
-            color: #1976d2;
-            text-decoration: underline;
-        }
         .prep-section {
             background-color: #e3f2fd;
             border-left: 4px solid #1976d2;
             padding: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border-radius: 0 8px 8px 0;
         }
         .prep-section h3 {
@@ -140,6 +117,32 @@
             color: #1976d2;
             margin-bottom: 2px;
         }
+        .script-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #d32f2f;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+        .jyutping {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .preposition {
+            color: #1976d2;
+            text-decoration: underline;
+            background-color: #e3f2fd;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
         .quiz-section {
             border-top: 2px dashed #ddd;
             padding-top: 20px;
@@ -176,6 +179,27 @@
             flex-direction: column;
             gap: 10px;
         }
+        .option-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+        .play-btn-option {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 15px;
+            transition: all 0.2s;
+        }
+        .play-btn-option:hover {
+            background: #e9ecef;
+            border-color: #bbb;
+        }
+        .play-btn-option:active {
+            transform: scale(0.95);
+        }
         .option-btn {
             background-color: #fff;
             border: 2px solid #ddd;
@@ -187,6 +211,7 @@
             text-align: left;
             transition: all 0.2s;
             color: #333;
+            flex-grow: 1;
         }
         .option-btn:hover {
             border-color: #bbb;
@@ -216,6 +241,7 @@
             background: #eee;
             padding: 15px;
             border-radius: 8px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -229,23 +255,6 @@
 
     <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80" alt="Cafe Counter" class="news-image">
 
-    <button class="action-btn" onclick="playText('今日，溫哥華天氣好凍。好多人喺Tim Hortons入面買咖啡。我喺櫃檯前面等。')">
-        🔊 Play Cantonese Audio
-    </button>
-
-    <div class="script-box">
-        <div class="cantonese-text">
-            今日，溫哥華天氣好凍。<br>
-            好多人<span class="preposition">喺</span> Tim Hortons <span class="preposition">入面</span>買咖啡。<br>
-            我<span class="preposition">喺</span>櫃檯<span class="preposition">前面</span>等。
-        </div>
-        <div class="jyutping">
-            Gam1 jat6, Wan1 go1 waa4 tin1 hei3 hou2 dung3.<br>
-            Hou2 do1 jan4 <strong>hai2</strong> Tim Hortons <strong>jap6 min6</strong> maai5 gaa3 fe1.<br>
-            Ngo5 <strong>hai2</strong> gwai6 toi2 <strong>cin4 min6</strong> dang2.
-        </div>
-    </div>
-
     <div class="prep-section">
         <h3>📚 Grammar & Vocabulary Prep</h3>
         <p><strong>Prepositions (介詞):</strong> Expressing where things are.</p>
@@ -256,46 +265,81 @@
         </ul>
         <p><strong>10 Key Vocabulary Words (Click to hear):</strong></p>
         <div class="vocab-grid">
-            <button class="vocab-item" onclick="playText('天氣')">
-                <span class="icon">🔊</span>
-                <div><strong>1. 天氣</strong> (tin1 hei3) - Weather</div>
-            </button>
             <button class="vocab-item" onclick="playText('凍')">
                 <span class="icon">🔊</span>
-                <div><strong>2. 凍</strong> (dung3) - Cold</div>
+                <div><strong>1. 凍</strong> (dung3) - Cold</div>
             </button>
-            <button class="vocab-item" onclick="playText('買')">
+            <button class="vocab-item" onclick="playText('咖啡店')">
                 <span class="icon">🔊</span>
-                <div><strong>3. 買</strong> (maai5) - To buy</div>
+                <div><strong>2. 咖啡店</strong> (gaa3 fe1 dim3) - Coffee shop</div>
             </button>
-            <button class="vocab-item" onclick="playText('咖啡')">
+            <button class="vocab-item" onclick="playText('朋友')">
                 <span class="icon">🔊</span>
-                <div><strong>4. 咖啡</strong> (gaa3 fe1) - Coffee</div>
+                <div><strong>3. 朋友</strong> (pang4 jau5) - Friend</div>
+            </button>
+            <button class="vocab-item" onclick="playText('舖頭')">
+                <span class="icon">🔊</span>
+                <div><strong>4. 舖頭</strong> (pou3 tau2) - Store/Shop</div>
+            </button>
+            <button class="vocab-item" onclick="playText('暖')">
+                <span class="icon">🔊</span>
+                <div><strong>5. 暖</strong> (nyun5) - Warm</div>
+            </button>
+            <button class="vocab-item" onclick="playText('買嘢飲')">
+                <span class="icon">🔊</span>
+                <div><strong>6. 買嘢飲</strong> (maai5 je5 jam2) - Buy drinks</div>
+            </button>
+            <button class="vocab-item" onclick="playText('坐')">
+                <span class="icon">🔊</span>
+                <div><strong>7. 坐</strong> (co5) - To sit</div>
             </button>
             <button class="vocab-item" onclick="playText('櫃檯')">
                 <span class="icon">🔊</span>
-                <div><strong>5. 櫃檯</strong> (gwai6 toi2) - Counter</div>
+                <div><strong>8. 櫃檯</strong> (gwai6 toi2) - Counter</div>
             </button>
-            <button class="vocab-item" onclick="playText('等')">
+            <button class="vocab-item" onclick="playText('企')">
                 <span class="icon">🔊</span>
-                <div><strong>6. 等</strong> (dang2) - To wait</div>
+                <div><strong>9. 企</strong> (kei5) - To stand</div>
             </button>
-            <button class="vocab-item" onclick="playText('好多人')">
+            <button class="vocab-item" onclick="playText('杯')">
                 <span class="icon">🔊</span>
-                <div><strong>7. 好多人</strong> (hou2 do1 jan4) - Many people</div>
+                <div><strong>10. 杯</strong> (bui1) - Cup</div>
             </button>
-            <button class="vocab-item" onclick="playText('今日')">
-                <span class="icon">🔊</span>
-                <div><strong>8. 今日</strong> (gam1 jat6) - Today</div>
-            </button>
-            <button class="vocab-item" onclick="playText('入面')">
-                <span class="icon">🔊</span>
-                <div><strong>9. 入面</strong> (jap6 min6) - Inside</div>
-            </button>
-            <button class="vocab-item" onclick="playText('前面')">
-                <span class="icon">🔊</span>
-                <div><strong>10. 前面</strong> (cin4 min6) - In front of</div>
-            </button>
+        </div>
+    </div>
+
+    <button class="action-btn" onclick="playText('今日溫哥華好凍。好多人喺 Tim Hortons。我都喺咖啡店。我朋友喺度。舖頭入面好暖。大家去入面買嘢飲。我哋坐喺入面。櫃檯前面好多人。我企喺朋友前面。我前面有一杯咖啡。')">
+        🔊 Play Full Story Audio
+    </button>
+
+    <div class="script-box">
+        <div class="cantonese-text">
+            今日溫哥華好凍。<br>
+            好多人<span class="preposition">喺</span> Tim Hortons。<br>
+            我都<span class="preposition">喺</span>咖啡店。<br>
+            我朋友<span class="preposition">喺</span>度。<br><br>
+
+            舖頭<span class="preposition">入面</span>好暖。<br>
+            大家去<span class="preposition">入面</span>買嘢飲。<br>
+            我哋坐喺<span class="preposition">入面</span>。<br><br>
+
+            櫃檯<span class="preposition">前面</span>好多人。<br>
+            我企喺朋友<span class="preposition">前面</span>。<br>
+            我<span class="preposition">前面</span>有一杯咖啡。
+        </div>
+        <div class="jyutping">
+            Gam1 jat6 Wan1 go1 waa4 hou2 dung3.<br>
+            Hou2 do1 jan4 <strong>hai2</strong> Tim Hortons.<br>
+            Ngo5 dou1 <strong>hai2</strong> gaa3 fe1 dim3.<br>
+            Ngo5 pang4 jau5 <strong>hai2</strong> dou6.<br><br>
+
+            Pou3 tau2 <strong>jap6 min6</strong> hou2 nyun5.<br>
+            Daai6 gaa1 heoi3 <strong>jap6 min6</strong> maai5 je5 jam2.<br>
+            Ngo5 dei6 co5 hai2 <strong>jap6 min6</strong>.<br><br>
+
+            Gwai6 toi2 <strong>cin4 min6</strong> hou2 do1 jan4.<br>
+            Ngo5 kei5 hai2 pang4 jau5 <strong>cin4 min6</strong>.<br>
+            Ngo5 <strong>cin4 min6</strong> jau5 jat1 bui1 gaa3 fe1.
         </div>
     </div>
 
@@ -304,64 +348,85 @@
         
         <div class="quiz-question">
             <div class="question-text">
-                1. 點解好多人買咖啡？
-                <button class="play-btn-small" onclick="playText('點解好多人買咖啡？')">🔊</button>
-                <span class="eng-trans">(Why are many people buying coffee?)</span>
+                1. 點解大家去入面買嘢飲？
+                <button class="play-btn-small" onclick="playText('點解大家去入面買嘢飲？')">🔊</button>
+                <span class="eng-trans">(Why is everyone going inside to buy drinks?)</span>
             </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    A. 等天車 
-                    <span class="eng-trans">(Waiting for Skytrain)</span>
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, true)">
-                    B. 天氣好凍 
-                    <span class="eng-trans">(Weather is very cold)</span>
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    C. 買麵包 
-                    <span class="eng-trans">(Buying bread)</span>
-                </button>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('因為好平')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        A. 因為好平 <span class="eng-trans">(Because it's very cheap)</span>
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('因為舖頭入面好暖')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, true)">
+                        B. 因為舖頭入面好暖 <span class="eng-trans">(Because inside the store is very warm)</span>
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('因為有洗手間')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        C. 因為有洗手間 <span class="eng-trans">(Because there is a washroom)</span>
+                    </button>
+                </div>
             </div>
         </div>
 
         <div class="quiz-question">
             <div class="question-text">
-                2. 我喺邊度等？
-                <button class="play-btn-small" onclick="playText('我喺邊度等？')">🔊</button>
-                <span class="eng-trans">(Where am I waiting?)</span>
+                2. 我企喺邊度？
+                <button class="play-btn-small" onclick="playText('我企喺邊度？')">🔊</button>
+                <span class="eng-trans">(Where am I standing?)</span>
             </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    A. 喺出面 
-                    <span class="eng-trans">(Outside)</span>
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, true)">
-                    B. 櫃檯前面 
-                    <span class="eng-trans">(In front of the counter)</span>
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    C. 洗手間 
-                    <span class="eng-trans">(In the washroom)</span>
-                </button>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('朋友前面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, true)">
+                        A. 朋友前面 <span class="eng-trans">(In front of my friend)</span>
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('櫃檯後面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        B. 櫃檯後面 <span class="eng-trans">(Behind the counter)</span>
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('出面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        C. 出面 <span class="eng-trans">(Outside)</span>
+                    </button>
+                </div>
             </div>
         </div>
 
         <div class="quiz-question">
             <div class="question-text">
-                3. "Inside" 點講？
-                <button class="play-btn-small" onclick="playText('Inside 點講？')">🔊</button>
-                <span class="eng-trans">(How to say "inside"?)</span>
+                3. "At the coffee shop" 點講？
+                <button class="play-btn-small" onclick="playText('At the coffee shop 點講？')">🔊</button>
+                <span class="eng-trans">(How to say "At the coffee shop"?)</span>
             </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    A. 前面 (cin4 min6)
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    B. 喺 (hai2)
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, true)">
-                    C. 入面 (jap6 min6)
-                </button>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('喺咖啡店')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, true)">
+                        A. 喺咖啡店 (hai2 gaa3 fe1 dim3)
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('咖啡店入面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        B. 咖啡店入面 (gaa3 fe1 dim3 jap6 min6)
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('咖啡店前面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        C. 咖啡店前面 (gaa3 fe1 dim3 cin4 min6)
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -372,26 +437,42 @@
                 <span class="eng-trans">(How to say "in front of"?)</span>
             </div>
             <div class="options">
-                <button class="option-btn" onclick="checkAnswer(this, true)">
-                    A. 前面 (cin4 min6)
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    B. 後面 (hau6 min6)
-                    <span class="eng-trans">(Behind)</span>
-                </button>
-                <button class="option-btn" onclick="checkAnswer(this, false)">
-                    C. 出面 (ceot1 min6)
-                    <span class="eng-trans">(Outside)</span>
-                </button>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('前面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, true)">
+                        A. 前面 (cin4 min6)
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('後面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        B. 後面 (hau6 min6) <span class="eng-trans">(Behind)</span>
+                    </button>
+                </div>
+                <div class="option-row">
+                    <button class="play-btn-option" onclick="playText('出面')">🔊</button>
+                    <button class="option-btn" onclick="checkAnswer(this, false)">
+                        C. 出面 (ceot1 min6) <span class="eng-trans">(Outside)</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="translation-box">
         <strong>English Story Translation:</strong><br>
-        Today, Vancouver's weather is very cold.<br>
-        Many people are buying coffee <strong>inside (入面)</strong> Tim Hortons.<br>
-        I am waiting <strong>in front of (前面)</strong> the counter.
+        Today Vancouver is very cold.<br>
+        Many people are <strong>at (喺)</strong> Tim Hortons.<br>
+        I am also <strong>at (喺)</strong> the coffee shop.<br>
+        My friend is <strong>at (喺)</strong> here.<br><br>
+
+        <strong>Inside (入面)</strong> the store it is very warm.<br>
+        Everyone goes <strong>inside (入面)</strong> to buy drinks.<br>
+        We sit <strong>inside (入面)</strong>.<br><br>
+
+        There are many people <strong>in front of (前面)</strong> the counter.<br>
+        I stand <strong>in front of (前面)</strong> my friend.<br>
+        There is a cup of coffee <strong>in front of (前面)</strong> me.
     </div>
 
 </div>
@@ -428,8 +509,9 @@
     };
 
     function checkAnswer(buttonElement, isCorrect) {
-        const optionsContainer = buttonElement.parentElement;
+        const optionsContainer = buttonElement.closest('.options');
         const allButtons = optionsContainer.querySelectorAll('.option-btn');
+        
         allButtons.forEach(btn => {
             btn.style.pointerEvents = 'none';
         });
