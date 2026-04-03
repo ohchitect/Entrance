@@ -712,12 +712,14 @@
             box-shadow: 0 2px 8px rgba(26, 44, 74, 0.1);
         }
         
-        button.option-btn:hover:not(:disabled) { 
-            background: var(--navy);
-            color: var(--text-light);
-            border-color: var(--accent-gold);
-            box-shadow: 0 6px 16px rgba(26, 44, 74, 0.2);
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            button.option-btn:hover:not(:disabled) {
+                background: var(--navy);
+                color: var(--text-light);
+                border-color: var(--accent-gold);
+                box-shadow: 0 6px 16px rgba(26, 44, 74, 0.2);
+                transform: translateY(-2px);
+            }
         }
         
         .correct-btn { 
