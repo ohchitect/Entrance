@@ -134,17 +134,17 @@
         }
 
         .upgrade-btn {
-            padding: 8px var(--spacing-sm);
+            padding: 5px var(--spacing-xs);
             background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
             border: 2px solid var(--accent-gold);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            font-weight: 700;
-            font-size: 0.88em;
+            font-weight: 600;
+            font-size: 0.8em;
             color: var(--text-light);
             transition: all 0.2s ease;
-            box-shadow: 0 3px 8px rgba(26, 44, 74, 0.2);
             text-align: center;
+            white-space: nowrap;
         }
 
         .upgrade-btn:active:not(:disabled) {
@@ -163,7 +163,9 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-top: 6px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid #e5e7eb;
         }
         
         .mission-title {
@@ -1252,7 +1254,7 @@
 <script src="colors.js?v=3"></script>
 <script src="shop.js?v=4"></script>
 <script src="vocab.js?v=3"></script>
-<script src="game.js?v=13"></script>
+<script src="game.js?v=14"></script>
 
 <script>
 function playCantoneseVoice(text) {
