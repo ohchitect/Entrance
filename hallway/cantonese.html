@@ -656,6 +656,17 @@
             display: none !important;
         }
 
+        #player.has-svg {
+            background-color: transparent !important;
+            border-radius: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        #player.has-svg::before,
+        #player.has-svg::after {
+            display: none !important;
+        }
+
         @keyframes attackRight { 
             0% { transform: translateX(0); }
             50% { transform: translateX(45px) scale(1.08); }

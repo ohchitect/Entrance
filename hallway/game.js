@@ -149,8 +149,7 @@ function startBattle() {
     document.getElementById('enemy-name').textContent = `${enemyNames[tierIndex]} (Lv ${currentLevel})`;
     
     // Set player appearance
-    document.getElementById('player').style.backgroundColor = save.playerColor;
-    document.getElementById('player').style.borderRadius = save.playerShape;
+    setPlayerShape(save.playerColor, save.playerShape);
     
     // Set enemy shape and color based on tier and level
     const enemyColor = getEnemyColor(currentLevel);
@@ -248,6 +247,55 @@ function checkCombatState() {
         return;
     }
     setTimeout(generateQuestion, 800);
+}
+
+function getPlayerSVG(shape, color) {
+    const svgs = {
+        'star': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <polygon points="30,8 36,24 53,24 40,34 45,50 30,40 15,50 20,34 7,24 24,24"
+                   fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="26" cy="28" r="3" fill="rgba(255,255,255,0.75)"/>
+          <circle cx="36" cy="28" r="3" fill="rgba(255,255,255,0.75)"/>
+        </svg>`,
+        'bird': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <ellipse cx="38" cy="18" rx="14" ry="9" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <ellipse cx="30" cy="34" rx="22" ry="18" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="19" cy="29" r="4" fill="rgba(255,255,255,0.75)"/>
+          <circle cx="19" cy="29" r="2" fill="#222"/>
+          <polygon points="46,31 57,27 49,36" fill="#f39c12"/>
+        </svg>`,
+        'heart': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <path d="M30,50 C14,39 4,30 4,20 C4,13 9,8 15,8 C20,8 25,11 30,17 C35,11 40,8 45,8 C51,8 56,13 56,20 C56,30 46,39 30,50 Z"
+                fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="25" cy="25" r="3" fill="rgba(255,255,255,0.75)"/>
+          <circle cx="36" cy="25" r="3" fill="rgba(255,255,255,0.75)"/>
+        </svg>`,
+        'diamond': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <polygon points="30,6 54,30 30,54 6,30"
+                   fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <polygon points="30,14 46,30 30,46 14,30" fill="rgba(255,255,255,0.12)"/>
+          <circle cx="26" cy="27" r="3" fill="rgba(255,255,255,0.75)"/>
+          <circle cx="36" cy="27" r="3" fill="rgba(255,255,255,0.75)"/>
+        </svg>`
+    };
+    return svgs[shape] || null;
+}
+
+function setPlayerShape(color, shape) {
+    const playerEl = document.getElementById('player');
+    const svg = getPlayerSVG(shape, color);
+    if (svg) {
+        playerEl.innerHTML = svg;
+        playerEl.classList.add('has-svg');
+        playerEl.style.backgroundColor = 'transparent';
+    } else {
+        playerEl.innerHTML = '';
+        playerEl.classList.remove('has-svg');
+        playerEl.style.backgroundColor = color;
+        playerEl.style.borderRadius = shape || '50%';
+        playerEl.style.border = '';
+        playerEl.style.boxShadow = '';
+    }
 }
 
 function getEnemySVG(tierIndex, color) {
