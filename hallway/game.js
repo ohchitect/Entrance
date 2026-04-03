@@ -48,14 +48,19 @@ function initApp() {
     showLevelSelect(); 
 }
 
+const tierIcons = ['🫧','👺','👹','🧌','🥷','🗿','⚔️','🐉','😈','👑'];
+
 function updateShopUI() {
     document.getElementById('coin-count').textContent = save.coins;
-    let costHp = 50 + (save.upgHp * 25); 
+    let costHp = 50 + (save.upgHp * 25);
     let costDmg = 225 + (save.upgDmg * 150);
     document.getElementById('cost-hp').textContent = costHp;
     document.getElementById('cost-dmg').textContent = costDmg;
     document.getElementById('btn-upg-hp').disabled = save.coins < costHp;
     document.getElementById('btn-upg-dmg').disabled = save.coins < costDmg;
+    const tierIdx = tiers.findIndex(t => save.maxLevel >= t.start && save.maxLevel <= t.end);
+    const badge = document.getElementById('tier-badge');
+    if (badge) badge.textContent = `${tierIcons[tierIdx] || '🫧'} Lv.${save.maxLevel}`;
 }
 
 function buyUpgrade(type) {
