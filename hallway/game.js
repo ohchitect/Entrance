@@ -188,8 +188,9 @@ function generateQuestion() {
 }
 
 function checkAnswer(index) {
-    if (buttonsLocked) return; 
+    if (buttonsLocked) return;
     buttonsLocked = true;
+    if (document.activeElement) document.activeElement.blur();
     const isCorrect = (currentOptions[index].eng === currentQuestion.eng);
     const btn = document.getElementById(`btn${index}`);
     playCantoneseVoice(currentOptions[index].cantonese);

@@ -699,7 +699,7 @@
             margin-bottom: var(--spacing-lg);
         }
         
-        button.option-btn { 
+        button.option-btn {
             background: white;
             border: 2px solid var(--navy);
             border-radius: var(--radius-md);
@@ -710,9 +710,12 @@
             font-weight: 700;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(26, 44, 74, 0.1);
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
-        
-        @media (hover: hover) {
+
+        /* Only apply hover on real mouse — prevents stuck highlight on touch screens */
+        @media (hover: hover) and (pointer: fine) {
             button.option-btn:hover:not(:disabled) {
                 background: var(--navy);
                 color: var(--text-light);
@@ -720,6 +723,12 @@
                 box-shadow: 0 6px 16px rgba(26, 44, 74, 0.2);
                 transform: translateY(-2px);
             }
+        }
+
+        /* Brief press feedback on touch — disappears the moment finger lifts */
+        button.option-btn:active:not(:disabled) {
+            transform: scale(0.97);
+            transition: transform 0.05s ease;
         }
         
         .correct-btn { 
