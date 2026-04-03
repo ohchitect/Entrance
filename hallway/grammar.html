@@ -3,110 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantonese Grammar RPG</title>
+    <title>Cantonese Grammar Level 1</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             padding: 20px;
             margin: 0;
+            color: #333;
         }
         .container {
             background-color: white;
             width: 100%;
-            max-width: 400px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            padding: 20px;
+            max-width: 420px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 20px;
             box-sizing: border-box;
         }
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-        .menu-btn {
-            background: linear-gradient(180deg, #ff9a22, #ff7a00);
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 15px;
-            width: 100%;
-            font-weight: bold;
-            font-size: 1rem;
-            color: #111;
-            margin-bottom: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #333;
-            transition: all 0.1s;
-        }
-        .menu-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #333;
-        }
-        .lesson-box {
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: #fff8f0;
-        }
-        .lesson-title {
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-        }
-        .lyrics {
-            line-height: 1.8;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
             text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 1.4rem;
+            margin: 0 0 5px 0;
+            color: #1a1a1a;
+        }
+        .header p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+        .lesson-content {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .phrase-group {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .phrase-group:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
         .cantonese-text {
-            font-weight: bold;
+            font-weight: 700;
             color: #d32f2f;
-            font-size: 1.3rem;
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 4px;
         }
         .jyutping {
-            color: #555;
-            font-size: 0.9rem;
-        }
-        .audio-controls {
-            margin-bottom: 15px;
-            width: 100%;
+            color: #666;
+            font-size: 1rem;
+            display: block;
+            word-wrap: break-word;
         }
         .action-btn {
-            background-color: #f0f0f0;
-            border: 2px solid #333;
-            border-radius: 8px;
-            padding: 12px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
             width: 100%;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1.1rem;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.2s;
+            transition: transform 0.1s, background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .action-btn:active {
+            transform: scale(0.98);
         }
         .action-btn:hover {
-            background-color: #e0e0e0;
+            background: #333;
         }
         .translation-box {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 2px dashed #ccc;
-            font-size: 0.9rem;
-            color: #444;
-            line-height: 1.6;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
         }
         .translation-box h4 {
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
+            font-size: 1rem;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .translation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .translation-list li {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+        }
+        .translation-list li:last-child {
+            margin-bottom: 0;
+        }
+        .t-term {
+            font-weight: 600;
             color: #333;
+        }
+        .t-def {
+            color: #555;
         }
     </style>
 </head>
@@ -114,49 +127,54 @@
 
 <div class="container">
     <div class="header">
-        <span>🎮 Cantonese Grammar</span>
-        <span>🎧 Lv.1</span>
+        <h1>🎮 Cantonese Grammar</h1>
+        <p>Mission: Classifiers & Story (Lv.1)</p>
     </div>
 
-    <button class="menu-btn">🎵 Select Background Beat</button>
-
-    <div class="lesson-box">
-        <div class="lesson-title">🎧 K-Pop Beat Player</div>
-        <audio id="bgm" class="audio-controls" controls loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        </audio>
-        <p style="font-size: 0.8rem; color: #666; margin-top: 0; text-align: center;">(Using an external MP3 link keeps your app file size near 0MB)</p>
-    </div>
-
-    <div class="lesson-box">
-        <div class="lesson-title">🎯 Mission: Classifiers & Story</div>
+    <div class="lesson-content">
+        <div class="phrase-group">
+            <span class="cantonese-text">個</span>
+            <span class="jyutping">(go3)</span>
+        </div>
+        <div class="phrase-group">
+            <span class="cantonese-text">一個人</span>
+            <span class="jyutping">(jat1 go3 jan4)</span>
+        </div>
         
-        <div class="lyrics" id="song-lyrics">
-            <span class="cantonese-text">個</span> <span class="jyutping">(go3)</span><br>
-            <span class="cantonese-text">一個人</span> <span class="jyutping">(jat1 go3 jan4)</span><br><br>
+        <div class="phrase-group">
+            <span class="cantonese-text">隻</span>
+            <span class="jyutping">(zek3)</span>
+        </div>
+        <div class="phrase-group">
+            <span class="cantonese-text">一隻狗</span>
+            <span class="jyutping">(jat1 zek3 gau2)</span>
+        </div>
 
-            <span class="cantonese-text">隻</span> <span class="jyutping">(zek3)</span><br>
-            <span class="cantonese-text">一隻狗</span> <span class="jyutping">(jat1 zek3 gau2)</span><br><br>
+        <div class="phrase-group">
+            <span class="cantonese-text">同</span>
+            <span class="jyutping">(tung4)</span>
+        </div>
 
-            <span class="cantonese-text">同</span> <span class="jyutping">(tung4)</span><br><br>
-
-            <span class="cantonese-text">一個人同隻狗返屋企</span><br>
+        <div class="phrase-group">
+            <span class="cantonese-text">一個人同隻狗返屋企</span>
             <span class="jyutping">(jat1 go3 jan4 tung4 zek3 gau2 faan1 uk1 kei2)</span>
         </div>
+    </div>
 
-        <button class="action-btn" onclick="readLyrics()">🔊 Play Cantonese Voice</button>
+    <button class="action-btn" onclick="readLyrics()">
+        🔊 Play Cantonese Voice
+    </button>
 
-        <div class="translation-box">
-            <h4>English Translations</h4>
-            <ul>
-                <li><strong>個 (go3):</strong> Classifier for people</li>
-                <li><strong>一個人:</strong> One person</li>
-                <li><strong>隻 (zek3):</strong> Classifier for animals</li>
-                <li><strong>一隻狗:</strong> One dog</li>
-                <li><strong>同 (tung4):</strong> And / With</li>
-                <li><strong>一個人同隻狗返屋企:</strong> A person and a dog go home.</li>
-            </ul>
-        </div>
+    <div class="translation-box">
+        <h4>Translations</h4>
+        <ul class="translation-list">
+            <li><span class="t-term">個 (go3)</span> <span class="t-def">Classifier for people</span></li>
+            <li><span class="t-term">一個人</span> <span class="t-def">One person</span></li>
+            <li><span class="t-term">隻 (zek3)</span> <span class="t-def">Classifier for animals</span></li>
+            <li><span class="t-term">一隻狗</span> <span class="t-def">One dog</span></li>
+            <li><span class="t-term">同 (tung4)</span> <span class="t-def">And / With</span></li>
+            <li><span class="t-term">一個人同隻狗返屋企</span> <span class="t-def">A person and a dog go home.</span></li>
+        </ul>
     </div>
 </div>
 
@@ -165,7 +183,6 @@
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
 
-            // Array containing ONLY the Cantonese text
             const phrases = [
                 "個",
                 "一個人",
@@ -180,8 +197,6 @@
             phrases.forEach((phrase, index) => {
                 setTimeout(() => {
                     const utterance = new SpeechSynthesisUtterance(phrase);
-                    
-                    // Force the language attribute to Cantonese/Traditional Chinese
                     utterance.lang = 'zh-HK';
 
                     const voices = window.speechSynthesis.getVoices();
@@ -194,14 +209,12 @@
                         if (zhVoice) utterance.voice = zhVoice;
                     }
 
-                    // Slower rate for clear pronunciation of single words
                     utterance.rate = 0.8; 
                     utterance.pitch = 1.0;
 
                     window.speechSynthesis.speak(utterance);
                 }, delay);
                 
-                // Add a 2.5-second pause between each Cantonese phrase to match a beat
                 delay += 2500; 
             });
 
@@ -210,7 +223,6 @@
         }
     }
 
-    // Ensure voices are loaded
     window.speechSynthesis.onvoiceschanged = function() {
         window.speechSynthesis.getVoices();
     };
