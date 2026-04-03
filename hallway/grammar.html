@@ -3,235 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantonese Grammar Level 1</title>
+    <title>Cantonese RPG Menu</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             padding: 20px;
             margin: 0;
-            color: #333;
+            color: #111;
         }
         .container {
             background-color: white;
             width: 100%;
-            max-width: 420px;
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            padding: 30px 20px;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px;
             box-sizing: border-box;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 1.4rem;
-            margin: 0 0 5px 0;
-            color: #1a1a1a;
-        }
-        .header p {
-            font-size: 0.9rem;
-            color: #666;
-            margin: 0;
-        }
-        .lesson-content {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .phrase-group {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .phrase-group:last-of-type {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        .cantonese-text {
-            font-weight: 700;
-            font-size: 1.6rem;
-            display: block;
-            margin-bottom: 4px;
-            color: #1a1a1a;
-        }
-        .grammar-highlight {
-            color: #1976d2;
-        }
-        .jyutping {
-            color: #666;
-            font-size: 1rem;
-            display: block;
-            word-wrap: break-word;
-        }
-        .action-btn {
-            background: #1a1a1a;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            width: 100%;
-            font-weight: 600;
+        .header-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 20px;
             font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .stat-right {
+            display: flex;
+            gap: 15px;
+        }
+        .main-btn {
+            background: linear-gradient(180deg, #ff9a22, #ff7a00);
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 12px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #111;
+            margin-bottom: 10px;
             cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 4px 0 #333;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 8px;
         }
-        .action-btn:active {
-            transform: scale(0.98);
+        .main-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #333;
         }
-        .action-btn:hover {
-            background: #333;
-        }
-        .translation-box {
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .translation-box h4 {
-            margin: 0 0 15px 0;
-            font-size: 1rem;
-            color: #1a1a1a;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .translation-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .translation-list li {
-            margin-bottom: 15px;
-            font-size: 0.95rem;
-            line-height: 1.4;
+        .upgrade-row {
             display: flex;
-            flex-direction: column;
-            border-left: 3px solid #1976d2;
-            padding-left: 10px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        .translation-list li:last-child {
-            margin-bottom: 0;
+        .upgrade-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            border: 1px solid #ccc;
         }
-        .t-term {
+        .btn-hp {
+            background-color: #1a237e;
+            color: white;
+            border: 2px solid #333;
+        }
+        .btn-dmg {
+            background-color: #e0e0e0;
+            color: #999;
+            border: 2px solid #bbb;
+        }
+        .mission-header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 25px 0 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .mission-btn {
+            background-color: white;
+            border: 2px solid #2c3e50;
+            border-radius: 8px;
+            padding: 12px 5px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.2s;
         }
-        .t-def {
-            color: #555;
+        .mission-btn:hover {
+            background-color: #f0f4f8;
+        }
+        .lesson-list {
+            display: none;
+            margin-top: 20px;
+            border-top: 2px dashed #ccc;
+            padding-top: 15px;
+        }
+        .lesson-item {
+            background: #f8f9fa;
+            border-left: 4px solid #ff7a00;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .lesson-item:hover {
+            background: #e9ecef;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>🎮 Cantonese Grammar</h1>
-        <p>Mission: Classifiers (Noah's Ark)</p>
-    </div>
-
-    <div class="lesson-content">
-        <div class="phrase-group">
-            <span class="cantonese-text">挪亞起咗一<span class="grammar-highlight">架</span>方舟。</span>
-            <span class="jyutping">(No4 aa3 hei2 zo2 jat1 gaa3 fong1 zau1.)</span>
-        </div>
-        
-        <div class="phrase-group">
-            <span class="cantonese-text">白鴿帶返一<span class="grammar-highlight">塊</span>橄欖葉。</span>
-            <span class="jyutping">(Baak6 gaap3 daai3 faan1 jat1 faai3 gaam3 laam2 jip6.)</span>
-        </div>
-
-        <div class="phrase-group">
-            <span class="cantonese-text">天上出現一<span class="grammar-highlight">條</span>彩虹。</span>
-            <span class="jyutping">(Tin1 soeng6 ceot1 jin6 jat1 tiu4 coi2 hung4.)</span>
-        </div>
-
-        <div class="phrase-group">
-            <span class="cantonese-text">一<span class="grammar-highlight">架</span>方舟<span class="grammar-highlight">同</span>一<span class="grammar-highlight">條</span>彩虹帶嚟希望。</span>
-            <span class="jyutping">(Jat1 gaa3 fong1 zau1 tung4 jat1 tiu4 coi2 hung4 daai3 lai4 hei1 mong6.)</span>
+    <div class="header-stats">
+        <span>🎮 Cantonese RPG</span>
+        <div class="stat-right">
+            <span>👹 Lv.22</span>
+            <span>💰 84</span>
         </div>
     </div>
 
-    <button class="action-btn" onclick="readLyrics()">
-        🔊 Play Grammar Story
-    </button>
+    <button class="main-btn">🎵 Tone Guide</button>
+    <button class="main-btn">❓ Help - Cannot hear Cantonese</button>
+    <button class="main-btn">🛍️ Character Shop</button>
 
-    <div class="translation-box">
-        <h4>Grammar Breakdown</h4>
-        <ul class="translation-list">
-            <li>
-                <span class="t-term">挪亞起咗一架方舟。</span> 
-                <span class="t-def">Noah built one ark. <strong>(架 / gaa3 = Classifier for vehicles/ships)</strong></span>
-            </li>
-            <li>
-                <span class="t-term">白鴿帶返一塊橄欖葉。</span> 
-                <span class="t-def">The dove brought back one olive leaf. <strong>(塊 / faai3 = Classifier for flat objects)</strong></span>
-            </li>
-            <li>
-                <span class="t-term">天上出現一條彩虹。</span> 
-                <span class="t-def">A rainbow appears in the sky. <strong>(條 / tiu4 = Classifier for long, flexible things)</strong></span>
-            </li>
-            <li>
-                <span class="t-term">一架方舟同一條彩虹帶嚟希望。</span> 
-                <span class="t-def">One ark <strong>and (同 / tung4)</strong> one rainbow bring hope.</span>
-            </li>
-        </ul>
+    <div class="upgrade-row">
+        <div class="upgrade-btn btn-hp">❤️ +HP (Cost: 50)</div>
+        <div class="upgrade-btn btn-dmg">⚔️ +DMG (Cost: 225)</div>
+    </div>
+
+    <div class="mission-header">
+        🎯 Select Mission
+    </div>
+
+    <div class="grid-container" id="categoryGrid">
+        </div>
+
+    <div id="lessonContainer" class="lesson-list">
+        <h3 id="lessonTitle" style="margin-top: 0; color: #2c3e50;"></h3>
+        <div id="lessonItems"></div>
     </div>
 </div>
 
 <script>
-    function readLyrics() {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-
-            const phrases = [
-                "挪亞起咗一架方舟",
-                "白鴿帶返一塊橄欖葉",
-                "天上出現一條彩虹",
-                "一架方舟同一條彩虹帶嚟希望"
-            ];
-
-            let delay = 0;
-
-            phrases.forEach((phrase, index) => {
-                setTimeout(() => {
-                    const utterance = new SpeechSynthesisUtterance(phrase);
-                    utterance.lang = 'zh-HK';
-
-                    const voices = window.speechSynthesis.getVoices();
-                    const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
-                    
-                    if (hkVoice) {
-                        utterance.voice = hkVoice;
-                    } else {
-                        const zhVoice = voices.find(voice => voice.lang.includes('zh'));
-                        if (zhVoice) utterance.voice = zhVoice;
-                    }
-
-                    utterance.rate = 0.8; 
-                    utterance.pitch = 1.0;
-
-                    window.speechSynthesis.speak(utterance);
-                }, delay);
-                
-                delay += 3500; 
-            });
-
-        } else {
-            alert("Text-to-Speech is not supported in this browser.");
-        }
-    }
-
-    window.speechSynthesis.onvoiceschanged = function() {
-        window.speechSynthesis.getVoices();
+    // Database of 150 Articles/News Topics categorized by difficulty
+    const curriculumDB = {
+        "Beginner": [
+            "Basic Greetings in Vancouver", "Ordering Tim Hortons Coffee", "Numbers 1-10", 
+            "Buying a Compass Card", "Asking for Washroom Locations", "Saying Thank You & Sorry",
+            "Days of the Week", "Basic Colors", "Ordering Dim Sum", "Identifying Family Members",
+            "Telling Time", "Common Action Verbs", "Basic Weather Words", "Body Parts", "Introducing Your Name"
+        ],
+        "Intermediate": [
+            "Booking a Table at a Restaurant", "Describing Weekend Plans", "Renting an Apartment in Burnaby",
+            "Calling a Plumber", "Shopping at T&T Supermarket", "Discussing Vancouver Weather",
+            "Giving Directions to a Taxi Driver", "Describing Physical Appearance", "Talking About Hobbies",
+            "Making Small Talk with Neighbors", "Returning an Item at a Store", "Discussing Dietary Restrictions",
+            "Describing Symptoms to a Pharmacist", "Setting up a Bank Account", "Discussing Holiday Plans"
+        ],
+        "Hard": [
+            "Analyzing BC Housing Market Trends", "Debating Carbon Tax Policies", "Discussing Metro Vancouver Traffic",
+            "Understanding Construction Permits", "Climate Change Impacts on BC", "Reviewing Political Elections",
+            "Analyzing Economic Inflation", "Healthcare System Challenges", "Artificial Intelligence in Daily Life",
+            "Discussing Local Tech Startup Culture", "Analyzing Global Trade News", "Philosophy of Modern Art",
+            "Debating Public Transit Expansions", "Legal Terminology in Contracts", "Historical Events of Gastown"
+        ],
+        "Tourist": [
+            "Navigating YVR Airport", "Buying Tickets for Capilano Suspension Bridge", "Taking the Seabus to Lonsdale",
+            "Ordering Seafood at Granville Island", "Asking for Photo Help at Stanley Park", "Checking into a Downtown Hotel",
+            "Renting a Bike at the Seawall", "Finding Souvenirs in Gastown", "Understanding Tipping Culture",
+            "Taking the Whistler Shuttle", "Emergency Numbers and Safety", "Booking a Whale Watching Tour",
+            "Navigating the Skytrain Map", "Asking for Free Wi-Fi", "Understanding Currency Exchange Rates"
+        ],
+        "Child": [
+            "Animal Names at the Aquarium", "Colors of the Rainbow", "Counting Toys", "My Favorite Fruits",
+            "Singing the ABCs in Cantonese", "Parts of the Face", "Playground Vocabulary", "My Pet Dog and Cat",
+            "Clothes I Wear", "Shapes and Sizes", "Types of Vehicles", "My Bedtime Routine",
+            "Feeling Happy and Sad", "Insects in the Garden", "Snack Time Words"
+        ],
+        "Elementary": [
+            "My School Backpack", "Playing Tag with Friends", "Favorite Subjects at School", "Riding the School Bus",
+            "Visiting the Library", "Weekend Cartoons", "My Lunchbox", "Learning to Ride a Bike",
+            "Summer Camp Activities", "My Birthday Party", "Helping Parents Clean", "Visiting Grandparents",
+            "Halloween Costumes", "Snow Days in Winter", "Drawing and Painting"
+        ],
+        "Middle School": [
+            "Homework Assignments", "Joining a Sports Team", "Listening to Pop Music", "Taking the Bus to the Mall",
+            "Playing Video Games", "Studying for Math Tests", "School Field Trips", "Hanging out at the Community Center",
+            "Learning to Cook Basic Meals", "Saving Allowance Money", "Using Social Media", "Choosing Elective Classes",
+            "Science Fair Projects", "Reading Comic Books", "Discussing Movies with Friends"
+        ],
+        "High School": [
+            "Getting a Learner's Driving License", "Applying for Part-time Jobs", "Preparing for Provincial Exams",
+            "Going to the School Prom", "Choosing University Programs", "Volunteering at Local Charities",
+            "Dating and Relationships", "Managing a Budget", "Attending Concerts", "Peer Pressure and Mental Health",
+            "Joining School Clubs", "Summer Jobs in Retail", "Discussing Future Careers", "Buying First Car",
+            "High School Graduation"
+        ],
+        "University": [
+            "Navigating the UBC Campus", "Registering for Semester Classes", "Living in Student Dorms",
+            "Writing a Thesis Paper", "Attending Networking Events", "Applying for Co-op Internships",
+            "Paying Tuition Fees", "Joining a Fraternity/Sorority", "Late Night Study Sessions",
+            "Cooking on a Student Budget", "Applying for Scholarships", "Attending Office Hours",
+            "Using the Academic Library", "Graduation Ceremony Logistics", "Moving to a New City for Work"
+        ],
+        "Business": [
+            "Leading a Project Meeting", "Writing Formal Emails", "Reviewing Construction Schedules",
+            "Negotiating Contracts", "Requesting Budget Approvals", "Conducting a Job Interview",
+            "Presenting Quarterly Reports", "Discussing Employee Benefits", "Resolving Workplace Conflicts",
+            "Networking at Industry Events", "Understanding Corporate Tax", "Pitching to New Clients",
+            "Managing Tenant Improvements", "Performance Review Appraisals", "Resigning from a Position"
+        ]
     };
+
+    const categories = [
+        "Beginner", "Intermediate", "Hard", "Tourist", "Child", 
+        "Elementary", "Middle School", "High School", "University", "Business"
+    ];
+
+    const gridContainer = document.getElementById('categoryGrid');
+    const lessonContainer = document.getElementById('lessonContainer');
+    const lessonTitle = document.getElementById('lessonTitle');
+    const lessonItems = document.getElementById('lessonItems');
+
+    // Generate Mission Buttons
+    categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = 'mission-btn';
+        btn.textContent = category;
+        btn.onclick = () => loadLessons(category);
+        gridContainer.appendChild(btn);
+    });
+
+    // Load corresponding 15 lessons when clicked
+    function loadLessons(category) {
+        lessonTitle.textContent = `${category} Missions (15)`;
+        lessonItems.innerHTML = ''; // Clear previous
+        
+        curriculumDB[category].forEach((topic, index) => {
+            const div = document.createElement('div');
+            div.className = 'lesson-item';
+            div.innerHTML = `<strong>Mission ${index + 1}:</strong> ${topic}`;
+            
+            // In a real app, clicking this would open the news template we built earlier
+            div.onclick = () => alert(`Loading lesson module for: ${topic}`);
+            
+            lessonItems.appendChild(div);
+        });
+
+        lessonContainer.style.display = 'block';
+        
+        // Scroll to the list smoothly
+        setTimeout(() => {
+            lessonContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
 </script>
 
 </body>
