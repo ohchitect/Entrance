@@ -547,11 +547,11 @@
         }
         
         /* ===== GAME SCREEN ===== */
-        .stats-bar { 
+        .stats-bar {
             display: flex;
             justify-content: space-between;
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
             font-weight: 700;
             font-size: clamp(0.9em, 3vw, 1.05em);
         }
@@ -593,15 +593,15 @@
             transition: width 0.3s ease;
         }
         
-        #arena { 
+        #arena {
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
-            height: 200px;
+            height: 160px;
             border-bottom: 2px solid #e5e7eb;
-            margin-bottom: var(--spacing-lg);
-            padding: var(--spacing-lg);
-            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            gap: var(--spacing-md);
             background: #f9fafb;
             border-radius: var(--radius-md);
         }
@@ -699,26 +699,26 @@
         .anim-attack { animation: attackRight 0.4s ease; }
         .anim-damage { animation: takeDamage 0.5s ease; }
         
-        #question-box { 
+        #question-box {
             text-align: center;
-            font-size: clamp(1.3em, 4vw, 1.8em);
-            margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+            font-size: clamp(1.2em, 4vw, 1.6em);
+            margin: var(--spacing-sm) 0 var(--spacing-xs) 0;
             font-weight: 700;
             color: var(--navy-dark);
         }
-        
-        #options { 
+
+        #options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-lg);
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-sm);
         }
         
         button.option-btn {
             background: white;
             border: 2px solid var(--navy);
             border-radius: var(--radius-md);
-            padding: var(--spacing-md);
+            padding: 10px var(--spacing-sm);
             font-size: clamp(0.9em, 3vw, 1.05em);
             cursor: pointer;
             color: var(--navy-dark);
@@ -946,7 +946,7 @@
             #vocab-list { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
             .tier-buttons { grid-template-columns: 1fr 1fr; }
             #options { grid-template-columns: 1fr 1fr; }
-            #arena { height: 160px; }
+            #arena { height: 140px; }
             .header-buttons { flex-direction: column; }
             .help-btn { width: 100%; }
         }
@@ -958,7 +958,7 @@
             .tier-buttons { grid-template-columns: 1fr 1fr; }
             .upgrade-buttons { grid-template-columns: 1fr 1fr; }
             #options { grid-template-columns: 1fr; }
-            #arena { height: 120px; padding: var(--spacing-md); }
+            #arena { height: 110px; padding: var(--spacing-xs) var(--spacing-sm); }
             .shop-items { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
         }
     </style>
@@ -1082,35 +1082,53 @@
             </div>
 
             <!-- Pitch contour diagram -->
-            <svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:80px;border-radius:8px;background:#f8f9fa;margin:6px 0;">
+            <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:110px;border-radius:10px;background:#f0f4ff;margin:6px 0;border:1px solid #dde4f5;">
                 <!-- Grid lines -->
-                <line x1="46" y1="16" x2="294" y2="16" stroke="#ddd" stroke-width="1"/>
-                <line x1="46" y1="52" x2="294" y2="52" stroke="#ddd" stroke-width="1"/>
-                <line x1="46" y1="88" x2="294" y2="88" stroke="#ddd" stroke-width="1"/>
-                <line x1="46" y1="124" x2="294" y2="124" stroke="#ddd" stroke-width="1"/>
+                <line x1="48" y1="18" x2="310" y2="18" stroke="#c8d0e8" stroke-width="1" stroke-dasharray="4,3"/>
+                <line x1="48" y1="50" x2="310" y2="50" stroke="#c8d0e8" stroke-width="1" stroke-dasharray="4,3"/>
+                <line x1="48" y1="82" x2="310" y2="82" stroke="#c8d0e8" stroke-width="1" stroke-dasharray="4,3"/>
+                <line x1="48" y1="114" x2="310" y2="114" stroke="#c8d0e8" stroke-width="1" stroke-dasharray="4,3"/>
                 <!-- Labels -->
-                <text x="42" y="19" font-size="9" fill="#999" text-anchor="end">high</text>
-                <text x="42" y="55" font-size="9" fill="#999" text-anchor="end">mid</text>
-                <text x="42" y="91" font-size="9" fill="#999" text-anchor="end">lo-mid</text>
-                <text x="42" y="127" font-size="9" fill="#999" text-anchor="end">low</text>
-                <!-- Tone 1: High flat -->
-                <line x1="52" y1="16" x2="290" y2="16" stroke="#e74c3c" stroke-width="3" stroke-linecap="round"/>
-                <text x="160" y="11" font-size="12" fill="#e74c3c" text-anchor="middle" font-weight="bold">1</text>
-                <!-- Tone 2: Rising high -->
-                <line x1="52" y1="88" x2="290" y2="16" stroke="#9b59b6" stroke-width="3" stroke-linecap="round"/>
-                <text x="105" y="50" font-size="12" fill="#9b59b6" font-weight="bold">2</text>
-                <!-- Tone 3: Mid flat -->
-                <line x1="52" y1="52" x2="290" y2="52" stroke="#3498db" stroke-width="3" stroke-linecap="round"/>
-                <text x="95" y="46" font-size="12" fill="#3498db" font-weight="bold">3</text>
-                <!-- Tone 4: Low falling -->
-                <line x1="52" y1="88" x2="290" y2="124" stroke="#1abc9c" stroke-width="3" stroke-linecap="round"/>
-                <text x="160" y="120" font-size="12" fill="#1abc9c" text-anchor="middle" font-weight="bold">4</text>
-                <!-- Tone 5: Low rising -->
-                <line x1="52" y1="112" x2="290" y2="70" stroke="#e67e22" stroke-width="3" stroke-linecap="round"/>
-                <text x="276" y="65" font-size="12" fill="#e67e22" font-weight="bold">5</text>
-                <!-- Tone 6: Low flat -->
-                <line x1="52" y1="102" x2="290" y2="102" stroke="#7d8c2a" stroke-width="3" stroke-linecap="round"/>
-                <text x="276" y="118" font-size="12" fill="#7d8c2a" font-weight="bold">6</text>
+                <text x="44" y="21" font-size="9" fill="#8895b3" text-anchor="end" font-family="sans-serif">high</text>
+                <text x="44" y="53" font-size="9" fill="#8895b3" text-anchor="end" font-family="sans-serif">mid</text>
+                <text x="44" y="85" font-size="9" fill="#8895b3" text-anchor="end" font-family="sans-serif">lo-mid</text>
+                <text x="44" y="117" font-size="9" fill="#8895b3" text-anchor="end" font-family="sans-serif">low</text>
+                <!-- Tone 1: High flat — red -->
+                <line x1="56" y1="18" x2="302" y2="18" stroke="#e74c3c" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="56" cy="18" r="4" fill="#e74c3c"/>
+                <circle cx="302" cy="18" r="4" fill="#e74c3c"/>
+                <rect x="168" y="6" width="16" height="16" rx="3" fill="#e74c3c"/>
+                <text x="176" y="18" font-size="11" fill="white" text-anchor="middle" font-weight="bold" font-family="sans-serif">1</text>
+                <!-- Tone 2: Rising — purple -->
+                <line x1="56" y1="82" x2="302" y2="18" stroke="#9b59b6" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="56" cy="82" r="4" fill="#9b59b6"/>
+                <circle cx="302" cy="18" r="4" fill="#9b59b6"/>
+                <rect x="92" y="42" width="16" height="16" rx="3" fill="#9b59b6"/>
+                <text x="100" y="54" font-size="11" fill="white" text-anchor="middle" font-weight="bold" font-family="sans-serif">2</text>
+                <!-- Tone 3: Mid flat — blue -->
+                <line x1="56" y1="50" x2="302" y2="50" stroke="#3498db" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="56" cy="50" r="4" fill="#3498db"/>
+                <circle cx="302" cy="50" r="4" fill="#3498db"/>
+                <rect x="122" y="34" width="16" height="16" rx="3" fill="#3498db"/>
+                <text x="130" y="46" font-size="11" fill="white" text-anchor="middle" font-weight="bold" font-family="sans-serif">3</text>
+                <!-- Tone 4: Low falling — teal -->
+                <line x1="56" y1="82" x2="302" y2="114" stroke="#1abc9c" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="56" cy="82" r="4" fill="#1abc9c"/>
+                <circle cx="302" cy="114" r="4" fill="#1abc9c"/>
+                <rect x="168" y="106" width="16" height="16" rx="3" fill="#1abc9c"/>
+                <text x="176" y="118" font-size="11" fill="white" text-anchor="middle" font-weight="bold" font-family="sans-serif">4</text>
+                <!-- Tone 5: Low rising — orange -->
+                <line x1="56" y1="106" x2="302" y2="66" stroke="#e67e22" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="56" cy="106" r="4" fill="#e67e22"/>
+                <circle cx="302" cy="66" r="4" fill="#e67e22"/>
+                <rect x="240" y="58" width="16" height="16" rx="3" fill="#e67e22"/>
+                <text x="248" y="70" font-size="11" fill="white" text-anchor="middle" font-weight="bold" font-family="sans-serif">5</text>
+                <!-- Tone 6: Low flat — olive -->
+                <line x1="56" y1="96" x2="302" y2="96" stroke="#7d8c2a" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="56" cy="96" r="4" fill="#7d8c2a"/>
+                <circle cx="302" cy="96" r="4" fill="#7d8c2a"/>
+                <rect x="240" y="80" width="16" height="16" rx="3" fill="#7d8c2a"/>
+                <text x="248" y="92" font-size="11" fill="white" text-anchor="middle" font-weight="bold" font-family="sans-serif">6</text>
             </svg>
 
             <p class="tone-tip">All examples use the same syllable — tap each card to hear the tone difference!</p>
@@ -1251,9 +1269,9 @@
     </div>
 
 <script src="colors.js?v=3"></script>
-<script src="shop.js?v=3"></script>
+<script src="shop.js?v=4"></script>
 <script src="vocab.js?v=3"></script>
-<script src="game.js?v=3"></script>
+<script src="game.js?v=4"></script>
 
 <script>
 function playCantoneseVoice(text) {

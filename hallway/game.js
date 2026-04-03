@@ -293,6 +293,74 @@ function getPlayerSVG(shape, color) {
           <polygon points="30,14 46,30 30,46 14,30" fill="rgba(255,255,255,0.12)"/>
           <circle cx="26" cy="27" r="3" fill="rgba(255,255,255,0.75)"/>
           <circle cx="36" cy="27" r="3" fill="rgba(255,255,255,0.75)"/>
+        </svg>`,
+        'robot': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <circle cx="30" cy="8" r="4" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <line x1="30" y1="12" x2="30" y2="16" stroke="rgba(0,0,0,0.4)" stroke-width="2"/>
+          <rect x="12" y="16" width="36" height="26" rx="4" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <rect x="17" y="21" width="10" height="8" rx="2" fill="#2196F3"/>
+          <rect x="33" y="21" width="10" height="8" rx="2" fill="#2196F3"/>
+          <rect x="18" y="33" width="24" height="5" rx="2" fill="rgba(0,0,0,0.2)"/>
+          <line x1="22" y1="35.5" x2="24" y2="35.5" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+          <line x1="26" y1="35.5" x2="28" y2="35.5" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+          <line x1="30" y1="35.5" x2="32" y2="35.5" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+          <rect x="4" y="20" width="7" height="16" rx="3" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <rect x="49" y="20" width="7" height="16" rx="3" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <rect x="18" y="44" width="10" height="12" rx="3" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <rect x="32" y="44" width="10" height="12" rx="3" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+        </svg>`,
+        'cat': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <polygon points="10,28 4,8 20,22" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <polygon points="50,28 56,8 40,22" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="30" cy="34" r="22" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <ellipse cx="22" cy="30" rx="5" ry="7" fill="rgba(255,255,255,0.85)"/>
+          <ellipse cx="22" cy="30" rx="2" ry="5" fill="#222"/>
+          <ellipse cx="38" cy="30" rx="5" ry="7" fill="rgba(255,255,255,0.85)"/>
+          <ellipse cx="38" cy="30" rx="2" ry="5" fill="#222"/>
+          <ellipse cx="30" cy="38" rx="4" ry="3" fill="rgba(255,182,193,0.7)"/>
+          <line x1="14" y1="37" x2="4" y2="34" stroke="rgba(0,0,0,0.4)" stroke-width="1.5"/>
+          <line x1="14" y1="39" x2="4" y2="40" stroke="rgba(0,0,0,0.4)" stroke-width="1.5"/>
+          <line x1="46" y1="37" x2="56" y2="34" stroke="rgba(0,0,0,0.4)" stroke-width="1.5"/>
+          <line x1="46" y1="39" x2="56" y2="40" stroke="rgba(0,0,0,0.4)" stroke-width="1.5"/>
+        </svg>`,
+        'ghost': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <path d="M8,52 Q10,44 14,50 Q18,56 22,50 Q26,44 30,50 Q34,56 38,50 Q42,44 46,50 Q50,56 52,52 L52,28 Q52,8 30,8 Q8,8 8,28 Z"
+                fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="22" cy="28" r="6" fill="rgba(255,255,255,0.9)"/>
+          <circle cx="22" cy="28" r="3" fill="#222"/>
+          <circle cx="38" cy="28" r="6" fill="rgba(255,255,255,0.9)"/>
+          <circle cx="38" cy="28" r="3" fill="#222"/>
+        </svg>`,
+        'ninja': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <circle cx="30" cy="30" r="24" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <rect x="8" y="26" width="44" height="12" rx="2" fill="rgba(0,0,0,0.5)"/>
+          <circle cx="22" cy="32" r="4" fill="#e74c3c"/>
+          <circle cx="22" cy="32" r="2" fill="#ff6b6b"/>
+          <circle cx="38" cy="32" r="4" fill="#e74c3c"/>
+          <circle cx="38" cy="32" r="2" fill="#ff6b6b"/>
+          <path d="M8,10 Q30,4 52,10 L52,28 Q30,22 8,28 Z" fill="rgba(0,0,0,0.45)"/>
+          <path d="M8,50 Q30,56 52,50 L52,38 Q30,44 8,38 Z" fill="rgba(0,0,0,0.45)"/>
+        </svg>`,
+        'wizard': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <polygon points="30,2 40,30 20,30" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="30" cy="16" r="3" fill="rgba(255,255,200,0.9)"/>
+          <ellipse cx="30" cy="30" rx="16" ry="4" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="30" cy="40" r="14" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="24" cy="38" r="4" fill="rgba(255,255,255,0.85)"/>
+          <circle cx="24" cy="38" r="2.5" fill="#222"/>
+          <circle cx="36" cy="38" r="4" fill="rgba(255,255,255,0.85)"/>
+          <circle cx="36" cy="38" r="2.5" fill="#222"/>
+          <path d="M26,46 Q30,50 34,46" stroke="rgba(0,0,0,0.4)" stroke-width="1.5" fill="none"/>
+        </svg>`,
+        'alien': `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <circle cx="22" cy="8" r="4" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <circle cx="38" cy="8" r="4" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <ellipse cx="30" cy="34" rx="22" ry="26" fill="${color}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+          <ellipse cx="20" cy="30" rx="9" ry="7" fill="rgba(100,240,100,0.85)"/>
+          <ellipse cx="20" cy="30" rx="5" ry="4" fill="#1a7a1a"/>
+          <ellipse cx="40" cy="30" rx="9" ry="7" fill="rgba(100,240,100,0.85)"/>
+          <ellipse cx="40" cy="30" rx="5" ry="4" fill="#1a7a1a"/>
+          <path d="M22,46 Q30,52 38,46" stroke="rgba(0,0,0,0.35)" stroke-width="2" fill="none"/>
         </svg>`
     };
     return svgs[shape] || null;
