@@ -59,7 +59,7 @@
             color: #1a1a1a;
         }
         .grammar-highlight {
-            color: #d32f2f;
+            color: #1976d2;
         }
         .jyutping {
             color: #666;
@@ -113,7 +113,7 @@
             line-height: 1.4;
             display: flex;
             flex-direction: column;
-            border-left: 3px solid #d32f2f;
+            border-left: 3px solid #1976d2;
             padding-left: 10px;
         }
         .translation-list li:last-child {
@@ -134,28 +134,28 @@
 <div class="container">
     <div class="header">
         <h1>🎮 Cantonese Grammar</h1>
-        <p>Mission: Classifiers & Conjunctions</p>
+        <p>Mission: Classifiers (Noah's Ark)</p>
     </div>
 
     <div class="lesson-content">
         <div class="phrase-group">
-            <span class="cantonese-text">我見到一<span class="grammar-highlight">個</span>人。</span>
-            <span class="jyutping">(Ngo5 gin3 dou2 jat1 go3 jan4.)</span>
+            <span class="cantonese-text">挪亞起咗一<span class="grammar-highlight">架</span>方舟。</span>
+            <span class="jyutping">(No4 aa3 hei2 zo2 jat1 gaa3 fong1 zau1.)</span>
         </div>
         
         <div class="phrase-group">
-            <span class="cantonese-text">佢拖住一<span class="grammar-highlight">隻</span>狗。</span>
-            <span class="jyutping">(Keoi5 to1 zyu6 jat1 zek3 gau2.)</span>
+            <span class="cantonese-text">白鴿帶返一<span class="grammar-highlight">塊</span>橄欖葉。</span>
+            <span class="jyutping">(Baak6 gaap3 daai3 faan1 jat1 faai3 gaam3 laam2 jip6.)</span>
         </div>
 
         <div class="phrase-group">
-            <span class="cantonese-text">一<span class="grammar-highlight">個</span>人<span class="grammar-highlight">同</span>一<span class="grammar-highlight">隻</span>狗喺溫哥華散步。</span>
-            <span class="jyutping">(Jat1 go3 jan4 tung4 jat1 zek3 gau2 hai2 Wan1 go1 waa4 saan3 bou6.)</span>
+            <span class="cantonese-text">天上出現一<span class="grammar-highlight">條</span>彩虹。</span>
+            <span class="jyutping">(Tin1 soeng6 ceot1 jin6 jat1 tiu4 coi2 hung4.)</span>
         </div>
 
         <div class="phrase-group">
-            <span class="cantonese-text">然後，一<span class="grammar-highlight">個</span>人<span class="grammar-highlight">同</span><span class="grammar-highlight">隻</span>狗一齊返屋企。</span>
-            <span class="jyutping">(Jin4 hau6, jat1 go3 jan4 tung4 zek3 gau2 jat1 cai4 faan1 uk1 kei2.)</span>
+            <span class="cantonese-text">一<span class="grammar-highlight">架</span>方舟<span class="grammar-highlight">同</span>一<span class="grammar-highlight">條</span>彩虹帶嚟希望。</span>
+            <span class="jyutping">(Jat1 gaa3 fong1 zau1 tung4 jat1 tiu4 coi2 hung4 daai3 lai4 hei1 mong6.)</span>
         </div>
     </div>
 
@@ -167,20 +167,20 @@
         <h4>Grammar Breakdown</h4>
         <ul class="translation-list">
             <li>
-                <span class="t-term">我見到一個人。</span> 
-                <span class="t-def">I see one person. <strong>(個 / go3 = Classifier for people)</strong></span>
+                <span class="t-term">挪亞起咗一架方舟。</span> 
+                <span class="t-def">Noah built one ark. <strong>(架 / gaa3 = Classifier for vehicles/ships)</strong></span>
             </li>
             <li>
-                <span class="t-term">佢拖住一隻狗。</span> 
-                <span class="t-def">He is walking one dog. <strong>(隻 / zek3 = Classifier for animals)</strong></span>
+                <span class="t-term">白鴿帶返一塊橄欖葉。</span> 
+                <span class="t-def">The dove brought back one olive leaf. <strong>(塊 / faai3 = Classifier for flat objects)</strong></span>
             </li>
             <li>
-                <span class="t-term">一個人同一隻狗喺溫哥華散步。</span> 
-                <span class="t-def">One person <strong>and (同 / tung4)</strong> one dog take a walk in Vancouver.</span>
+                <span class="t-term">天上出現一條彩虹。</span> 
+                <span class="t-def">A rainbow appears in the sky. <strong>(條 / tiu4 = Classifier for long, flexible things)</strong></span>
             </li>
             <li>
-                <span class="t-term">然後，一個人同隻狗一齊返屋企。</span> 
-                <span class="t-def">Then, a person and a dog go home together.</span>
+                <span class="t-term">一架方舟同一條彩虹帶嚟希望。</span> 
+                <span class="t-def">One ark <strong>and (同 / tung4)</strong> one rainbow bring hope.</span>
             </li>
         </ul>
     </div>
@@ -192,10 +192,10 @@
             window.speechSynthesis.cancel();
 
             const phrases = [
-                "我見到一個人",
-                "佢拖住一隻狗",
-                "一個人同一隻狗喺溫哥華散步",
-                "然後，一個人同隻狗一齊返屋企"
+                "挪亞起咗一架方舟",
+                "白鴿帶返一塊橄欖葉",
+                "天上出現一條彩虹",
+                "一架方舟同一條彩虹帶嚟希望"
             ];
 
             let delay = 0;
@@ -221,7 +221,6 @@
                     window.speechSynthesis.speak(utterance);
                 }, delay);
                 
-                // 3.5 second pause between each sentence
                 delay += 3500; 
             });
 
