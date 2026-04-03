@@ -23,12 +23,15 @@ let save = JSON.parse(localStorage.getItem('cantoRPG_save')) || {
     ownedShapes: []
 };
 
-let currentLevel = 1; 
-let currentQuestion = null; 
-let currentOptions = []; 
+let currentLevel = 1;
+let currentQuestion = null;
+let currentOptions = [];
 let buttonsLocked = false;
 let player = { hp: 100, maxHp: 100, dmg: 2, xp: 0, requiredXp: 15 };
 let enemy = { hp: 30, maxHp: 30, dmg: 15 };
+let answerTimer = null;
+let timerInterval = null;
+const ANSWER_TIME = 5; // seconds
 
 function saveGame() { 
     localStorage.setItem('cantoRPG_save', JSON.stringify(save)); 
@@ -74,6 +77,7 @@ function buyUpgrade(type) {
 }
 
 function showLevelSelect() {
+    clearAnswerTimer();
     document.getElementById('level-select-screen').style.display = 'flex';
     document.getElementById('preview-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'none';
@@ -182,8 +186,53 @@ function updateBattleUI() {
     document.getElementById('player-xp-text').textContent = `${player.xp}/${player.requiredXp}`;
 }
 
+function startAnswerTimer() {
+    clearAnswerTimer();
+    let remaining = ANSWER_TIME;
+    const timerEl = document.getElementById('answer-timer');
+    if (timerEl) { timerEl.textContent = remaining; timerEl.style.color = '#e67e22'; }
+    timerInterval = setInterval(() => {
+        remaining--;
+        if (timerEl) {
+            timerEl.textContent = remaining;
+            timerEl.style.color = remaining <= 2 ? '#e74c3c' : '#e67e22';
+        }
+        if (remaining <= 0) {
+            clearAnswerTimer();
+            timeOut();
+        }
+    }, 1000);
+}
+
+function clearAnswerTimer() {
+    if (answerTimer) { clearTimeout(answerTimer); answerTimer = null; }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    const timerEl = document.getElementById('answer-timer');
+    if (timerEl) timerEl.textContent = '';
+}
+
+function timeOut() {
+    if (buttonsLocked) return;
+    buttonsLocked = true;
+    const msg = document.getElementById('message');
+    msg.textContent = "Too slow! ⚡";
+    msg.style.color = "#c0392b";
+    document.getElementById(`btn${currentOptions.findIndex(o => o.eng === currentQuestion.eng)}`).classList.add("correct-btn");
+    document.getElementById('enemy').style.transform = "translateX(-20px) scale(1.05)";
+    setTimeout(() => {
+        document.getElementById('enemy').style.transform = "none";
+        document.getElementById('player').classList.add('anim-damage');
+        player.hp -= enemy.dmg;
+        updateBattleUI();
+        setTimeout(() => {
+            document.getElementById('player').classList.remove('anim-damage');
+            checkCombatState();
+        }, 500);
+    }, 300);
+}
+
 function generateQuestion() {
-    buttonsLocked = false; 
+    buttonsLocked = false;
     document.getElementById('message').textContent = "";
     for(let i=0; i<4; i++) { 
         let b = document.getElementById(`btn${i}`); 
@@ -201,11 +250,13 @@ function generateQuestion() {
     currentOptions = [...wrong, currentQuestion].sort(() => Math.random() - 0.5);
     document.getElementById('question-box').textContent = currentQuestion.eng;
     for(let i=0; i<4; i++) document.getElementById(`btn${i}`).textContent = currentOptions[i].cantonese;
+    startAnswerTimer();
 }
 
 function checkAnswer(index) {
     if (buttonsLocked) return;
     buttonsLocked = true;
+    clearAnswerTimer();
     if (document.activeElement) document.activeElement.blur();
     const isCorrect = (currentOptions[index].eng === currentQuestion.eng);
     const btn = document.getElementById(`btn${index}`);

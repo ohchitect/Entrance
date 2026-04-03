@@ -705,6 +705,24 @@
             margin: var(--spacing-sm) 0 var(--spacing-xs) 0;
             font-weight: 700;
             color: var(--navy-dark);
+            position: relative;
+        }
+
+        #answer-timer {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.65em;
+            font-weight: 800;
+            min-width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            background: rgba(230,126,34,0.12);
+            border: 2px solid currentColor;
+            transition: color 0.3s;
         }
 
         #options {
@@ -1029,7 +1047,7 @@
                 </div>
             </div>
 
-            <div id="question-box">Loading...</div>
+            <div id="question-box">Loading...<span id="answer-timer"></span></div>
             <div id="options">
                 <button class="option-btn" onclick="checkAnswer(0)" id="btn0"></button>
                 <button class="option-btn" onclick="checkAnswer(1)" id="btn1"></button>
@@ -1271,7 +1289,7 @@
 <script src="colors.js?v=3"></script>
 <script src="shop.js?v=4"></script>
 <script src="vocab.js?v=3"></script>
-<script src="game.js?v=4"></script>
+<script src="game.js?v=5"></script>
 
 <script>
 function playCantoneseVoice(text) {
