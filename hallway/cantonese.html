@@ -551,7 +551,7 @@
             display: flex;
             justify-content: space-between;
             gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 4px;
             font-weight: 700;
             font-size: clamp(0.9em, 3vw, 1.05em);
         }
@@ -597,26 +597,26 @@
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
-            height: 160px;
+            height: 110px;
             border-bottom: 2px solid #e5e7eb;
-            margin-bottom: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-md);
+            margin-bottom: 4px;
+            padding: 6px var(--spacing-md);
             gap: var(--spacing-md);
             background: #f9fafb;
             border-radius: var(--radius-md);
         }
         
-        .entity-container { 
+        .entity-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 45%;
-            gap: var(--spacing-sm);
+            gap: 4px;
         }
         
-        #player { 
-            width: 90px;
-            height: 90px;
+        #player {
+            width: 70px;
+            height: 70px;
             background: var(--navy);
             border-radius: 50%;
             position: relative;
@@ -637,9 +637,9 @@
         #player::before { left: 22px; }
         #player::after { right: 22px; }
         
-        #enemy { 
-            width: 100px;
-            height: 100px;
+        #enemy {
+            width: 75px;
+            height: 75px;
             border-radius: 20%;
             position: relative;
             transition: background-color 0.5s ease;
@@ -701,8 +701,8 @@
         
         #question-box {
             text-align: center;
-            font-size: clamp(1.2em, 4vw, 1.6em);
-            margin: var(--spacing-xs) 0 var(--spacing-xs) 0;
+            font-size: clamp(1.1em, 4vw, 1.4em);
+            margin: 2px 0 4px 0;
             font-weight: 700;
             color: var(--navy-dark);
         }
@@ -710,27 +710,27 @@
         #answer-timer {
             display: block;
             text-align: center;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: 800;
-            height: 36px;
-            line-height: 36px;
+            height: 22px;
+            line-height: 22px;
             letter-spacing: 1px;
             transition: color 0.3s;
-            margin: var(--spacing-xs) 0 2px 0;
+            margin: 2px 0 0 0;
         }
 
         #options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-sm);
+            gap: var(--spacing-xs);
+            margin-bottom: 4px;
         }
-        
+
         button.option-btn {
             background: white;
             border: 2px solid var(--navy);
             border-radius: var(--radius-md);
-            padding: var(--spacing-md);
+            padding: 11px var(--spacing-md);
             font-size: clamp(0.9em, 3vw, 1.05em);
             cursor: pointer;
             color: var(--navy-dark);
@@ -1284,7 +1284,7 @@
 <script src="colors.js?v=3"></script>
 <script src="shop.js?v=4"></script>
 <script src="vocab.js?v=3"></script>
-<script src="game.js?v=8"></script>
+<script src="game.js?v=9"></script>
 
 <script>
 function playCantoneseVoice(text) {
