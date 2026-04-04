@@ -928,6 +928,37 @@
             transition: background 0.2s, color 0.2s;
         }
 
+        @media (min-width: 769px) {
+            #arena {
+                height: 180px;
+            }
+            #player {
+                width: 96px;
+                height: 96px;
+            }
+            #player::before, #player::after {
+                width: 20px;
+                height: 20px;
+                top: 44px;
+            }
+            #player::before { left: 30px; }
+            #player::after { right: 30px; }
+            #enemy {
+                width: 100px;
+                height: 100px;
+            }
+            #enemy::before, #enemy::after {
+                width: 18px;
+                height: 18px;
+                top: 48px;
+            }
+            #enemy::before { left: 38px; }
+            #enemy::after { right: 38px; }
+            .entity-container {
+                max-width: 220px;
+            }
+        }
+
         @media (max-width: 768px) {
             .main-container { padding: var(--spacing-md); }
             #vocab-list { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
