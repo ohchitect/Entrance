@@ -129,6 +129,11 @@
         .shop-item-details { display: flex; flex-direction: column; }
         .shop-item-name { font-weight: bold; color: #79c0ff; font-size: 15px;}
         .shop-item-power { font-size: 13px; font-style: italic; color: #8b949e; }
+        .shop-item-rarity { font-size: 11px; text-transform: uppercase; font-weight: bold; margin-top: 2px;}
+        .rarity-common { color: #8b949e; }
+        .rarity-uncommon { color: #56d364; }
+        .rarity-rare { color: #58a6ff; }
+        .rarity-ultra { color: #d2a8ff; text-shadow: 0 0 5px #d2a8ff; }
         
         #status-effects { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;}
         .buff-badge { background-color: #1f6feb; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
@@ -313,10 +318,9 @@
         }
     }
 
-    // --- ASCII Art Collection ---
+    // --- ASCII Art & Enemy Collection ---
     const asciiArt = {
         door: "  ______ \n /      \\\n|  |  |  |\n|  |  |  |\n|  |  |  |\n|__|__|__|",
-        monster: "  (o_o)\n  /| |\\\n  / \\",
         well: "   _||_ \n  /____\\\n  |    |\n  |____|",
         troll: "  (ಠ_ಠ)\n --| |--\n   / \\",
         shrine: "    /\\\n   /  \\\n  | [] |\n  |____|",
@@ -326,10 +330,18 @@
         death: "  .---.\n / RIP \\\n |     |\n ----- "
     };
 
+    const normalEnemies = [
+        { name: "Syntax Slime", ascii: "  (o_o)\n  /| |\\\n  / \\" },
+        { name: "Rogue Comma", ascii: "   ,\n  / \\\n  |_|" },
+        { name: "Dangling Participle Bat", ascii: "  /\\o/\\\n   / \\\n  ^   ^" },
+        { name: "Misplaced Modifier Goblin", ascii: "  (>_<)\n  /| |\\\n  / \\" },
+        { name: "Run-On Sentence Snake", ascii: "  ~^~^~^~o\n" }
+    ];
+
     const bossData = [
         { name: "The Comma Chameleon", desc: "A colorful reptilian beast whose punctuation blends into its surroundings.", ascii: "   ,  ,\n  /(.-.)\\\n  \\_\\_/_/" },
         { name: "The Syntax Behemoth", desc: "A massive amalgamation of terrible grammar towering over the room.", ascii: "  (o_O)\n /|||||\\\n  /   \\" },
-        { name: "The Dangling Participle", desc: "A ghostly entity that floats awkwardly, disconnected from reality.", ascii: "   .~.  \n  / o o \\\n |   >   |\n  \\ ~~~ /" },
+        { name: "The Dangling Participle Boss", desc: "A ghostly entity that floats awkwardly, disconnected from reality.", ascii: "   .~.  \n  / o o \\\n |   >   |\n  \\ ~~~ /" },
         { name: "The Run-On Rhino", desc: "A charging beast that doesn't know when to stop, panting heavily.", ascii: "  \\__/\n  (oo)\n //||\\\\" },
         { name: "The Apostrophe Assassin", desc: "A cloaked figure throwing possessive blades with lethal inaccuracy.", ascii: "   /\\\n  (  )\n  /||\\\n  /  \\" }
     ];
@@ -466,31 +478,50 @@
         { stat: ["'Fewer' refers to items you can count, 'Less' to bulk amounts.", "'Enormity' traditionally means great size or vastness.", "'Affect' is usually a verb, 'Effect' is usually a noun."], lie: 1 }
     ];
 
-    const allSpells = [
-        { level: 1, name: "Gastown Whisper", cost: 2, effect: "hint", value: 0, desc: "Gain a hint. Max 3 uses per room." },
-        { level: 5, name: "Kitsilano Cure", cost: 15, effect: "heal", value: 50, desc: "Restores 50 HP." },
-        { level: 10, name: "Lions Gate Ward", cost: 20, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
-        { level: 15, name: "UBC Insight", cost: 30, effect: "solve", value: 0, desc: "Automatically solves one challenge." },
-        { level: 20, name: "Whistler Wind", cost: 40, effect: "heal", value: 150, desc: "Restores 150 HP." },
-        { level: 25, name: "Gastown Ghost", cost: 50, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
-        { level: 30, name: "YVR Bypass", cost: 60, effect: "solve", value: 0, desc: "Automatically solves one challenge." }
+    const spellCompendium = [
+        { name: "Kitsilano Cure", cost: 15, effect: "heal", value: 50, desc: "Restores 50 HP." },
+        { name: "Lions Gate Ward", cost: 20, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
+        { name: "UBC Insight", cost: 30, effect: "solve", value: 0, desc: "Automatically solves one challenge." },
+        { name: "Whistler Wind", cost: 40, effect: "heal", value: 150, desc: "Restores 150 HP." },
+        { name: "Gastown Ghost", cost: 50, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
+        { name: "YVR Bypass", cost: 60, effect: "solve", value: 0, desc: "Automatically solves one challenge." },
+        { name: "Stanley Park Sap", cost: 25, effect: "heal", value: 80, desc: "Restores 80 HP." },
+        { name: "Granville Strike", cost: 35, effect: "solve", value: 0, desc: "Automatically solves one challenge." },
+        { name: "Robson Ward", cost: 25, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
+        { name: "Capilano Restoration", cost: 30, effect: "heal", value: 100, desc: "Restores 100 HP." }
     ];
 
-    const shopConsumables = [
-        { name: "Commercial Drive Coffee", power: "Restores 20 MP.", weight: 3, value: 40.00, type: "consumable", mpHeal: 20 },
-        { name: "Yaletown Health Potion", power: "Restores 50 HP.", weight: 5, value: 70.00, type: "consumable", hpHeal: 50 },
-        { name: "East Van Trail Mix", power: "Restores 30 HP & 10 MP.", weight: 4, value: 55.00, type: "consumable", hpHeal: 30, mpHeal: 10 }
+    const shopConsumablesPool = [
+        { name: "Commercial Drive Coffee", power: "Restores 20 MP.", weight: 3, value: 40.00, type: "consumable", mpHeal: 20, rarity: "common" },
+        { name: "Yaletown Health Potion", power: "Restores 50 HP.", weight: 5, value: 70.00, type: "consumable", hpHeal: 50, rarity: "common" },
+        { name: "East Van Trail Mix", power: "Restores 30 HP & 10 MP.", weight: 4, value: 55.00, type: "consumable", hpHeal: 30, mpHeal: 10, rarity: "uncommon" },
+        { name: "Main Street Kombucha", power: "Restores 100 HP.", weight: 5, value: 120.00, type: "consumable", hpHeal: 100, rarity: "rare" },
+        { name: "Richmond Night Market Skewer", power: "Restores 200 HP.", weight: 2, value: 250.00, type: "consumable", hpHeal: 200, rarity: "ultra" }
     ];
 
-    const shopGear = [
-        { name: "MEC Expedition Backpack", power: "Passive: Increases Max Weight by 20 lbs.", weight: 0, value: 150.00, type: "gear", effect: "carry_capacity", amount: 20 },
-        { name: "Gastown Iron Gauntlets", power: "Passive: Reduces damage taken by 5.", weight: 15, value: 200.00, type: "gear", effect: "damage_reduction", amount: 5 },
-        { name: "Granville Broadsword", power: "Passive: Increases Base Damage by 8.", weight: 20, value: 250.00, type: "gear", effect: "damage_boost", amount: 8 },
-        { name: "Stanley Park Bark Shield", power: "Passive: Increases Max HP by 10.", weight: 12, value: 180.00, type: "gear", effect: "max_hp", amount: 10 }
+    const shopGearPool = [
+        { name: "MEC Expedition Backpack", power: "Passive: Increases Max Weight by 20 lbs.", weight: 0, value: 150.00, type: "gear", effect: "carry_capacity", amount: 20, rarity: "common" },
+        { name: "Gastown Iron Gauntlets", power: "Passive: Reduces damage taken by 5.", weight: 15, value: 200.00, type: "gear", effect: "damage_reduction", amount: 5, rarity: "common" },
+        { name: "Granville Broadsword", power: "Passive: Increases Base Damage by 8.", weight: 20, value: 250.00, type: "gear", effect: "damage_boost", amount: 8, rarity: "uncommon" },
+        { name: "Stanley Park Bark Shield", power: "Passive: Increases Max HP by 10.", weight: 12, value: 180.00, type: "gear", effect: "max_hp", amount: 10, rarity: "common" },
+        { name: "Olympic Village Pauldrons", power: "Passive: Reduces damage taken by 10.", weight: 18, value: 350.00, type: "gear", effect: "damage_reduction", amount: 10, rarity: "rare" },
+        { name: "Grouse Mountain Greataxe", power: "Passive: Increases Base Damage by 20.", weight: 25, value: 500.00, type: "gear", effect: "damage_boost", amount: 20, rarity: "ultra" }
     ];
 
-    const gearAdjectives = ["Heavy", "Rusted", "Dense", "Lead-lined", "Bulky", "Iron"];
-    const gearNouns = ["Ring", "Pendant", "Cloak", "Bracer", "Boots", "Amulet"];
+    function generateShopInventory(pool, size) {
+        let inventory = [];
+        for(let i=0; i<size; i++) {
+            let roll = Math.random();
+            let targetRarity = roll < 0.05 ? "ultra" : roll < 0.15 ? "rare" : roll < 0.40 ? "uncommon" : "common";
+            let items = pool.filter(x => x.rarity === targetRarity);
+            if(items.length === 0) items = pool.filter(x => x.rarity === "common");
+            inventory.push({...items[Math.floor(Math.random() * items.length)]});
+        }
+        return inventory;
+    }
+
+    const gearAdjectives = ["Heavy", "Rusted", "Dense", "Lead-lined", "Bulky", "Iron", "Steel", "Obsidian"];
+    const gearNouns = ["Ring", "Pendant", "Cloak", "Bracer", "Boots", "Amulet", "Charm"];
 
     // --- State Variables ---
     let gameState = {};
@@ -507,7 +538,7 @@
 
     // --- Initialization & Menus ---
     window.onload = () => {
-        if (localStorage.getItem('grammarDungeonSaveV7')) {
+        if (localStorage.getItem('grammarDungeonSaveV8')) {
             document.getElementById('btn-continue').style.display = "block";
         }
     };
@@ -547,17 +578,18 @@
             mp: maxMp, baseMaxMp: maxMp,
             baseDamage: 15 + (alloc.dmg * 5),
             baseWeight: 30 + (alloc.wgt * 10),
-            wallet: 0, inventory: [], spells: [],
-            floor: 1, map: [], currentNodeId: 0
+            wallet: 0, inventory: [], 
+            spells: [{ name: "Gastown Whisper", cost: 1, effect: "hint", value: 0, desc: "Gain a hint. Max 3 uses per room." }],
+            floor: 1, map: [], currentNodeId: 0,
+            lastEnemyName: "", lastQuestion: ""
         };
         activeBuffs.shield = false;
-        checkNewSpells();
         generateMap(1); saveGameState();
         switchScreen('screen-game'); renderMap(); loadRoom(0);
     }
 
     function loadGame() {
-        const saved = localStorage.getItem('grammarDungeonSaveV7');
+        const saved = localStorage.getItem('grammarDungeonSaveV8');
         if (saved) {
             gameState = JSON.parse(saved);
             activeBuffs.shield = false;
@@ -566,14 +598,14 @@
     }
 
     function saveGameState() {
-        localStorage.setItem('grammarDungeonSaveV7', JSON.stringify(gameState));
+        localStorage.setItem('grammarDungeonSaveV8', JSON.stringify(gameState));
         recalculatePassives(); updateStats(); updateInventoryDisplay(); updateSpellsDisplay();
     }
 
     function saveAndQuit() { saveGameState(); showMainMenu(); document.getElementById('btn-continue').style.display = "block"; }
 
     function clearSaveAndDie() {
-        localStorage.removeItem('grammarDungeonSaveV7');
+        localStorage.removeItem('grammarDungeonSaveV8');
         document.getElementById('btn-continue').style.display = "none";
         document.getElementById('ascii-art').innerText = asciiArt.death;
         document.getElementById('room-description').innerHTML = "<h2>You Died.</h2><p>Your grammatical spirit has been crushed beneath the weight of your errors.</p>";
@@ -611,21 +643,22 @@
             gameState.mp = gameState.baseMaxMp;
             leveledUp = true;
             expNeeded = getExpNeeded(gameState.level);
-            checkNewSpells();
+            
+            // Random Spell every 5 levels
+            if (gameState.level % 5 === 0) {
+                let unlearned = spellCompendium.filter(s => !gameState.spells.some(ls => ls.name === s.name));
+                if(unlearned.length > 0) {
+                    let newSpell = unlearned[Math.floor(Math.random() * unlearned.length)];
+                    gameState.spells.push(newSpell);
+                    fb += `<br><span class="info">You learned a new spell from the compendium: <strong>${newSpell.name}</strong>!</span>`;
+                }
+            }
         }
 
         if (leveledUp) {
             fb += `<div class="level-up"><strong>Level Up!</strong> You are now Level ${gameState.level}! Stats increased and restored to full.</div>`;
         }
         return fb;
-    }
-
-    function checkNewSpells() {
-        allSpells.forEach(spell => {
-            if (gameState.level >= spell.level && !gameState.spells.some(s => s.name === spell.name)) {
-                gameState.spells.push(spell);
-            }
-        });
     }
 
     function generateGearDrop() {
@@ -653,16 +686,19 @@
     function generateMap(floorNum) {
         const numNodes = 6 + Math.floor(floorNum * 1.2);
         let newMap = [{ id: 0, type: 'entrance', completed: true }];
+        let lastType = 'entrance';
+        
         for (let i = 1; i < numNodes - 1; i++) {
-            const rand = Math.random();
-            let type = 'encounter';
-            if (rand < 0.10 && i > 1) type = 'peddler_consumables';
-            else if (rand < 0.20 && i > 1) type = 'peddler_gear';
-            else if (rand < 0.30 && i > 1) type = 'inn';
-            else if (rand < 0.40 && i > 1) type = 'chance_well';
-            else if (rand < 0.50 && i > 1) type = 'chance_troll';
-            else if (rand < 0.60 && i > 1) type = 'chance_shrine';
+            let possibleTypes = ['encounter', 'peddler_consumables', 'peddler_gear', 'inn', 'chance_well', 'chance_troll', 'chance_shrine'].filter(t => t !== lastType);
+            let type = '';
+            // Bias towards encounters
+            if (Math.random() < 0.6 && lastType !== 'encounter') {
+                type = 'encounter';
+            } else {
+                type = possibleTypes[Math.floor(Math.random() * possibleTypes.length)];
+            }
             newMap.push({ id: i, type: type, completed: false, initialized: false });
+            lastType = type;
         }
         newMap.push({ id: numNodes - 1, type: 'boss', completed: false, initialized: false });
         gameState.map = newMap; gameState.currentNodeId = 0; gameState.floor = floorNum;
@@ -726,8 +762,10 @@
         
         if (currentWeight >= dynamicStats.maxWeight * 0.8) {
             document.getElementById('weight-text').style.color = "#f85149";
+            document.getElementById('weight-text').parentElement.style.color = "#f85149";
         } else {
             document.getElementById('weight-text').style.color = "#c9d1d9";
+            document.getElementById('weight-text').parentElement.style.color = "#c9d1d9";
         }
 
         document.getElementById('hp-bar').style.width = `${Math.max(0, (gameState.hp / dynamicStats.maxHp) * 100)}%`;
@@ -748,14 +786,25 @@
         }
         gameState.inventory.forEach((item, index) => {
             let actionHtml = "";
+            let rarityClass = item.rarity ? `rarity-${item.rarity}` : "rarity-common";
+            
             if (item.type === "consumable") {
                 actionHtml = `<button class="btn-small use-btn" onclick="useItem(${index})">Use</button> `;
             } else if (item.type === "gear") {
-                actionHtml = `<span style="color:#e3b341; font-size:12px; display:block;">Equipped</span> `;
+                actionHtml = `<span style="color:#e3b341; font-size:12px; display:block; margin-bottom:2px;">Equipped</span> `;
             }
             actionHtml += `<button class="btn-small drop-btn" onclick="dropItem(${index})">Drop</button>`;
+            
             const row = document.createElement('tr');
-            row.innerHTML = `<td style="font-weight:bold; color:#79c0ff;">${item.name}</td><td style="font-style:italic; font-size:12px;">${item.power}</td><td>${item.weight}lbs</td><td>$${item.value.toFixed(0)}</td><td>${actionHtml}</td>`;
+            row.innerHTML = `
+                <td>
+                    <div style="font-weight:bold; color:#79c0ff;">${item.name}</div>
+                    ${item.rarity ? `<div class="shop-item-rarity ${rarityClass}">${item.rarity}</div>` : ''}
+                </td>
+                <td style="font-style:italic; font-size:12px;">${item.power}</td>
+                <td>${item.weight}lbs</td>
+                <td>$${item.value.toFixed(0)}</td>
+                <td>${actionHtml}</td>`;
             inventoryList.appendChild(row);
         });
     }
@@ -781,7 +830,6 @@
     function dropItem(index) {
         gameState.inventory.splice(index, 1); saveGameState();
         document.getElementById('feedback').innerHTML = "<span class='info'>Item dropped.</span>";
-        // If in loot resolution screen, refresh it
         if (document.getElementById('loot-ui')) {
             renderLootResolutionUI();
         }
@@ -795,7 +843,6 @@
         playSound('magic');
         document.getElementById('feedback').innerHTML = `<span class='success'>Consumed ${item.name}.</span>`;
         saveGameState(); 
-        if(document.querySelector('.peddler-section')) loadPeddlerUI(shopConsumables); 
         if (document.getElementById('loot-ui')) renderLootResolutionUI();
     }
 
@@ -834,7 +881,7 @@
         if (spell.effect === "heal") {
             gameState.hp = Math.min(dynamicStats.maxHp, gameState.hp + spell.value);
             fb += `Restored ${spell.value} HP.`;
-        } else if (spell.effect === "shield") {
+        } else if (spell.effect === "shield" || spell.effect === "armor") {
             activeBuffs.shield = true;
             fb += `A protective ward surrounds you.`;
         } else if (spell.effect === "solve") {
@@ -842,6 +889,22 @@
             document.getElementById('feedback').innerHTML = fb;
             saveGameState();
             if(currentQuestionData) submitAnswer(gameState.map[gameState.currentNodeId].type === 'boss', true); 
+            return;
+        } else if (spell.effect === "damage") {
+            fb += `You blast the enemy for ${spell.value} damage!`;
+            document.getElementById('feedback').innerHTML = fb;
+            saveGameState();
+            if(currentQuestionData) {
+                const node = gameState.map[gameState.currentNodeId];
+                node.enemyHP -= spell.value;
+                if(node.enemyHP <= 0) submitAnswer(node.type === 'boss', true);
+                else {
+                    let isBoss = node.type === 'boss';
+                    let bossInfo = getBossInfo(gameState.floor);
+                    let title = isBoss ? `Floor Boss: ${bossInfo.name}` : `Shadow Encounter`;
+                    setupEncounterRoom(title, "The creature took damage from your magic!", isBoss, node);
+                }
+            }
             return;
         }
         
@@ -873,19 +936,28 @@
             document.getElementById('grammar-task').innerHTML = "";
             renderTransitionChoices();
         } else if (node.type === 'encounter') {
-            document.getElementById('ascii-art').innerText = asciiArt.monster;
             if (!node.initialized) {
                 node.enemyMaxHP = Math.floor(30 * Math.pow(1.15, gameState.floor - 1));
                 node.enemyHP = node.enemyMaxHP;
+                
+                let availableEnemies = normalEnemies.filter(e => e.name !== gameState.lastEnemyName);
+                if(availableEnemies.length === 0) availableEnemies = normalEnemies;
+                let enemy = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+                
+                node.enemyName = enemy.name;
+                node.ascii = enemy.ascii;
+                gameState.lastEnemyName = enemy.name;
                 node.initialized = true;
             }
-            setupEncounterRoom("Shadow Encounter", `A linguistic anomaly blocks your path.`, false, node);
+            document.getElementById('ascii-art').innerText = node.ascii;
+            setupEncounterRoom(`Shadow Encounter: ${node.enemyName}`, `A level ${gameState.level} linguistic anomaly blocks your path.`, false, node);
         } else if (node.type === 'boss') {
             const bossInfo = getBossInfo(gameState.floor);
             document.getElementById('ascii-art').innerText = bossInfo.ascii;
             if (!node.initialized) {
                 node.enemyMaxHP = Math.floor(100 * Math.pow(1.15, gameState.floor - 1));
                 node.enemyHP = node.enemyMaxHP;
+                node.enemyName = bossInfo.name;
                 node.initialized = true;
             }
             setupEncounterRoom(`Floor Boss: ${bossInfo.name}`, bossInfo.desc, true, node);
@@ -894,10 +966,12 @@
             setupInnRoom();
         } else if (node.type === 'peddler_consumables') {
             document.getElementById('ascii-art').innerText = asciiArt.merchant;
-            setupPeddlerRoom("The Commercial Drive Provisioner", shopConsumables);
+            if(!node.initialized) { node.shopInventory = generateShopInventory(shopConsumablesPool, 4); node.initialized = true; }
+            setupPeddlerRoom("The Commercial Drive Provisioner", node.shopInventory, node);
         } else if (node.type === 'peddler_gear') {
             document.getElementById('ascii-art').innerText = asciiArt.merchant;
-            setupPeddlerRoom("The Gastown Blacksmith", shopGear);
+            if(!node.initialized) { node.shopInventory = generateShopInventory(shopGearPool, 4); node.initialized = true; }
+            setupPeddlerRoom("The Gastown Blacksmith", node.shopInventory, node);
         } else if (node.type === 'chance_well') {
             document.getElementById('ascii-art').innerText = asciiArt.well;
             setupWellRoom();
@@ -957,7 +1031,6 @@
         
         const currentWeight = calculateCurrentWeight();
         if (currentWeight + pendingLootItem.weight <= dynamicStats.maxWeight) {
-            // Weight is now fine, add it automatically
             gameState.inventory.push(pendingLootItem);
             document.getElementById('feedback').innerHTML += `<br><span class="success">You have made room. <strong>${pendingLootItem.name}</strong> added to bag.</span>`;
             pendingLootItem = null;
@@ -977,7 +1050,7 @@
         `;
         
         if (gameState.inventory.length === 0) {
-            html += `<p>Your bag is mysteriously full of rocks? (Bug: Should not happen)</p>`;
+            html += `<p>Your bag is strangely empty but heavy. (Bug)</p>`;
         } else {
             gameState.inventory.forEach((item, index) => {
                 html += `
@@ -1004,14 +1077,17 @@
         hintsUsed = 0;
         document.getElementById('hint-display').innerText = "";
         
-        const qIndex = Math.floor(Math.random() * questionDatabase.length);
-        currentQuestionData = questionDatabase[qIndex];
+        let availableQs = questionDatabase.filter(q => q.question !== gameState.lastQuestion);
+        if(availableQs.length === 0) availableQs = questionDatabase;
+        const qIndex = Math.floor(Math.random() * availableQs.length);
+        currentQuestionData = availableQs[qIndex];
+        gameState.lastQuestion = currentQuestionData.question;
 
         let hpPercent = Math.max(0, (node.enemyHP / node.enemyMaxHP) * 100);
         let enemyUI = `
             <div style="margin-top:15px; background:#0d1117; padding:10px; border-radius:6px; border:1px solid #da3633;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <strong style="color:#f85149;">Enemy HP</strong>
+                    <strong style="color:#f85149;">${node.enemyName} HP</strong>
                     <span style="color:#f85149;">${node.enemyHP} / ${node.enemyMaxHP}</span>
                 </div>
                 <div class="bar-container" style="border-color:#da3633;"><div class="bar" style="background-color:#f85149; width:${hpPercent}%;"></div></div>
@@ -1064,7 +1140,7 @@
                 document.getElementById('ascii-art').innerText = asciiArt.victory;
                 let rewardsHtml = gainRewards(20, 30, isBoss);
                 
-                feedbackElement.innerHTML = `<div class='success'>Execution Successful! Dealt ${dmgDealt} DMG. The enemy is defeated!<br>${rewardsHtml}</div>`;
+                feedbackElement.innerHTML = `<div class='success'>Execution Successful! Dealt ${dmgDealt} DMG. The ${node.enemyName} dies!<br>${rewardsHtml}</div>`;
                 
                 let dropChance = isBoss ? 1.0 : 0.3;
                 if (Math.random() < dropChance) {
@@ -1075,7 +1151,7 @@
                         renderTransitionChoices();
                     } else {
                         triggerLootResolution(item);
-                        return; // Halt transition to allow resolution
+                        return; // Halt transition
                     }
                 } else {
                     renderTransitionChoices();
@@ -1083,12 +1159,10 @@
                 saveGameState();
                 
             } else {
-                // Enemy survives, load next question
-                feedbackElement.innerHTML = `<div class='success'>Correct! You dealt ${dmgDealt} DMG! The enemy staggers but attacks back.</div>`;
+                feedbackElement.innerHTML = `<div class='success'>Correct! You dealt ${dmgDealt} DMG! The ${node.enemyName} staggers but attacks back.</div>`;
                 saveGameState();
-                const bossInfo = getBossInfo(gameState.floor);
-                let title = isBoss ? `Floor Boss: ${bossInfo.name}` : "Shadow Encounter";
-                let desc = isBoss ? "The creature is wounded but still demands answers." : "The anomaly persists.";
+                let title = isBoss ? `Floor Boss: ${node.enemyName}` : `Shadow Encounter: ${node.enemyName}`;
+                let desc = `The ${node.enemyName} is wounded but still demands answers.`;
                 setupEncounterRoom(title, desc, isBoss, node);
             }
             
@@ -1110,11 +1184,10 @@
                 
                 if (gameState.hp <= 0) { clearSaveAndDie(); return; } 
                 else { 
-                    const bossInfo = getBossInfo(gameState.floor);
-                    let title = isBoss ? `Floor Boss: ${bossInfo.name}` : "Shadow Encounter";
+                    let title = isBoss ? `Floor Boss: ${node.enemyName}` : `Shadow Encounter: ${node.enemyName}`;
                     document.getElementById('input-container').innerHTML = `
                         <div class="door-choices" style="margin-top:10px;">
-                            <button class="action-btn" style="background-color:#da3633;" onclick="setupEncounterRoom('${title}', 'The creature demands another answer.', ${isBoss}, gameState.map[gameState.currentNodeId])">Brace for next question...</button>
+                            <button class="action-btn" style="background-color:#da3633;" onclick="setupEncounterRoom('${title}', 'The ${node.enemyName} demands another answer.', ${isBoss}, gameState.map[gameState.currentNodeId])">Brace for next question...</button>
                             <button class="action-btn" style="background-color:#21262d; border:1px solid #30363d;" onclick="renderTransitionChoices()">Flee to next room...</button>
                         </div>
                     `;
@@ -1252,28 +1325,33 @@
         }
     }
 
-    function setupPeddlerRoom(shopName, inventorySet) {
+    function setupPeddlerRoom(shopName, inventorySet, node) {
         document.getElementById('room-description').innerHTML = `<h2>${shopName}</h2><p>"Greetings, traveler! Bear in mind your carry weight before purchasing."</p>`;
         document.getElementById('grammar-task').innerHTML = "";
-        loadPeddlerUI(inventorySet);
+        loadPeddlerUI(inventorySet, node);
     }
 
-    function loadPeddlerUI(inventorySet) {
+    function loadPeddlerUI(inventorySet, node) {
         let interactionHTML = `<div class="peddler-section">`;
         
         interactionHTML += `<div class="shop-column"><h3>Buy Wares</h3>`;
-        inventorySet.forEach((item, index) => {
-            const shopType = inventorySet === shopConsumables ? 'shopConsumables' : 'shopGear';
-            interactionHTML += `
-                <div class="shop-item">
-                    <div class="shop-item-details">
-                        <span class="shop-item-name">${item.name} - $${item.value.toFixed(2)}</span>
-                        <span class="shop-item-power">${item.power} (${item.weight} lbs)</span>
+        if (inventorySet.length === 0) {
+            interactionHTML += `<p style="color:#8b949e; font-style:italic;">"I'm all sold out, friend."</p>`;
+        } else {
+            inventorySet.forEach((item, index) => {
+                let rarityClass = item.rarity ? `rarity-${item.rarity}` : "rarity-common";
+                interactionHTML += `
+                    <div class="shop-item">
+                        <div class="shop-item-details">
+                            <span class="shop-item-name">${item.name} - $${item.value.toFixed(2)}</span>
+                            <span class="shop-item-power">${item.power} (${item.weight} lbs)</span>
+                            <span class="shop-item-rarity ${rarityClass}">${item.rarity || 'Common'}</span>
+                        </div>
+                        <button class="btn-small buy-btn" onclick="buyItem(${index}, ${node.id})">Buy</button>
                     </div>
-                    <button class="btn-small buy-btn" onclick="buyItem(${index}, ${shopType})">Buy</button>
-                </div>
-            `;
-        });
+                `;
+            });
+        }
         interactionHTML += `</div>`;
 
         interactionHTML += `<div class="shop-column"><h3>Sell Items</h3>`;
@@ -1281,11 +1359,10 @@
             interactionHTML += `<p>Your bag is empty.</p>`;
         } else {
             gameState.inventory.forEach((item, index) => {
-                const shopType = inventorySet === shopConsumables ? 'shopConsumables' : 'shopGear';
                 interactionHTML += `
                     <div class="shop-item">
                         <div class="shop-item-details"><span class="shop-item-name">${item.name}</span><span class="shop-item-power">+ $${item.value.toFixed(2)}</span></div>
-                        <button class="btn-small use-btn" onclick="sellItem(${index}, ${shopType})">Sell</button>
+                        <button class="btn-small use-btn" onclick="sellItem(${index}, ${node.id})">Sell</button>
                     </div>
                 `;
             });
@@ -1294,15 +1371,20 @@
         document.getElementById('input-container').innerHTML = interactionHTML;
     }
 
-    function buyItem(index, inventorySet) {
+    function buyItem(index, nodeId) {
+        const node = gameState.map[nodeId];
+        const inventorySet = node.shopInventory;
         const item = inventorySet[index];
         const feedbackElement = document.getElementById('feedback');
         
         if (gameState.wallet >= item.value) {
             if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight || item.effect === "carry_capacity") {
                 playSound('coin');
-                gameState.wallet -= item.value; gameState.inventory.push({...item});
-                saveGameState(); loadPeddlerUI(inventorySet); 
+                gameState.wallet -= item.value; 
+                gameState.inventory.push({...item});
+                inventorySet.splice(index, 1); // Remove from shop
+                saveGameState(); 
+                loadPeddlerUI(inventorySet, node); 
                 feedbackElement.innerHTML = `<span class='success'>You purchased ${item.name}!</span>`;
             } else {
                 feedbackElement.innerHTML = `<span class='failure'>Your bag is too heavy to carry the ${item.name}. Invest in Strength (Weight).</span>`;
@@ -1312,11 +1394,15 @@
         }
     }
 
-    function sellItem(index, inventorySet) {
+    function sellItem(index, nodeId) {
+        const node = gameState.map[nodeId];
+        const inventorySet = node.shopInventory;
         const item = gameState.inventory[index];
         playSound('coin');
-        gameState.wallet += item.value; gameState.inventory.splice(index, 1);
-        saveGameState(); loadPeddlerUI(inventorySet); 
+        gameState.wallet += item.value; 
+        gameState.inventory.splice(index, 1);
+        saveGameState(); 
+        loadPeddlerUI(inventorySet, node); 
         document.getElementById('feedback').innerHTML = `<span class='success'>You sold the ${item.name} for $${item.value.toFixed(2)} CAD.</span>`;
     }
 </script>
