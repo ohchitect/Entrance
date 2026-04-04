@@ -27,6 +27,8 @@
         }
         h1, h2, h3, h4 { color: #d2a8ff; text-align: center; margin-top: 0; }
         
+        button, input { touch-action: manipulation; }
+        
         /* ASCII Art Area */
         #ascii-art {
             font-family: 'Courier New', Courier, monospace;
@@ -63,7 +65,7 @@
         .stat { font-size: 14px; font-weight: bold; color: #c9d1d9; display: flex; flex-direction: column; }
         .stat-val-row { display: flex; justify-content: space-between; margin-bottom: 2px;}
         
-        .bar-container { width: 100%; height: 10px; background-color: #21262d; border-radius: 5px; overflow: hidden; }
+        .bar-container { width: 100%; height: 10px; background-color: #21262d; border-radius: 5px; overflow: hidden; border: 1px solid #30363d; }
         .bar { height: 100%; width: 100%; transition: width 0.3s, background-color 0.3s; }
         #hp-bar { background-color: #da3633; }
         #mp-bar { background-color: #1f6feb; }
@@ -105,9 +107,11 @@
         .failure { color: #f85149; background-color: rgba(218, 54, 51, 0.1); border: 1px solid #da3633; }
         .info { color: #e3b341; background-color: rgba(227, 179, 65, 0.1); border: 1px solid #e3b341; }
         .level-up { color: #d2a8ff; text-align: center; margin-top: 10px; font-size: 18px;}
-        .boss-hp { color: #f85149; font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 10px; background: #0d1117; padding: 8px; border: 1px solid #da3633; border-radius: 4px;}
         .hint-text { color: #e3b341; font-style: italic; margin-bottom: 10px; display: block; }
         
+        .door-choices { display: flex; gap: 10px; width: 100%; flex-wrap: wrap; }
+        .door-choices button { flex: 1; min-width: 30%; }
+
         /* Inventory / Shop */
         .panel-container { display: flex; gap: 15px; flex-wrap: wrap; }
         .side-panel { background-color: #0d1117; padding: 15px; border-radius: 6px; flex: 1; min-width: 250px; border: 1px solid #30363d; box-sizing: border-box;}
@@ -129,10 +133,14 @@
         #status-effects { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;}
         .buff-badge { background-color: #1f6feb; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         
+        /* Loot Resolution */
+        #loot-ui { background:#21262d; border:1px solid #da3633; padding:15px; border-radius:6px; margin-top: 10px;}
+        
         @media (max-width: 600px) {
             #combat-ui { flex-direction: column; }
             .panel-container { flex-direction: column; }
             .peddler-section { flex-direction: column; }
+            .door-choices { flex-direction: column; }
             h1 { font-size: 24px; }
         }
     </style>
@@ -257,6 +265,54 @@
 </div>
 
 <script>
+    // --- Audio System ---
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playSound(type) {
+        initAudio();
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if(type === 'magic') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
+            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
+        } else if (type === 'coin') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1500, now);
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            osc.start(now); osc.stop(now + 0.1);
+        } else if (type === 'attack') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.exponentialRampToValueAtTime(40, now + 0.2);
+            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            osc.start(now); osc.stop(now + 0.2);
+        } else if (type === 'encounter') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.setValueAtTime(450, now + 0.1);
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.linearRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
+        }
+    }
+
     // --- ASCII Art Collection ---
     const asciiArt = {
         door: "  ______ \n /      \\\n|  |  |  |\n|  |  |  |\n|  |  |  |\n|__|__|__|",
@@ -265,7 +321,9 @@
         troll: "  (ಠ_ಠ)\n --| |--\n   / \\",
         shrine: "    /\\\n   /  \\\n  | [] |\n  |____|",
         merchant: "  ($.) \n  /[_]\\ \n  / \\",
-        inn: "   /\\  \n  /  \\ \n | zZ | \n |____| "
+        inn: "   /\\  \n  /  \\ \n | zZ | \n |____| ",
+        victory: "  \\o/ \n   |  \n  / \\ \n VICTORY!",
+        death: "  .---.\n / RIP \\\n |     |\n ----- "
     };
 
     const bossData = [
@@ -283,10 +341,10 @@
 
     // --- Database: Compressed Question Array (110 total) ---
     const rawQuestions = [
-        ["Grammar", "Fix the dangling participle: 'Walking through the dark dungeon, the treasure chest was finally found by the brave adventurer.'", "Walking through the dark dungeon, the brave adventurer finally found the treasure chest."],
-        ["Grammar", "Fix the subject-verb agreement: 'The group of heavily armed goblins are blocking the exit.'", "The group of heavily armed goblins is blocking the exit."],
-        ["Punctuation", "Fix punctuation and word choice: 'Its raining outside so their going to the tavern.'", "It's raining outside, so they're going to the tavern."],
-        ["Grammar", "Convert to past perfect tense: 'The dragon eats the villagers before the knights arrive.'", "The dragon had eaten the villagers before the knights arrived."],
+        ["Grammar", "Fix the dangling participle: 'Walking through the dark dungeon, the treasure chest was finally found by the brave adventurer.'", "Walking through the dark dungeon, the brave adventurer finally found the treasure chest.", "Walking through the dark dungeon, he finally found the treasure chest.", "Walking through the dark dungeon, she finally found the treasure chest.", "Walking through the dark dungeon, they finally found the treasure chest."],
+        ["Grammar", "Fix the subject-verb agreement: 'The group of heavily armed goblins are blocking the exit.'", "The group of heavily armed goblins is blocking the exit.", "It is blocking the exit."],
+        ["Punctuation", "Fix punctuation and word choice: 'Its raining outside so their going to the tavern.'", "It's raining outside, so they're going to the tavern.", "It's raining outside, so they are going to the tavern."],
+        ["Grammar", "Convert to past perfect tense: 'The dragon eats the villagers before the knights arrive.'", "The dragon had eaten the villagers before the knights arrived.", "He had eaten the villagers before the knights arrived.", "She had eaten the villagers before the knights arrived.", "It had eaten the villagers before the knights arrived."],
         ["Spelling", "Correct the spelling: The hotel will [accomodate] our requests.", "accommodate"],
         ["Spelling", "Correct the spelling: He will [definitly] be there tomorrow.", "definitely"],
         ["Spelling", "Correct the spelling: The local [Vancouvirite] knew all the hidden trails.", "Vancouverite"],
@@ -324,28 +382,28 @@
         ["Grammar", "Who or whom: To [blank] does this sword belong?", "whom"],
         ["Grammar", "Who or whom: [Blank] is knocking at the dungeon door?", "who"],
         ["Grammar", "Subject-verb: Each of the chests [contain/contains] gold.", "contains"],
-        ["Grammar", "Subject-verb: The swarm of bees [was/were] angry.", "was"],
+        ["Grammar", "Subject-verb: The swarm of bees [was/were] angry.", "was", "it was"],
         ["Grammar", "Pronoun agreement: Everyone must bring [his or her/their] own shield.", "their"], 
-        ["Grammar", "Fix: 'Between you and I, the boss is weak.'", "Between you and me, the boss is weak."],
+        ["Grammar", "Fix: 'Between you and I, the boss is weak.'", "Between you and me, the boss is weak.", "Between you and me, he is weak.", "Between you and me, she is weak.", "Between you and me, it is weak."],
         ["Grammar", "Fix: 'She runs quicker than him.'", "She runs more quickly than he."],
-        ["Grammar", "Fix: 'I feel badly about the broken potion.'", "I feel bad about the broken potion."],
-        ["Grammar", "Fix: 'He laid on the bed to rest.'", "He lay on the bed to rest."],
-        ["Grammar", "Fix: 'If I was a wizard, I would cast fire.'", "If I were a wizard, I would cast fire."],
+        ["Grammar", "Fix: 'I feel badly about the broken potion.'", "I feel bad about the broken potion.", "He feels bad about the broken potion.", "She feels bad about the broken potion.", "They feel bad about the broken potion."],
+        ["Grammar", "Fix: 'He laid on the bed to rest.'", "He lay on the bed to rest.", "She lay on the bed to rest.", "They lay on the bed to rest."],
+        ["Grammar", "Fix: 'If I was a wizard, I would cast fire.'", "If I were a wizard, I would cast fire.", "If he were a wizard, he would cast fire.", "If she were a wizard, she would cast fire.", "If they were a wizard, they would cast fire."],
         ["Grammar", "Fix: 'There is less arrows in this quiver.'", "There are fewer arrows in this quiver."],
-        ["Grammar", "Fix: 'He drug the heavy chest across the room.'", "He dragged the heavy chest across the room."],
-        ["Grammar", "Fix: 'The data is conclusive.' (Strict formal)", "The data are conclusive."],
-        ["Grammar", "Fix: 'I could of blocked that attack.'", "I could have blocked that attack."],
-        ["Grammar", "Fix: 'Irregardless of the danger, we move forward.'", "Regardless of the danger, we move forward."],
-        ["Grammar", "Fix: 'Me and the rogue split the loot.'", "The rogue and I split the loot."],
-        ["Grammar", "Fix: 'The potion effected his stamina.'", "The potion affected his stamina."],
+        ["Grammar", "Fix: 'He drug the heavy chest across the room.'", "He dragged the heavy chest across the room.", "She dragged the heavy chest across the room.", "They dragged the heavy chest across the room."],
+        ["Grammar", "Fix: 'The data is conclusive.' (Strict formal)", "The data are conclusive.", "They are conclusive."],
+        ["Grammar", "Fix: 'I could of blocked that attack.'", "I could have blocked that attack.", "He could have blocked that attack.", "She could have blocked that attack.", "They could have blocked that attack."],
+        ["Grammar", "Fix: 'Irregardless of the danger, we move forward.'", "Regardless of the danger, we move forward.", "Regardless of the danger, they move forward."],
+        ["Grammar", "Fix: 'Me and the rogue split the loot.'", "The rogue and I split the loot.", "We split the loot."],
+        ["Grammar", "Fix: 'The potion effected his stamina.'", "The potion affected his stamina.", "It affected his stamina."],
         ["Grammar", "Fix: 'Its a long way down to the next floor.'", "It's a long way down to the next floor."],
-        ["Grammar", "Fix: 'She is one of those clerics who heals everyone.'", "She is one of those clerics who heal everyone."],
-        ["Grammar", "Fix: 'I only have five pieces of gold.' (Position of only)", "I have only five pieces of gold."],
-        ["Grammar", "Fix: 'Having finished the spell, the door opened.'", "Having finished the spell, the wizard opened the door."],
-        ["Grammar", "Fix: 'The king was hung yesterday.'", "The king was hanged yesterday."],
-        ["Grammar", "Fix: 'Whose going to take the vanguard?'", "Who's going to take the vanguard?"],
-        ["Grammar", "Fix: 'The monster snuck up behind us.'", "The monster sneaked up behind us."],
-        ["Grammar", "Fix: 'He dove into the river.'", "He dived into the river."],
+        ["Grammar", "Fix: 'She is one of those clerics who heals everyone.'", "She is one of those clerics who heal everyone.", "He is one of those clerics who heal everyone.", "They are one of those clerics who heal everyone."],
+        ["Grammar", "Fix: 'I only have five pieces of gold.' (Position of only)", "I have only five pieces of gold.", "He has only five pieces of gold.", "She has only five pieces of gold.", "They have only five pieces of gold."],
+        ["Grammar", "Fix: 'Having finished the spell, the door opened.'", "Having finished the spell, the wizard opened the door.", "Having finished the spell, he opened the door.", "Having finished the spell, she opened the door.", "Having finished the spell, they opened the door."],
+        ["Grammar", "Fix: 'The king was hung yesterday.'", "The king was hanged yesterday.", "He was hanged yesterday."],
+        ["Grammar", "Fix: 'Whose going to take the vanguard?'", "Who's going to take the vanguard?", "Who is going to take the vanguard?"],
+        ["Grammar", "Fix: 'The monster snuck up behind us.'", "The monster sneaked up behind us.", "It sneaked up behind us."],
+        ["Grammar", "Fix: 'He dove into the river.'", "He dived into the river.", "She dived into the river.", "They dived into the river."],
         
         ["Vocabulary", "Word for: 'A subtle difference in or shade of meaning, expression, or sound.' (Starts with N)", "nuance"],
         ["Vocabulary", "Word for: 'Tending to talk a great deal; talkative.' (Starts with L)", "loquacious"],
@@ -374,33 +432,33 @@
         ["Vocabulary", "Word for: 'Given to sudden and unaccountable changes of mood.' (Starts with C)", "capricious"],
         
         ["Punctuation", "Add correct punctuation: Stop right there", "Stop right there!"],
-        ["Punctuation", "Correct the apostrophe: The two boys dogs ran away.", "The two boys' dogs ran away."],
-        ["Punctuation", "Correct the apostrophe: The womens cloaks were stained.", "The women's cloaks were stained."],
-        ["Punctuation", "Fix: My favorite colors are red blue and green.", "My favorite colors are red, blue, and green."],
-        ["Punctuation", "Fix: He said I am coming.", "He said, \"I am coming.\""],
-        ["Punctuation", "Fix: Vancouver BC is beautiful.", "Vancouver, BC, is beautiful."],
-        ["Punctuation", "Fix: I brought my sword shield and potions.", "I brought my sword, shield, and potions."],
-        ["Punctuation", "Join with semicolon: The troll fell the bridge shook.", "The troll fell; the bridge shook."],
-        ["Punctuation", "Fix comma splice: I cast fireball, the goblin burned.", "I cast fireball; the goblin burned."],
-        ["Punctuation", "Fix: Yes I will accept the quest.", "Yes, I will accept the quest."],
-        ["Punctuation", "Fix: The spell which is very powerful costs 50 MP.", "The spell, which is very powerful, costs 50 MP."],
-        ["Punctuation", "Fix: Although he was tired he fought on.", "Although he was tired, he fought on."],
+        ["Punctuation", "Correct the apostrophe: The two boys dogs ran away.", "The two boys' dogs ran away.", "Their dogs ran away."],
+        ["Punctuation", "Correct the apostrophe: The womens cloaks were stained.", "The women's cloaks were stained.", "Their cloaks were stained."],
+        ["Punctuation", "Fix: My favorite colors are red blue and green.", "My favorite colors are red, blue, and green.", "His favorite colors are red, blue, and green.", "Her favorite colors are red, blue, and green."],
+        ["Punctuation", "Fix: He said I am coming.", "He said, \"I am coming.\"", "She said, \"I am coming.\""],
+        ["Punctuation", "Fix: Vancouver BC is beautiful.", "Vancouver, BC, is beautiful.", "It is beautiful."],
+        ["Punctuation", "Fix: I brought my sword shield and potions.", "I brought my sword, shield, and potions.", "He brought his sword, shield, and potions.", "She brought her sword, shield, and potions.", "They brought their sword, shield, and potions."],
+        ["Punctuation", "Join with semicolon: The troll fell the bridge shook.", "The troll fell; the bridge shook.", "He fell; it shook.", "It fell; it shook."],
+        ["Punctuation", "Fix comma splice: I cast fireball, the goblin burned.", "I cast fireball; the goblin burned.", "I cast fireball; it burned."],
+        ["Punctuation", "Fix: Yes I will accept the quest.", "Yes, I will accept the quest.", "Yes, he will accept the quest.", "Yes, she will accept the quest.", "Yes, they will accept the quest."],
+        ["Punctuation", "Fix: The spell which is very powerful costs 50 MP.", "The spell, which is very powerful, costs 50 MP.", "It, which is very powerful, costs 50 MP."],
+        ["Punctuation", "Fix: Although he was tired he fought on.", "Although he was tired, he fought on.", "Although she was tired, she fought on.", "Although they were tired, they fought on."],
         ["Punctuation", "Fix: Its a trap!", "It's a trap!"],
-        ["Punctuation", "Fix: The dragon hoard was massive it filled the cave.", "The dragon hoard was massive; it filled the cave."],
+        ["Punctuation", "Fix: The dragon hoard was massive it filled the cave.", "The dragon hoard was massive; it filled the cave.", "It was massive; it filled the cave."],
         ["Punctuation", "Fix: Bring the following iron wood and stone.", "Bring the following: iron, wood, and stone."],
         ["Punctuation", "Correct the apostrophe: It is nobody elses business.", "It is nobody else's business."],
-        ["Punctuation", "Fix: Well I suppose we can rest here.", "Well, I suppose we can rest here."],
+        ["Punctuation", "Fix: Well I suppose we can rest here.", "Well, I suppose we can rest here.", "Well, we suppose we can rest here."],
         ["Punctuation", "Fix: June 5 2026 is the deadline.", "June 5, 2026, is the deadline."],
-        ["Punctuation", "Fix: He lived in London Ontario for a year.", "He lived in London, Ontario, for a year."],
-        ["Punctuation", "Fix: The sword was sharp heavy and deadly.", "The sword was sharp, heavy, and deadly."],
-        ["Punctuation", "Fix: \"Go away\" the troll grunted.", "\"Go away,\" the troll grunted."],
-        ["Punctuation", "Fix: The potion is effective however it tastes awful.", "The potion is effective; however, it tastes awful."],
-        ["Punctuation", "Fix: My brother a skilled knight leads the charge.", "My brother, a skilled knight, leads the charge."],
-        ["Punctuation", "Fix: We must hurry or we will miss the caravan.", "We must hurry, or we will miss the caravan."],
-        ["Punctuation", "Fix: The wizard asked \"Where is my staff?\"", "The wizard asked, \"Where is my staff?\""]
+        ["Punctuation", "Fix: He lived in London Ontario for a year.", "He lived in London, Ontario, for a year.", "She lived in London, Ontario, for a year.", "They lived in London, Ontario, for a year."],
+        ["Punctuation", "Fix: The sword was sharp heavy and deadly.", "The sword was sharp, heavy, and deadly.", "It was sharp, heavy, and deadly."],
+        ["Punctuation", "Fix: \"Go away\" the troll grunted.", "\"Go away,\" the troll grunted.", "\"Go away,\" he grunted.", "\"Go away,\" it grunted."],
+        ["Punctuation", "Fix: The potion is effective however it tastes awful.", "The potion is effective; however, it tastes awful.", "It is effective; however, it tastes awful."],
+        ["Punctuation", "Fix: My brother a skilled knight leads the charge.", "My brother, a skilled knight, leads the charge.", "He, a skilled knight, leads the charge."],
+        ["Punctuation", "Fix: We must hurry or we will miss the caravan.", "We must hurry, or we will miss the caravan.", "They must hurry, or they will miss the caravan."],
+        ["Punctuation", "Fix: The wizard asked \"Where is my staff?\"", "The wizard asked, \"Where is my staff?\"", "He asked, \"Where is my staff?\"", "She asked, \"Where is my staff?\""]
     ];
 
-    const questionDatabase = rawQuestions.map(q => ({ type: q[0], question: q[1], correctAnswers: [q[2]] }));
+    const questionDatabase = rawQuestions.map(q => ({ type: q[0], question: q[1], correctAnswers: q.slice(2) }));
 
     const trollStatements = [
         { stat: ["'I' before 'E' except after 'C' is a rule with no exceptions.", "'Its' is the possessive form, 'It's' is the contraction.", "A dangling participle modifies the wrong noun."], lie: 0 },
@@ -443,14 +501,13 @@
     let currentQuestionData = null;
     let activeBuffs = { shield: false };
     
-    let bossQuestionsRequired = 0;
-    let bossQuestionsAnswered = 0;
     let hintsUsed = 0;
     let trollCurrentData = null;
+    let pendingLootItem = null;
 
     // --- Initialization & Menus ---
     window.onload = () => {
-        if (localStorage.getItem('grammarDungeonSaveV5')) {
+        if (localStorage.getItem('grammarDungeonSaveV7')) {
             document.getElementById('btn-continue').style.display = "block";
         }
     };
@@ -494,35 +551,31 @@
             floor: 1, map: [], currentNodeId: 0
         };
         activeBuffs.shield = false;
-        bossQuestionsRequired = 0;
-        bossQuestionsAnswered = 0;
         checkNewSpells();
         generateMap(1); saveGameState();
         switchScreen('screen-game'); renderMap(); loadRoom(0);
     }
 
     function loadGame() {
-        const saved = localStorage.getItem('grammarDungeonSaveV5');
+        const saved = localStorage.getItem('grammarDungeonSaveV7');
         if (saved) {
             gameState = JSON.parse(saved);
             activeBuffs.shield = false;
-            bossQuestionsRequired = 0;
-            bossQuestionsAnswered = 0;
             switchScreen('screen-game'); renderMap(); loadRoom(gameState.currentNodeId);
         }
     }
 
     function saveGameState() {
-        localStorage.setItem('grammarDungeonSaveV5', JSON.stringify(gameState));
+        localStorage.setItem('grammarDungeonSaveV7', JSON.stringify(gameState));
         recalculatePassives(); updateStats(); updateInventoryDisplay(); updateSpellsDisplay();
     }
 
     function saveAndQuit() { saveGameState(); showMainMenu(); document.getElementById('btn-continue').style.display = "block"; }
 
     function clearSaveAndDie() {
-        localStorage.removeItem('grammarDungeonSaveV5');
+        localStorage.removeItem('grammarDungeonSaveV7');
         document.getElementById('btn-continue').style.display = "none";
-        document.getElementById('ascii-art').innerText = "  \\_/\n (x_x)\n // \\\\";
+        document.getElementById('ascii-art').innerText = asciiArt.death;
         document.getElementById('room-description').innerHTML = "<h2>You Died.</h2><p>Your grammatical spirit has been crushed beneath the weight of your errors.</p>";
         document.getElementById('combat-ui').style.display = "none";
         document.getElementById('feedback').innerHTML = `<button class="action-btn" onclick="location.reload()">Return to Menu</button>`;
@@ -609,9 +662,9 @@
             else if (rand < 0.40 && i > 1) type = 'chance_well';
             else if (rand < 0.50 && i > 1) type = 'chance_troll';
             else if (rand < 0.60 && i > 1) type = 'chance_shrine';
-            newMap.push({ id: i, type: type, completed: false });
+            newMap.push({ id: i, type: type, completed: false, initialized: false });
         }
-        newMap.push({ id: numNodes - 1, type: 'boss', completed: false });
+        newMap.push({ id: numNodes - 1, type: 'boss', completed: false, initialized: false });
         gameState.map = newMap; gameState.currentNodeId = 0; gameState.floor = floorNum;
     }
 
@@ -671,7 +724,11 @@
         document.getElementById('weight-text').innerText = `${currentWeight} / ${dynamicStats.maxWeight}`;
         document.getElementById('wallet-balance').innerText = gameState.wallet.toFixed(2);
         
-        document.getElementById('weight-text').style.color = currentWeight > dynamicStats.maxWeight ? "#f85149" : "#c9d1d9";
+        if (currentWeight >= dynamicStats.maxWeight * 0.8) {
+            document.getElementById('weight-text').style.color = "#f85149";
+        } else {
+            document.getElementById('weight-text').style.color = "#c9d1d9";
+        }
 
         document.getElementById('hp-bar').style.width = `${Math.max(0, (gameState.hp / dynamicStats.maxHp) * 100)}%`;
         document.getElementById('mp-bar').style.width = `${Math.max(0, (gameState.mp / dynamicStats.maxMp) * 100)}%`;
@@ -724,6 +781,10 @@
     function dropItem(index) {
         gameState.inventory.splice(index, 1); saveGameState();
         document.getElementById('feedback').innerHTML = "<span class='info'>Item dropped.</span>";
+        // If in loot resolution screen, refresh it
+        if (document.getElementById('loot-ui')) {
+            renderLootResolutionUI();
+        }
     }
 
     function useItem(index) {
@@ -731,15 +792,18 @@
         if (item.hpHeal) gameState.hp = Math.min(dynamicStats.maxHp, gameState.hp + item.hpHeal);
         if (item.mpHeal) gameState.mp = Math.min(dynamicStats.maxMp, gameState.mp + item.mpHeal);
         gameState.inventory.splice(index, 1);
+        playSound('magic');
         document.getElementById('feedback').innerHTML = `<span class='success'>Consumed ${item.name}.</span>`;
-        saveGameState(); if(document.querySelector('.peddler-section')) loadPeddlerUI(shopConsumables); 
+        saveGameState(); 
+        if(document.querySelector('.peddler-section')) loadPeddlerUI(shopConsumables); 
+        if (document.getElementById('loot-ui')) renderLootResolutionUI();
     }
 
     // --- Magic System ---
     function castSpell(index) {
         const spell = gameState.spells[index];
         if (gameState.mp < spell.cost) return;
-        
+        playSound('magic');
         const feedbackElement = document.getElementById('feedback');
 
         if (spell.effect === "hint") {
@@ -787,6 +851,7 @@
 
     // --- Room Logic ---
     function loadRoom(nodeId) {
+        playSound('encounter');
         document.getElementById('feedback').innerText = "";
         document.getElementById('hint-display').innerText = "";
         currentQuestionData = null;
@@ -798,7 +863,7 @@
             document.getElementById('ascii-art').innerText = asciiArt.door;
             document.getElementById('room-description').innerHTML = `<p>You have already cleared this room. The path forward awaits.</p>`;
             document.getElementById('grammar-task').innerHTML = "";
-            document.getElementById('input-container').innerHTML = "";
+            renderTransitionChoices();
             return;
         }
 
@@ -806,16 +871,24 @@
             document.getElementById('ascii-art').innerText = asciiArt.door;
             document.getElementById('room-description').innerHTML = `<p>The heavy doors slam shut behind you. The air is damp. You must push forward.</p>`;
             document.getElementById('grammar-task').innerHTML = "";
-            document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Step into the dark...</button>`;
+            renderTransitionChoices();
         } else if (node.type === 'encounter') {
             document.getElementById('ascii-art').innerText = asciiArt.monster;
-            setupEncounterRoom("Shadow Encounter", `A level ${gameState.level} linguistic anomaly blocks your path.`, false);
+            if (!node.initialized) {
+                node.enemyMaxHP = Math.floor(30 * Math.pow(1.15, gameState.floor - 1));
+                node.enemyHP = node.enemyMaxHP;
+                node.initialized = true;
+            }
+            setupEncounterRoom("Shadow Encounter", `A linguistic anomaly blocks your path.`, false, node);
         } else if (node.type === 'boss') {
-            bossQuestionsRequired = gameState.floor; // Floor 1 requires exactly 1
-            bossQuestionsAnswered = 0;
             const bossInfo = getBossInfo(gameState.floor);
             document.getElementById('ascii-art').innerText = bossInfo.ascii;
-            setupEncounterRoom(`Floor Boss: ${bossInfo.name}`, bossInfo.desc, true);
+            if (!node.initialized) {
+                node.enemyMaxHP = Math.floor(100 * Math.pow(1.15, gameState.floor - 1));
+                node.enemyHP = node.enemyMaxHP;
+                node.initialized = true;
+            }
+            setupEncounterRoom(`Floor Boss: ${bossInfo.name}`, bossInfo.desc, true, node);
         } else if (node.type === 'inn') {
             document.getElementById('ascii-art').innerText = asciiArt.inn;
             setupInnRoom();
@@ -837,16 +910,26 @@
         }
     }
 
+    function renderTransitionChoices() {
+        document.getElementById('input-container').innerHTML = `
+            <div class="door-choices">
+                <button class="action-btn" onclick="completeCurrentNode()">Enter Left Door</button>
+                <button class="action-btn" onclick="completeCurrentNode()">Enter Middle Door</button>
+                <button class="action-btn" onclick="completeCurrentNode()">Enter Right Door</button>
+            </div>
+        `;
+    }
+
     function completeCurrentNode() {
         gameState.map[gameState.currentNodeId].completed = true;
-        activeBuffs.shield = false; // Reset buffs
+        activeBuffs.shield = false; 
         
         if (gameState.map[gameState.currentNodeId].type === 'boss') {
             document.getElementById('ascii-art').innerText = asciiArt.door;
             document.getElementById('room-description').innerHTML = `<h2>Boss Defeated!</h2><p>The creature dissolves. You find the stairs leading down.</p>`;
             document.getElementById('grammar-task').innerHTML = "";
             document.getElementById('hint-display').innerText = "";
-            document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="descendFloor()">Descend to Floor ${gameState.floor + 1}</button>`;
+            document.getElementById('input-container').innerHTML = `<button class="action-btn" style="background-color:#8957e5;" onclick="descendFloor()">Descend to Floor ${gameState.floor + 1}</button>`;
             saveGameState(); renderMap(); return;
         }
 
@@ -859,20 +942,83 @@
         generateMap(gameState.floor + 1); saveGameState(); renderMap(); loadRoom(0);
     }
 
+    // --- Loot Overencumbrance System ---
+    function triggerLootResolution(loot) {
+        pendingLootItem = loot;
+        document.getElementById('ascii-art').innerText = asciiArt.victory;
+        document.getElementById('room-description').innerHTML = `<h2>Loot Found!</h2>`;
+        document.getElementById('grammar-task').innerHTML = "";
+        document.getElementById('hint-display').innerHTML = "";
+        renderLootResolutionUI();
+    }
+
+    function renderLootResolutionUI() {
+        if (!pendingLootItem) { renderTransitionChoices(); return; }
+        
+        const currentWeight = calculateCurrentWeight();
+        if (currentWeight + pendingLootItem.weight <= dynamicStats.maxWeight) {
+            // Weight is now fine, add it automatically
+            gameState.inventory.push(pendingLootItem);
+            document.getElementById('feedback').innerHTML += `<br><span class="success">You have made room. <strong>${pendingLootItem.name}</strong> added to bag.</span>`;
+            pendingLootItem = null;
+            saveGameState();
+            renderTransitionChoices();
+            return;
+        }
+
+        let html = `
+            <div id="loot-ui">
+                <h3 style="color:#f85149; margin-top:0;">Bag Overencumbered!</h3>
+                <p>You found <strong>${pendingLootItem.name}</strong> (${pendingLootItem.weight} lbs), but your bag is too heavy. (Capacity: ${currentWeight}/${dynamicStats.maxWeight} lbs)</p>
+                <button class="action-btn" style="background-color:#da3633;" onclick="discardPendingLoot()">Leave ${pendingLootItem.name} Behind</button>
+                <hr style="border:0; border-top:1px solid #30363d; margin: 15px 0;">
+                <h4 style="color:#c9d1d9;">Drop items to make room:</h4>
+                <div style="max-height:200px; overflow-y:auto; margin-bottom:10px;">
+        `;
+        
+        if (gameState.inventory.length === 0) {
+            html += `<p>Your bag is mysteriously full of rocks? (Bug: Should not happen)</p>`;
+        } else {
+            gameState.inventory.forEach((item, index) => {
+                html += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #30363d; padding:8px 0;">
+                        <span><strong style="color:#79c0ff;">${item.name}</strong> (${item.weight} lbs)</span>
+                        <button class="btn-small drop-btn" onclick="dropItem(${index})">Drop</button>
+                    </div>
+                `;
+            });
+        }
+        
+        html += `</div></div>`;
+        document.getElementById('input-container').innerHTML = html;
+    }
+
+    function discardPendingLoot() {
+        document.getElementById('feedback').innerHTML += `<br><span class="info">You left the <strong>${pendingLootItem.name}</strong> behind.</span>`;
+        pendingLootItem = null;
+        renderTransitionChoices();
+    }
+
     // --- Encounter Logic ---
-    function setupEncounterRoom(title, desc, isBoss) {
+    function setupEncounterRoom(title, desc, isBoss, node) {
         hintsUsed = 0;
         document.getElementById('hint-display').innerText = "";
         
         const qIndex = Math.floor(Math.random() * questionDatabase.length);
         currentQuestionData = questionDatabase[qIndex];
 
-        let bossUI = "";
-        if (isBoss) {
-            bossUI = `<div class="boss-hp">Boss Health: ${bossQuestionsAnswered}/${bossQuestionsRequired} Questions Answered</div>`;
-        }
+        let hpPercent = Math.max(0, (node.enemyHP / node.enemyMaxHP) * 100);
+        let enemyUI = `
+            <div style="margin-top:15px; background:#0d1117; padding:10px; border-radius:6px; border:1px solid #da3633;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <strong style="color:#f85149;">Enemy HP</strong>
+                    <span style="color:#f85149;">${node.enemyHP} / ${node.enemyMaxHP}</span>
+                </div>
+                <div class="bar-container" style="border-color:#da3633;"><div class="bar" style="background-color:#f85149; width:${hpPercent}%;"></div></div>
+            </div>
+        `;
 
-        document.getElementById('room-description').innerHTML = `<h2>${title}</h2><p>${desc}</p>${bossUI}`;
+        document.getElementById('room-description').innerHTML = `<h2>${title}</h2><p>${desc}</p>${enemyUI}`;
         document.getElementById('grammar-task').innerHTML = `<span class="challenge-type">${currentQuestionData.type} Challenge</span><br>${currentQuestionData.question}`;
         
         document.getElementById('input-container').innerHTML = `
@@ -905,40 +1051,55 @@
 
         const feedbackElement = document.getElementById('feedback');
         document.getElementById('hint-display').innerText = ""; 
+        const node = gameState.map[gameState.currentNodeId];
 
         if (isCorrect) {
-            if (isBoss) {
-                bossQuestionsAnswered++;
-                if (bossQuestionsAnswered < bossQuestionsRequired) {
-                    feedbackElement.innerHTML = `<div class='success'>Correct! The boss staggers. Keep going! (${bossQuestionsAnswered}/${bossQuestionsRequired})</div>`;
-                    saveGameState();
-                    const bossInfo = getBossInfo(gameState.floor);
-                    setupEncounterRoom(`Floor Boss: ${bossInfo.name}`, `The creature is wounded but still demands answers.`, true);
-                    return; 
-                }
-            }
-
-            let rewardsHtml = gainRewards(20, 30, isBoss);
+            playSound('attack');
             
-            let dropChance = isBoss ? 1.0 : 0.3;
-            if (Math.random() < dropChance) {
-                const item = generateGearDrop();
-                if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight) {
-                    gameState.inventory.push(item);
-                    rewardsHtml += `<br>Heavy Loot found: <strong>${item.name}</strong> (${item.weight} lbs) added to bag.`;
+            let dmgDealt = gameState.baseDamage + dynamicStats.damageBoost;
+            node.enemyHP -= dmgDealt;
+            
+            if (node.enemyHP <= 0) {
+                // Enemy Defeated
+                document.getElementById('ascii-art').innerText = asciiArt.victory;
+                let rewardsHtml = gainRewards(20, 30, isBoss);
+                
+                feedbackElement.innerHTML = `<div class='success'>Execution Successful! Dealt ${dmgDealt} DMG. The enemy is defeated!<br>${rewardsHtml}</div>`;
+                
+                let dropChance = isBoss ? 1.0 : 0.3;
+                if (Math.random() < dropChance) {
+                    const item = generateGearDrop();
+                    if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight) {
+                        gameState.inventory.push(item);
+                        feedbackElement.innerHTML += `<br><span class="success">Heavy Loot found: <strong>${item.name}</strong> (${item.weight} lbs) added to bag.</span>`;
+                        renderTransitionChoices();
+                    } else {
+                        triggerLootResolution(item);
+                        return; // Halt transition to allow resolution
+                    }
                 } else {
-                    rewardsHtml += `<br>Heavy Loot found: <strong>${item.name}</strong> (${item.weight} lbs). Bag is overencumbered, forced to leave it behind.`;
+                    renderTransitionChoices();
                 }
+                saveGameState();
+                
+            } else {
+                // Enemy survives, load next question
+                feedbackElement.innerHTML = `<div class='success'>Correct! You dealt ${dmgDealt} DMG! The enemy staggers but attacks back.</div>`;
+                saveGameState();
+                const bossInfo = getBossInfo(gameState.floor);
+                let title = isBoss ? `Floor Boss: ${bossInfo.name}` : "Shadow Encounter";
+                let desc = isBoss ? "The creature is wounded but still demands answers." : "The anomaly persists.";
+                setupEncounterRoom(title, desc, isBoss, node);
             }
             
-            feedbackElement.innerHTML = `<div class='success'>Execution Successful!<br>${rewardsHtml}</div>`;
-            document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Continue</button>`;
-            saveGameState();
         } else {
+            // Incorrect answer
             if (activeBuffs.shield) {
+                playSound('magic');
                 feedbackElement.innerHTML = `<div class='info'>Incorrect! The magic ward absorbed the blow! The ward dissipates.</div>`;
                 activeBuffs.shield = false;
             } else {
+                playSound('attack');
                 let dmg = (12 * gameState.floor) + Math.floor(gameState.level * 2);
                 if (isBoss) dmg *= 1.5; 
                 
@@ -949,12 +1110,14 @@
                 
                 if (gameState.hp <= 0) { clearSaveAndDie(); return; } 
                 else { 
-                    if (isBoss) {
-                         const bossInfo = getBossInfo(gameState.floor);
-                         document.getElementById('input-container').innerHTML = `<button class="action-btn" style="background-color:#da3633;" onclick="setupEncounterRoom('Floor Boss: ${bossInfo.name}', 'The creature demands another answer.', true)">Brace for next question...</button>`;
-                    } else {
-                         document.getElementById('input-container').innerHTML = `<button class="action-btn" style="background-color:#da3633;" onclick="completeCurrentNode()">Flee to next room...</button>`;
-                    }
+                    const bossInfo = getBossInfo(gameState.floor);
+                    let title = isBoss ? `Floor Boss: ${bossInfo.name}` : "Shadow Encounter";
+                    document.getElementById('input-container').innerHTML = `
+                        <div class="door-choices" style="margin-top:10px;">
+                            <button class="action-btn" style="background-color:#da3633;" onclick="setupEncounterRoom('${title}', 'The creature demands another answer.', ${isBoss}, gameState.map[gameState.currentNodeId])">Brace for next question...</button>
+                            <button class="action-btn" style="background-color:#21262d; border:1px solid #30363d;" onclick="renderTransitionChoices()">Flee to next room...</button>
+                        </div>
+                    `;
                 }
             }
             saveGameState();
@@ -968,7 +1131,7 @@
         document.getElementById('input-container').innerHTML = `
             <input type="number" id="well-amount" placeholder="Amount of CAD to toss in..." min="1">
             <button class="action-btn" style="background-color:#8957e5;" onclick="tossWell()">Toss Coin</button>
-            <button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d;" onclick="completeCurrentNode()">Walk Away</button>
+            <button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d;" onclick="renderTransitionChoices()">Walk Away</button>
         `;
     }
 
@@ -980,12 +1143,15 @@
         if (gameState.wallet < amt) { fb.innerHTML = `<span class="failure">You do not have enough CAD.</span>`; return; }
         
         gameState.wallet -= amt;
+        playSound('coin');
         
         if (amt >= 100) {
+            playSound('magic');
             gameState.baseMaxHp += 15;
             gameState.hp = dynamicStats.maxHp + 15; 
             fb.innerHTML = `<span class="success">The well glows brilliantly! Your Max HP permanently increases by 15!</span>`;
         } else if (amt >= 50) {
+            playSound('magic');
             gameState.exp += 150;
             fb.innerHTML = `<span class="success">The well hums. You gain a surge of 150 EXP!</span>`;
             gainRewards(0,0,false); 
@@ -994,7 +1160,7 @@
             fb.innerHTML = `<span class="info">The well bubbles slightly. You recover 20 HP.</span>`;
         }
         saveGameState();
-        document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Continue</button>`;
+        renderTransitionChoices();
     }
 
     function setupTrollRoom() {
@@ -1013,15 +1179,17 @@
     function guessTroll(idx) {
         const fb = document.getElementById('feedback');
         if (idx === trollCurrentData.lie) {
+            playSound('coin');
             gameState.wallet += 100;
             fb.innerHTML = `<span class="success">"Blast!" the Troll groans. "You win." He tosses you $100.00 CAD.</span>`;
         } else {
+            playSound('attack');
             gameState.hp -= 20;
             fb.innerHTML = `<span class="failure">"Wrong!" The Troll strikes you for 20 damage!</span>`;
             if (gameState.hp <= 0) { clearSaveAndDie(); return; }
         }
         saveGameState();
-        document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Cross the Bridge</button>`;
+        renderTransitionChoices();
     }
 
     function setupShrineRoom() {
@@ -1030,28 +1198,30 @@
         document.getElementById('input-container').innerHTML = `
             <button class="action-btn" style="background-color:#1f6feb;" onclick="prayShrine()">Pray (Lose 15 HP, Restores MP)</button>
             <button class="action-btn" style="background-color:#da3633;" onclick="desecrateShrine()">Desecrate (Gain $150, Take 30 DMG)</button>
-            <button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d;" onclick="completeCurrentNode()">Leave the Shrine Be</button>
+            <button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d;" onclick="renderTransitionChoices()">Leave the Shrine Be</button>
         `;
     }
 
     function prayShrine() {
+        playSound('magic');
         gameState.hp -= 15;
         gameState.mp = dynamicStats.maxMp;
         const fb = document.getElementById('feedback');
         fb.innerHTML = `<span class="info">You sacrifice your vitality. Your mind clears and your MP is fully restored!</span>`;
         if (gameState.hp <= 0) { clearSaveAndDie(); return; }
         saveGameState();
-        document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Continue</button>`;
+        renderTransitionChoices();
     }
 
     function desecrateShrine() {
+        playSound('attack');
         gameState.hp -= 30;
         gameState.wallet += 150;
         const fb = document.getElementById('feedback');
         fb.innerHTML = `<span class="failure">You smash the altar and find $150.00 CAD inside, but a curse strikes you for 30 damage!</span>`;
         if (gameState.hp <= 0) { clearSaveAndDie(); return; }
         saveGameState();
-        document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Continue</button>`;
+        renderTransitionChoices();
     }
 
     // --- Special Rooms (Inn / Peddler) ---
@@ -1060,7 +1230,7 @@
         document.getElementById('grammar-task').innerHTML = "";
         document.getElementById('input-container').innerHTML = `
             <button class="action-btn" onclick="restAtInn()">Rest ($60.00 CAD)</button>
-            <button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d;" onclick="completeCurrentNode()">Leave the Inn</button>
+            <button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d;" onclick="renderTransitionChoices()">Leave the Inn</button>
         `;
     }
 
@@ -1070,11 +1240,12 @@
             if (gameState.hp >= dynamicStats.maxHp && gameState.mp >= dynamicStats.maxMp) {
                 feedbackElement.innerHTML = "<span class='info'>You are already fully rested.</span>";
             } else {
+                playSound('coin');
                 gameState.wallet -= 60;
                 gameState.hp = dynamicStats.maxHp; gameState.mp = dynamicStats.maxMp;
                 feedbackElement.innerHTML = "<span class='success'>You rest and recover all your HP and MP.</span>";
                 saveGameState();
-                document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Continue Journey</button>`;
+                renderTransitionChoices();
             }
         } else {
             feedbackElement.innerHTML = "<span class='failure'>You do not have enough CAD.</span>";
@@ -1119,7 +1290,7 @@
                 `;
             });
         }
-        interactionHTML += `</div></div><button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d; margin-top: 15px;" onclick="completeCurrentNode()">Leave Shop</button>`;
+        interactionHTML += `</div></div><button class="action-btn" style="background-color:#21262d; border: 1px solid #30363d; margin-top: 15px;" onclick="renderTransitionChoices()">Leave Shop</button>`;
         document.getElementById('input-container').innerHTML = interactionHTML;
     }
 
@@ -1129,6 +1300,7 @@
         
         if (gameState.wallet >= item.value) {
             if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight || item.effect === "carry_capacity") {
+                playSound('coin');
                 gameState.wallet -= item.value; gameState.inventory.push({...item});
                 saveGameState(); loadPeddlerUI(inventorySet); 
                 feedbackElement.innerHTML = `<span class='success'>You purchased ${item.name}!</span>`;
@@ -1142,6 +1314,7 @@
 
     function sellItem(index, inventorySet) {
         const item = gameState.inventory[index];
+        playSound('coin');
         gameState.wallet += item.value; gameState.inventory.splice(index, 1);
         saveGameState(); loadPeddlerUI(inventorySet); 
         document.getElementById('feedback').innerHTML = `<span class='success'>You sold the ${item.name} for $${item.value.toFixed(2)} CAD.</span>`;
