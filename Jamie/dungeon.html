@@ -282,39 +282,64 @@
     function playSound(type) {
         initAudio();
         if (!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
         const now = audioCtx.currentTime;
 
-        if(type === 'magic') {
+        function playNote(freq, wtype, startTime, duration, vol=0.2) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = wtype;
+            osc.frequency.value = freq;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(vol, startTime + 0.05);
+            gain.gain.setValueAtTime(vol, startTime + duration - 0.05);
+            gain.gain.linearRampToValueAtTime(0, startTime + duration);
+            osc.start(startTime);
+            osc.stop(startTime + duration);
+        }
+
+        if (type === 'start') {
+            [261.63, 329.63, 392.00, 523.25].forEach((f, i) => playNote(f, 'sine', now + i*0.3, 0.3));
+        } else if (type === 'stats') {
+            [220.00, 261.63, 329.63].forEach((f, i) => playNote(f, 'triangle', now + i*0.4, 0.4));
+        } else if (type === 'encounter') {
+            [110, 116.54, 110, 123.47].forEach((f, i) => playNote(f, 'sawtooth', now + i*0.2, 0.2, 0.1));
+        } else if (type === 'boss') {
+            [65.41, 73.42, 65.41, 61.74].forEach((f, i) => playNote(f, 'square', now + i*0.6, 0.6, 0.15));
+        } else if (type === 'event') {
+            [440, 554.37, 659.25, 880].forEach((f, i) => playNote(f, 'sine', now + i*0.15, 0.4, 0.1));
+        } else if (type === 'shop') {
+            [392.00, 493.88, 587.33, 783.99].forEach((f, i) => playNote(f, 'triangle', now + i*0.2, 0.2, 0.1));
+        } else if (type === 'magic') {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(400, now);
             osc.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
-            gainNode.gain.setValueAtTime(0.3, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
             osc.start(now); osc.stop(now + 0.3);
         } else if (type === 'coin') {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(1500, now);
-            gainNode.gain.setValueAtTime(0.2, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
             osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'attack') {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(150, now);
             osc.frequency.exponentialRampToValueAtTime(40, now + 0.2);
-            gainNode.gain.setValueAtTime(0.3, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
             osc.start(now); osc.stop(now + 0.2);
-        } else if (type === 'encounter') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(300, now);
-            osc.frequency.setValueAtTime(450, now + 0.1);
-            gainNode.gain.setValueAtTime(0.2, now);
-            gainNode.gain.linearRampToValueAtTime(0.01, now + 0.3);
-            osc.start(now); osc.stop(now + 0.3);
         }
     }
 
@@ -488,7 +513,9 @@
         { name: "Stanley Park Sap", cost: 25, effect: "heal", value: 80, desc: "Restores 80 HP." },
         { name: "Granville Strike", cost: 35, effect: "solve", value: 0, desc: "Automatically solves one challenge." },
         { name: "Robson Ward", cost: 25, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
-        { name: "Capilano Restoration", cost: 30, effect: "heal", value: 100, desc: "Restores 100 HP." }
+        { name: "Capilano Restoration", cost: 30, effect: "heal", value: 100, desc: "Restores 100 HP." },
+        { name: "Burrard Blast", cost: 20, effect: "damage", value: 30, desc: "Deals 30 Damage to the enemy." },
+        { name: "Seymour Shock", cost: 40, effect: "damage", value: 80, desc: "Deals 80 Damage to the enemy." }
     ];
 
     const shopConsumablesPool = [
@@ -538,7 +565,7 @@
 
     // --- Initialization & Menus ---
     window.onload = () => {
-        if (localStorage.getItem('grammarDungeonSaveV8')) {
+        if (localStorage.getItem('grammarDungeonSaveV9')) {
             document.getElementById('btn-continue').style.display = "block";
         }
     };
@@ -548,9 +575,13 @@
         document.getElementById(screenId).classList.add('active');
     }
 
-    function showMainMenu() { switchScreen('screen-menu'); }
+    function showMainMenu() { 
+        playSound('start');
+        switchScreen('screen-menu'); 
+    }
 
     function showNewGameMenu() {
+        playSound('stats');
         allocPoints = 5; alloc = { hp: 0, mp: 0, dmg: 0, wgt: 0 };
         updateAllocUI(); switchScreen('screen-stats');
     }
@@ -579,7 +610,7 @@
             baseDamage: 15 + (alloc.dmg * 5),
             baseWeight: 30 + (alloc.wgt * 10),
             wallet: 0, inventory: [], 
-            spells: [{ name: "Gastown Whisper", cost: 1, effect: "hint", value: 0, desc: "Gain a hint. Max 3 uses per room." }],
+            spells: [{ name: "Gastown Whisper", cost: 2, effect: "hint", value: 0, desc: "Gain a hint. Max 3 uses per room." }],
             floor: 1, map: [], currentNodeId: 0,
             lastEnemyName: "", lastQuestion: ""
         };
@@ -589,7 +620,7 @@
     }
 
     function loadGame() {
-        const saved = localStorage.getItem('grammarDungeonSaveV8');
+        const saved = localStorage.getItem('grammarDungeonSaveV9');
         if (saved) {
             gameState = JSON.parse(saved);
             activeBuffs.shield = false;
@@ -598,14 +629,14 @@
     }
 
     function saveGameState() {
-        localStorage.setItem('grammarDungeonSaveV8', JSON.stringify(gameState));
+        localStorage.setItem('grammarDungeonSaveV9', JSON.stringify(gameState));
         recalculatePassives(); updateStats(); updateInventoryDisplay(); updateSpellsDisplay();
     }
 
     function saveAndQuit() { saveGameState(); showMainMenu(); document.getElementById('btn-continue').style.display = "block"; }
 
     function clearSaveAndDie() {
-        localStorage.removeItem('grammarDungeonSaveV8');
+        localStorage.removeItem('grammarDungeonSaveV9');
         document.getElementById('btn-continue').style.display = "none";
         document.getElementById('ascii-art').innerText = asciiArt.death;
         document.getElementById('room-description').innerHTML = "<h2>You Died.</h2><p>Your grammatical spirit has been crushed beneath the weight of your errors.</p>";
@@ -644,7 +675,6 @@
             leveledUp = true;
             expNeeded = getExpNeeded(gameState.level);
             
-            // Random Spell every 5 levels
             if (gameState.level % 5 === 0) {
                 let unlearned = spellCompendium.filter(s => !gameState.spells.some(ls => ls.name === s.name));
                 if(unlearned.length > 0) {
@@ -691,7 +721,6 @@
         for (let i = 1; i < numNodes - 1; i++) {
             let possibleTypes = ['encounter', 'peddler_consumables', 'peddler_gear', 'inn', 'chance_well', 'chance_troll', 'chance_shrine'].filter(t => t !== lastType);
             let type = '';
-            // Bias towards encounters
             if (Math.random() < 0.6 && lastType !== 'encounter') {
                 type = 'encounter';
             } else {
@@ -881,40 +910,40 @@
         if (spell.effect === "heal") {
             gameState.hp = Math.min(dynamicStats.maxHp, gameState.hp + spell.value);
             fb += `Restored ${spell.value} HP.`;
+            feedbackElement.innerHTML = fb;
+            saveGameState();
         } else if (spell.effect === "shield" || spell.effect === "armor") {
             activeBuffs.shield = true;
             fb += `A protective ward surrounds you.`;
+            feedbackElement.innerHTML = fb;
+            saveGameState();
         } else if (spell.effect === "solve") {
             fb += `The magic forces the correct answer into reality!`;
-            document.getElementById('feedback').innerHTML = fb;
+            feedbackElement.innerHTML = fb;
             saveGameState();
             if(currentQuestionData) submitAnswer(gameState.map[gameState.currentNodeId].type === 'boss', true); 
-            return;
         } else if (spell.effect === "damage") {
             fb += `You blast the enemy for ${spell.value} damage!`;
-            document.getElementById('feedback').innerHTML = fb;
             saveGameState();
             if(currentQuestionData) {
                 const node = gameState.map[gameState.currentNodeId];
                 node.enemyHP -= spell.value;
-                if(node.enemyHP <= 0) submitAnswer(node.type === 'boss', true);
-                else {
+                if(node.enemyHP <= 0) {
+                    handleEnemyDefeat(node, node.type === 'boss');
+                } else {
+                    feedbackElement.innerHTML = fb;
                     let isBoss = node.type === 'boss';
-                    let bossInfo = getBossInfo(gameState.floor);
-                    let title = isBoss ? `Floor Boss: ${bossInfo.name}` : `Shadow Encounter`;
-                    setupEncounterRoom(title, "The creature took damage from your magic!", isBoss, node);
+                    let title = isBoss ? `Floor Boss: ${node.enemyName}` : `Shadow Encounter: ${node.enemyName}`;
+                    setupEncounterRoom(title, `The ${node.enemyName} took damage from your magic!`, isBoss, node);
                 }
+            } else {
+                feedbackElement.innerHTML = fb;
             }
-            return;
         }
-        
-        feedbackElement.innerHTML = fb;
-        saveGameState();
     }
 
     // --- Room Logic ---
     function loadRoom(nodeId) {
-        playSound('encounter');
         document.getElementById('feedback').innerText = "";
         document.getElementById('hint-display').innerText = "";
         currentQuestionData = null;
@@ -936,6 +965,7 @@
             document.getElementById('grammar-task').innerHTML = "";
             renderTransitionChoices();
         } else if (node.type === 'encounter') {
+            playSound('encounter');
             if (!node.initialized) {
                 node.enemyMaxHP = Math.floor(30 * Math.pow(1.15, gameState.floor - 1));
                 node.enemyHP = node.enemyMaxHP;
@@ -952,6 +982,7 @@
             document.getElementById('ascii-art').innerText = node.ascii;
             setupEncounterRoom(`Shadow Encounter: ${node.enemyName}`, `A level ${gameState.level} linguistic anomaly blocks your path.`, false, node);
         } else if (node.type === 'boss') {
+            playSound('boss');
             const bossInfo = getBossInfo(gameState.floor);
             document.getElementById('ascii-art').innerText = bossInfo.ascii;
             if (!node.initialized) {
@@ -962,23 +993,29 @@
             }
             setupEncounterRoom(`Floor Boss: ${bossInfo.name}`, bossInfo.desc, true, node);
         } else if (node.type === 'inn') {
+            playSound('shop');
             document.getElementById('ascii-art').innerText = asciiArt.inn;
             setupInnRoom();
         } else if (node.type === 'peddler_consumables') {
+            playSound('shop');
             document.getElementById('ascii-art').innerText = asciiArt.merchant;
             if(!node.initialized) { node.shopInventory = generateShopInventory(shopConsumablesPool, 4); node.initialized = true; }
             setupPeddlerRoom("The Commercial Drive Provisioner", node.shopInventory, node);
         } else if (node.type === 'peddler_gear') {
+            playSound('shop');
             document.getElementById('ascii-art').innerText = asciiArt.merchant;
             if(!node.initialized) { node.shopInventory = generateShopInventory(shopGearPool, 4); node.initialized = true; }
             setupPeddlerRoom("The Gastown Blacksmith", node.shopInventory, node);
         } else if (node.type === 'chance_well') {
+            playSound('event');
             document.getElementById('ascii-art').innerText = asciiArt.well;
             setupWellRoom();
         } else if (node.type === 'chance_troll') {
+            playSound('event');
             document.getElementById('ascii-art').innerText = asciiArt.troll;
             setupTrollRoom();
         } else if (node.type === 'chance_shrine') {
+            playSound('event');
             document.getElementById('ascii-art').innerText = asciiArt.shrine;
             setupShrineRoom();
         }
@@ -1020,7 +1057,6 @@
     function triggerLootResolution(loot) {
         pendingLootItem = loot;
         document.getElementById('ascii-art').innerText = asciiArt.victory;
-        document.getElementById('room-description').innerHTML = `<h2>Loot Found!</h2>`;
         document.getElementById('grammar-task').innerHTML = "";
         document.getElementById('hint-display').innerHTML = "";
         renderLootResolutionUI();
@@ -1073,6 +1109,44 @@
     }
 
     // --- Encounter Logic ---
+    function handleEnemyDefeat(node, isBoss) {
+        node.enemyHP = 0;
+        document.getElementById('ascii-art').innerText = asciiArt.victory;
+        
+        let enemyUI = `
+            <div style="margin-top:15px; background:#0d1117; padding:10px; border-radius:6px; border:1px solid #da3633;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <strong style="color:#f85149;">${node.enemyName} HP</strong>
+                    <span style="color:#f85149;">0 / ${node.enemyMaxHP}</span>
+                </div>
+                <div class="bar-container" style="border-color:#da3633;"><div class="bar" style="background-color:#f85149; width:0%;"></div></div>
+            </div>
+        `;
+
+        document.getElementById('room-description').innerHTML = `<h2>Victory!</h2><p>The ${node.enemyName} has been defeated and its anomaly dissolves.</p>${enemyUI}`;
+        
+        let rewardsHtml = gainRewards(20, 30, isBoss);
+        const feedbackElement = document.getElementById('feedback');
+        
+        feedbackElement.innerHTML = `<div class='success'>Execution Successful! The ${node.enemyName} dies!<br>${rewardsHtml}</div>`;
+        
+        let dropChance = isBoss ? 1.0 : 0.3;
+        if (Math.random() < dropChance) {
+            const item = generateGearDrop();
+            if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight) {
+                gameState.inventory.push(item);
+                feedbackElement.innerHTML += `<br><span class="success">Heavy Loot found: <strong>${item.name}</strong> (${item.weight} lbs) added to bag.</span>`;
+                renderTransitionChoices();
+            } else {
+                triggerLootResolution(item);
+                return; 
+            }
+        } else {
+            renderTransitionChoices();
+        }
+        saveGameState();
+    }
+
     function setupEncounterRoom(title, desc, isBoss, node) {
         hintsUsed = 0;
         document.getElementById('hint-display').innerText = "";
@@ -1136,28 +1210,7 @@
             node.enemyHP -= dmgDealt;
             
             if (node.enemyHP <= 0) {
-                // Enemy Defeated
-                document.getElementById('ascii-art').innerText = asciiArt.victory;
-                let rewardsHtml = gainRewards(20, 30, isBoss);
-                
-                feedbackElement.innerHTML = `<div class='success'>Execution Successful! Dealt ${dmgDealt} DMG. The ${node.enemyName} dies!<br>${rewardsHtml}</div>`;
-                
-                let dropChance = isBoss ? 1.0 : 0.3;
-                if (Math.random() < dropChance) {
-                    const item = generateGearDrop();
-                    if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight) {
-                        gameState.inventory.push(item);
-                        feedbackElement.innerHTML += `<br><span class="success">Heavy Loot found: <strong>${item.name}</strong> (${item.weight} lbs) added to bag.</span>`;
-                        renderTransitionChoices();
-                    } else {
-                        triggerLootResolution(item);
-                        return; // Halt transition
-                    }
-                } else {
-                    renderTransitionChoices();
-                }
-                saveGameState();
-                
+                handleEnemyDefeat(node, isBoss);
             } else {
                 feedbackElement.innerHTML = `<div class='success'>Correct! You dealt ${dmgDealt} DMG! The ${node.enemyName} staggers but attacks back.</div>`;
                 saveGameState();
@@ -1219,12 +1272,12 @@
         playSound('coin');
         
         if (amt >= 100) {
-            playSound('magic');
+            setTimeout(()=>playSound('magic'), 200);
             gameState.baseMaxHp += 15;
             gameState.hp = dynamicStats.maxHp + 15; 
             fb.innerHTML = `<span class="success">The well glows brilliantly! Your Max HP permanently increases by 15!</span>`;
         } else if (amt >= 50) {
-            playSound('magic');
+            setTimeout(()=>playSound('magic'), 200);
             gameState.exp += 150;
             fb.innerHTML = `<span class="success">The well hums. You gain a surge of 150 EXP!</span>`;
             gainRewards(0,0,false); 
@@ -1382,7 +1435,7 @@
                 playSound('coin');
                 gameState.wallet -= item.value; 
                 gameState.inventory.push({...item});
-                inventorySet.splice(index, 1); // Remove from shop
+                inventorySet.splice(index, 1); 
                 saveGameState(); 
                 loadPeddlerUI(inventorySet, node); 
                 feedbackElement.innerHTML = `<span class='success'>You purchased ${item.name}!</span>`;
