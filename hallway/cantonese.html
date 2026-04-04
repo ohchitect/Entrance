@@ -597,18 +597,25 @@
             border: 3px solid var(--accent-gold);
         }
         
-        #player::before, #player::after { 
-            content: '';
-            position: absolute;
-            background: var(--accent-gold);
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            top: 32px;
-        }
-        
-        #player::before { left: 14px; }
-        #player::after { right: 14px; }
+      #player::before, #player::after { 
+    content: '';
+    position: absolute;
+    background: var(--accent-gold);
+    width: 14px; /* Slightly scaled down to match the percentage layout better */
+    height: 14px;
+    border-radius: 50%;
+    /* Centers the eyes vertically perfectly */
+    top: 50%;
+    transform: translateY(-50%); 
+}
+
+#player::before { 
+    left: 20%; 
+}
+
+#player::after { 
+    right: 20%; 
+}
         
         #enemy {
             width: 75px;
