@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cantonese Vocab RPG</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
             --navy: #1a2c4a;
@@ -39,7 +37,7 @@
         * { box-sizing: border-box; }
         
         body { 
-            font-family: 'Noto Sans HK', 'Microsoft JhengHei', 'PingFang HK', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: #ffffff;
             color: var(--text-dark);
             display: flex;
@@ -926,37 +924,6 @@
             cursor: pointer;
             width: 100%;
             transition: background 0.2s, color 0.2s;
-        }
-
-        @media (min-width: 769px) {
-            #arena {
-                height: 180px;
-            }
-            #player {
-                width: 96px;
-                height: 96px;
-            }
-            #player::before, #player::after {
-                width: 20px;
-                height: 20px;
-                top: 44px;
-            }
-            #player::before { left: 30px; }
-            #player::after { right: 30px; }
-            #enemy {
-                width: 100px;
-                height: 100px;
-            }
-            #enemy::before, #enemy::after {
-                width: 18px;
-                height: 18px;
-                top: 48px;
-            }
-            #enemy::before { left: 38px; }
-            #enemy::after { right: 38px; }
-            .entity-container {
-                max-width: 220px;
-            }
         }
 
         @media (max-width: 768px) {
