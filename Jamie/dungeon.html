@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Grammar Dungeon: Endless Descent</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #d3d3d3;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+        #game-container {
+            width: 100%;
+            max-width: 950px;
+            background-color: #2a2a2a;
+            border: 2px solid #555;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        h1, h2, h3, h4 { color: #f39c12; text-align: center; margin-top: 0; }
+        
+        /* Menu Screens */
+        .screen { display: none; flex-direction: column; align-items: center; }
+        .screen.active { display: flex; }
+        
+        .menu-btn { background-color: #3498db; color: white; padding: 15px 30px; font-size: 18px; margin: 10px; width: 300px; border: none; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; }
+        .menu-btn:hover { background-color: #2980b9; }
+        .menu-btn.danger { background-color: #e74c3c; }
+        .menu-btn.danger:hover { background-color: #c0392b; }
+
+        /* Stat Allocation */
+        .stat-row { display: flex; justify-content: space-between; align-items: center; width: 400px; margin: 10px 0; background: #111; padding: 10px; border-radius: 4px; }
+        .stat-btn { background-color: #f39c12; color: #111; border: none; border-radius: 4px; width: 30px; height: 30px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .stat-btn:disabled { background-color: #555; cursor: not-allowed; }
+
+        /* Game UI */
+        #stats-panel { display: flex; justify-content: space-between; align-items: center; background-color: #111; padding: 10px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #555; flex-wrap: wrap; gap: 15px; }
+        .stat-group { display: flex; flex-direction: column; gap: 5px; }
+        .stat { font-size: 14px; font-weight: bold; color: #fff; display: flex; align-items: center; justify-content: space-between; width: 220px;}
+        
+        .bar-container { width: 120px; height: 12px; background-color: #555; border: 1px solid #fff; border-radius: 6px; overflow: hidden; display: inline-block; vertical-align: middle; }
+        .bar { height: 100%; width: 100%; transition: width 0.3s, background-color 0.3s; }
+        #hp-bar { background-color: #e74c3c; }
+        #mp-bar { background-color: #3498db; }
+        #exp-bar { background-color: #f39c12; }
+        
+        /* Map System */
+        #map-container { background-color: #111; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #555; overflow-x: auto; white-space: nowrap; display: flex; align-items: center; min-height: 80px; }
+        .map-node { display: inline-flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; background-color: #555; color: white; font-weight: bold; margin: 0 15px; position: relative; cursor: not-allowed; border: 2px solid #333; z-index: 2; transition: all 0.3s; }
+        .map-node::after { content: ''; position: absolute; top: 50%; right: -32px; width: 30px; height: 4px; background-color: #555; transform: translateY(-50%); z-index: 1; }
+        .map-node:last-child::after { display: none; }
+        .map-node.completed { background-color: #2ecc71; border-color: #27ae60; cursor: pointer; }
+        .map-node.completed::after { background-color: #2ecc71; }
+        .map-node.current { background-color: #f1c40f; border-color: #f39c12; color: #111; cursor: pointer; transform: scale(1.1); box-shadow: 0 0 10px #f1c40f; }
+        .map-node.boss { border-radius: 4px; transform: rotate(45deg); }
+        .map-node.boss span { transform: rotate(-45deg); display: block; }
+        .map-node.boss.current { background-color: #e74c3c; border-color: #c0392b; color: white; box-shadow: 0 0 10px #e74c3c; }
+        
+        /* Interaction Area */
+        #room-description { background-color: #111; padding: 15px; border-left: 4px solid #f39c12; margin-bottom: 10px; min-height: 80px; }
+        .challenge-type { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 10px; background-color: #34495e; color: #ecf0f1; text-transform: uppercase; }
+        #grammar-task { font-style: italic; margin-bottom: 20px; color: #aaddff; font-size: 16px; }
+        
+        #combat-ui { display: flex; gap: 20px; margin-bottom: 20px; }
+        #interaction-area { flex: 2; min-height: 100px; }
+        #spell-area { flex: 1; background-color: #111; padding: 10px; border-radius: 4px; border: 1px solid #3498db; }
+        
+        input[type="text"] { width: calc(100% - 22px); padding: 10px; background-color: #111; color: #fff; border: 1px solid #555; border-radius: 4px; font-family: inherit; margin-bottom: 10px; font-size: 16px; }
+        button.action-btn { background-color: #2ecc71; color: #fff; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 4px; font-weight: bold; font-family: inherit; width: 100%; margin-bottom: 10px; }
+        button.action-btn:hover { background-color: #27ae60; }
+        
+        button.spell-btn { background-color: #9b59b6; color: white; border: none; padding: 8px; margin-bottom: 8px; width: 100%; cursor: pointer; border-radius: 4px; font-weight: bold; font-family: inherit; font-size: 14px;}
+        button.spell-btn:hover { background-color: #8e44ad; }
+        button.spell-btn:disabled { background-color: #555; color: #888; cursor: not-allowed; }
+        
+        #feedback { font-weight: bold; margin-bottom: 20px; min-height: 20px; padding: 10px; border-radius: 4px; }
+        .success { color: #2ecc71; background-color: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71; }
+        .failure { color: #e74c3c; background-color: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; }
+        .info { color: #f1c40f; background-color: rgba(241, 196, 15, 0.1); border: 1px solid #f1c40f; }
+        .level-up { color: #9b59b6; background-color: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6; font-size: 18px; text-align: center; margin-top: 10px;}
+        
+        /* Inventory / Shop */
+        .panel-container { display: flex; gap: 20px; }
+        .side-panel { background-color: #333; padding: 15px; border-radius: 4px; flex: 1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #555; }
+        th { color: #f39c12; }
+        .btn-small { padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; color: white; width: auto; margin: 0; }
+        .use-btn { background-color: #2ecc71; } .use-btn:hover { background-color: #27ae60; }
+        .drop-btn { background-color: #e74c3c; } .drop-btn:hover { background-color: #c0392b; }
+        .buy-btn { background-color: #f1c40f; color: #111;} .buy-btn:hover { background-color: #f39c12; }
+        
+        .peddler-section { display: flex; gap: 20px; flex-wrap: wrap; }
+        .shop-column { flex: 1; min-width: 300px; background-color: #222; padding: 15px; border-radius: 4px; }
+        .shop-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #444; }
+        .shop-item-details { display: flex; flex-direction: column; }
+        .shop-item-name { font-weight: bold; color: #aaddff; }
+        .shop-item-power { font-size: 12px; font-style: italic; color: #bbb; }
+        
+        #status-effects { display: flex; gap: 10px; margin-top: 10px; }
+        .buff-badge { background-color: #3498db; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    
+    <div id="screen-menu" class="screen active">
+        <h1>The Grammar Dungeon</h1>
+        <h2>Endless Descent</h2>
+        <button class="menu-btn" onclick="showNewGameMenu()">Start New Game</button>
+        <button class="menu-btn" id="btn-continue" style="display:none;" onclick="loadGame()">Continue Saved Game</button>
+    </div>
+
+    <div id="screen-stats" class="screen">
+        <h1>Hero Creation</h1>
+        <p>Allocate your starting attributes. Points remaining: <span id="points-left" style="color: #2ecc71; font-weight: bold;">5</span></p>
+        
+        <div class="stat-row">
+            <span>Max HP (+10/pt) [Base 50]: <span id="alloc-hp-val">50</span></span>
+            <div><button class="stat-btn" onclick="adjustStat('hp', -1)">-</button><button class="stat-btn" onclick="adjustStat('hp', 1)">+</button></div>
+        </div>
+        <div class="stat-row">
+            <span>Max MP (+5/pt) [Base 20]: <span id="alloc-mp-val">20</span></span>
+            <div><button class="stat-btn" onclick="adjustStat('mp', -1)">-</button><button class="stat-btn" onclick="adjustStat('mp', 1)">+</button></div>
+        </div>
+        <div class="stat-row">
+            <span>Base Damage (+5/pt) [Base 15]: <span id="alloc-dmg-val">15</span></span>
+            <div><button class="stat-btn" onclick="adjustStat('dmg', -1)">-</button><button class="stat-btn" onclick="adjustStat('dmg', 1)">+</button></div>
+        </div>
+        <div class="stat-row">
+            <span>Max Weight (+10/pt) [Base 30]: <span id="alloc-wgt-val">30</span></span>
+            <div><button class="stat-btn" onclick="adjustStat('wgt', -1)">-</button><button class="stat-btn" onclick="adjustStat('wgt', 1)">+</button></div>
+        </div>
+        
+        <button class="menu-btn" style="margin-top: 20px;" onclick="startNewGame()">Enter the Dungeon</button>
+        <button class="menu-btn danger" onclick="showMainMenu()">Cancel</button>
+    </div>
+
+    <div id="screen-game" class="screen" style="align-items: stretch;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="floor-title" style="text-align: left; margin-bottom: 5px;">Floor 1</h2>
+            <button class="btn-small drop-btn" onclick="saveAndQuit()">Save & Quit</button>
+        </div>
+        
+        <div id="map-container"></div>
+
+        <div id="stats-panel">
+            <div class="stat-group">
+                <div class="stat"><span>Level <span id="level-text">1</span></span></div>
+                <div class="stat">EXP: <span id="exp-text">0/50</span>
+                    <div class="bar-container"><div id="exp-bar" class="bar"></div></div>
+                </div>
+            </div>
+            <div class="stat-group">
+                <div class="stat">HP: <span id="hp-text"></span>
+                    <div class="bar-container"><div id="hp-bar" class="bar"></div></div>
+                </div>
+                <div class="stat">MP: <span id="mp-text"></span>
+                    <div class="bar-container"><div id="mp-bar" class="bar"></div></div>
+                </div>
+            </div>
+            <div class="stat-group">
+                <div class="stat">Damage: <span id="dmg-text"></span></div>
+                <div class="stat">Weight: <span id="weight-text"></span> lbs</div>
+                <div class="stat">Wallet: $<span id="wallet-balance"></span> CAD</div>
+            </div>
+        </div>
+        <div id="status-effects"></div>
+        
+        <div id="room-description"></div>
+        
+        <div id="combat-ui">
+            <div id="interaction-area">
+                <div id="grammar-task"></div>
+                <div id="input-container"></div>
+            </div>
+            <div id="spell-area">
+                <h4 style="margin:0 0 10px 0; color:#3498db;">Spellbook</h4>
+                <div id="active-spells"></div>
+            </div>
+        </div>
+        
+        <div id="feedback"></div>
+        
+        <div class="panel-container">
+            <div class="side-panel" style="flex: 2;">
+                <h3 style="margin:0;">Bag Contents</h3>
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Effect</th>
+                            <th>Wt</th>
+                            <th>Value</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-list"></tbody>
+                </table>
+            </div>
+            <div class="side-panel" style="flex: 1;">
+                <h3 style="margin:0;">Learned Magic</h3>
+                <div id="spell-library" style="margin-top: 10px; font-size: 13px;"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- Database: Encounters, Spells, Gear ---
+    const questionDatabase = [
+        { type: "Grammar", question: "Fix the dangling participle: 'Walking through the dark dungeon, the treasure chest was finally found by the brave adventurer.'", correctAnswers: ["Walking through the dark dungeon, the brave adventurer finally found the treasure chest.", "The brave adventurer finally found the treasure chest walking through the dark dungeon."] },
+        { type: "Grammar", question: "Fix the subject-verb agreement: 'The group of heavily armed goblins are blocking the exit.'", correctAnswers: ["The group of heavily armed goblins is blocking the exit."] },
+        { type: "Grammar", question: "Fix punctuation and word choice: 'Its raining outside so their going to the tavern.'", correctAnswers: ["It's raining outside, so they're going to the tavern.", "It is raining outside, so they are going to the tavern."] },
+        { type: "Grammar", question: "Convert to past perfect tense: 'The dragon eats the villagers before the knights arrive.'", correctAnswers: ["The dragon had eaten the villagers before the knights arrived."] },
+        { type: "Spelling", question: "Correct the spelling: The hotel will [accomodate] our requests.", correctAnswers: ["accommodate"] },
+        { type: "Spelling", question: "Correct the spelling: He will [definitly] be there tomorrow.", correctAnswers: ["definitely"] },
+        { type: "Spelling", question: "Correct the spelling: The local [Vancouvirite] knew all the hidden trails.", correctAnswers: ["Vancouverite"] },
+        { type: "Vocabulary", question: "Word for: 'Lasting for a very short time.' (Starts with E)", correctAnswers: ["ephemeral"] },
+        { type: "Vocabulary", question: "Word for: 'Present, appearing, or found everywhere.' (Starts with U)", correctAnswers: ["ubiquitous"] },
+        { type: "Vocabulary", question: "Word for: 'A person who dislikes humankind and avoids human society.' (Starts with M)", correctAnswers: ["misanthrope"] }
+    ];
+
+    const allSpells = [
+        { level: 5, name: "Kitsilano Cure", cost: 15, effect: "heal", value: 50, desc: "Restores 50 HP." },
+        { level: 10, name: "Lions Gate Ward", cost: 20, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
+        { level: 15, name: "UBC Insight", cost: 30, effect: "solve", value: 0, desc: "Automatically solves the current challenge." },
+        { level: 20, name: "Whistler Wind", cost: 40, effect: "heal", value: 150, desc: "Restores 150 HP." },
+        { level: 25, name: "Gastown Ghost", cost: 50, effect: "shield", value: 0, desc: "Nullifies damage from the next incorrect answer." },
+        { level: 30, name: "YVR Bypass", cost: 60, effect: "solve", value: 0, desc: "Automatically solves the current challenge." }
+    ];
+
+    const peddlerInventory = [
+        { name: "Commercial Drive Coffee", power: "Restores 30 MP.", weight: 1, value: 40.00, type: "consumable", mpHeal: 30 },
+        { name: "Yaletown Health Potion", power: "Restores 80 HP.", weight: 2, value: 70.00, type: "consumable", hpHeal: 80 },
+        { name: "MEC Expedition Backpack", power: "Passive: Increases Max Weight by 30 lbs.", weight: 0, value: 150.00, type: "gear", effect: "carry_capacity", amount: 30 },
+        { name: "Granville Broadsword", power: "Passive: Increases Base Damage by 15.", weight: 10, value: 250.00, type: "gear", effect: "damage_boost", amount: 15 }
+    ];
+
+    const gearAdjectives = ["Rainy", "Overcast", "Evergreen", "Pacific", "Alpine", "Coastal"];
+    const gearNouns = ["Ring", "Pendant", "Cloak", "Bracer", "Boots", "Amulet"];
+
+    // --- State Variables ---
+    let gameState = {};
+    let allocPoints = 5;
+    let alloc = { hp: 0, mp: 0, dmg: 0, wgt: 0 };
+    
+    let dynamicStats = { maxHp: 0, maxMp: 0, maxWeight: 0, damageBoost: 0 };
+    let currentQuestionData = null;
+    let activeBuffs = { shield: false };
+
+    // --- Initialization & Menus ---
+    window.onload = () => {
+        if (localStorage.getItem('grammarDungeonSaveV2')) {
+            document.getElementById('btn-continue').style.display = "block";
+        }
+    };
+
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function showMainMenu() { switchScreen('screen-menu'); }
+
+    function showNewGameMenu() {
+        allocPoints = 5; alloc = { hp: 0, mp: 0, dmg: 0, wgt: 0 };
+        updateAllocUI(); switchScreen('screen-stats');
+    }
+
+    function adjustStat(stat, amt) {
+        if (amt > 0 && allocPoints > 0) { alloc[stat]++; allocPoints--; } 
+        else if (amt < 0 && alloc[stat] > 0) { alloc[stat]--; allocPoints++; }
+        updateAllocUI();
+    }
+
+    function updateAllocUI() {
+        document.getElementById('points-left').innerText = allocPoints;
+        document.getElementById('alloc-hp-val').innerText = 50 + (alloc.hp * 10);
+        document.getElementById('alloc-mp-val').innerText = 20 + (alloc.mp * 5);
+        document.getElementById('alloc-dmg-val').innerText = 15 + (alloc.dmg * 5);
+        document.getElementById('alloc-wgt-val').innerText = 30 + (alloc.wgt * 10);
+    }
+
+    function startNewGame() {
+        const maxHp = 50 + (alloc.hp * 10);
+        const maxMp = 20 + (alloc.mp * 5);
+        gameState = {
+            level: 1, exp: 0,
+            hp: maxHp, baseMaxHp: maxHp,
+            mp: maxMp, baseMaxMp: maxMp,
+            baseDamage: 15 + (alloc.dmg * 5),
+            baseWeight: 30 + (alloc.wgt * 10),
+            wallet: 0, inventory: [], spells: [],
+            floor: 1, map: [], currentNodeId: 0
+        };
+        activeBuffs.shield = false;
+        generateMap(1); saveGameState();
+        switchScreen('screen-game'); renderMap(); loadRoom(0);
+    }
+
+    function loadGame() {
+        const saved = localStorage.getItem('grammarDungeonSaveV2');
+        if (saved) {
+            gameState = JSON.parse(saved);
+            activeBuffs.shield = false;
+            switchScreen('screen-game'); renderMap(); loadRoom(gameState.currentNodeId);
+        }
+    }
+
+    function saveGameState() {
+        localStorage.setItem('grammarDungeonSaveV2', JSON.stringify(gameState));
+        recalculatePassives(); updateStats(); updateInventoryDisplay(); updateSpellsDisplay();
+    }
+
+    function saveAndQuit() { saveGameState(); showMainMenu(); document.getElementById('btn-continue').style.display = "block"; }
+
+    function clearSaveAndDie() {
+        localStorage.removeItem('grammarDungeonSaveV2');
+        document.getElementById('btn-continue').style.display = "none";
+        document.getElementById('room-description').innerHTML = "<h2>You Died.</h2><p>Your grammatical spirit has been broken.</p>";
+        document.getElementById('combat-ui').style.display = "none";
+        document.getElementById('feedback').innerHTML = `<button class="action-btn" onclick="location.reload()">Return to Menu</button>`;
+        document.getElementById('map-container').innerHTML = "";
+    }
+
+    // --- EXP and Leveling ---
+    function getExpNeeded(lvl) {
+        return Math.floor(50 * Math.pow(1.2, lvl - 1));
+    }
+
+    function gainRewards(baseExp, baseCAD, isBoss) {
+        let expGained = Math.floor(baseExp * (1 + (gameState.floor * 0.2)));
+        let cadGained = Math.floor(baseCAD * (1 + (gameState.floor * 0.1)));
+        if (isBoss) { expGained *= 2; cadGained *= 3; }
+        
+        gameState.wallet += cadGained;
+        gameState.exp += expGained;
+        
+        let fb = `You gained ${expGained} EXP and $${cadGained.toFixed(2)} CAD.`;
+        
+        let leveledUp = false;
+        let expNeeded = getExpNeeded(gameState.level);
+        while (gameState.exp >= expNeeded && gameState.level < 99) {
+            gameState.exp -= expNeeded;
+            gameState.level++;
+            
+            // Dynamic Stat Growth
+            gameState.baseMaxHp += Math.floor(10 * (1 + (gameState.level * 0.05)));
+            gameState.baseMaxMp += Math.floor(5 * (1 + (gameState.level * 0.05)));
+            gameState.baseDamage += Math.floor(5 * (1 + (gameState.level * 0.05)));
+            
+            gameState.hp = gameState.baseMaxHp;
+            gameState.mp = gameState.baseMaxMp;
+            leveledUp = true;
+            expNeeded = getExpNeeded(gameState.level);
+            checkNewSpells();
+        }
+
+        if (leveledUp) {
+            fb += `<div class="level-up"><strong>Level Up!</strong> You are now Level ${gameState.level}! Stats increased and restored to full.</div>`;
+        }
+        return fb;
+    }
+
+    function checkNewSpells() {
+        allSpells.forEach(spell => {
+            if (gameState.level >= spell.level && !gameState.spells.some(s => s.name === spell.name)) {
+                gameState.spells.push(spell);
+            }
+        });
+    }
+
+    function generateGearDrop() {
+        const adj = gearAdjectives[Math.floor(Math.random() * gearAdjectives.length)];
+        const noun = gearNouns[Math.floor(Math.random() * gearNouns.length)];
+        const types = ["max_hp", "max_mp", "damage_boost", "carry_capacity"];
+        const type = types[Math.floor(Math.random() * types.length)];
+        
+        let amount = 0; let powerDesc = "";
+        const multiplier = gameState.floor + Math.floor(gameState.level / 2);
+        
+        if(type === "max_hp") { amount = multiplier * 5; powerDesc = `+${amount} Max HP`; }
+        if(type === "max_mp") { amount = multiplier * 2; powerDesc = `+${amount} Max MP`; }
+        if(type === "damage_boost") { amount = multiplier * 2; powerDesc = `+${amount} Base Damage`; }
+        if(type === "carry_capacity") { amount = multiplier * 5; powerDesc = `+${amount} lbs Max Wgt`; }
+        
+        return {
+            name: `${adj} ${noun}`, power: `Passive: ${powerDesc}`, weight: Math.floor(Math.random() * 3) + 1,
+            value: 50 + (multiplier * 15), type: "gear", effect: type, amount: amount
+        };
+    }
+
+    // --- Map Generation ---
+    function generateMap(floorNum) {
+        const numNodes = 6 + Math.floor(floorNum * 1.5);
+        let newMap = [{ id: 0, type: 'entrance', completed: true }];
+        for (let i = 1; i < numNodes - 1; i++) {
+            const rand = Math.random();
+            let type = 'encounter';
+            if (rand < 0.20 && i > 1) type = 'peddler';
+            else if (rand < 0.40 && i > 1) type = 'inn';
+            newMap.push({ id: i, type: type, completed: false });
+        }
+        newMap.push({ id: numNodes - 1, type: 'boss', completed: false });
+        gameState.map = newMap; gameState.currentNodeId = 0; gameState.floor = floorNum;
+    }
+
+    function renderMap() {
+        const container = document.getElementById('map-container');
+        container.innerHTML = "";
+        document.getElementById('floor-title').innerText = `Floor ${gameState.floor}: The Descent`;
+        
+        gameState.map.forEach(node => {
+            const el = document.createElement('div');
+            el.className = `map-node ${node.type === 'boss' ? 'boss' : ''} ${node.completed ? 'completed' : ''} ${node.id === gameState.currentNodeId ? 'current' : ''}`;
+            
+            let icon = node.id + 1;
+            if (node.type === 'boss') icon = "<span>☠</span>";
+            if (node.type === 'inn') icon = "⛺";
+            if (node.type === 'peddler') icon = "💰";
+            if (node.type === 'entrance') icon = "🚪";
+            el.innerHTML = icon;
+            
+            el.onclick = () => {
+                if (node.completed || node.id === gameState.currentNodeId || (node.id === gameState.currentNodeId + 1 && gameState.map[gameState.currentNodeId].completed)) {
+                    gameState.currentNodeId = node.id; renderMap(); loadRoom(node.id);
+                }
+            };
+            container.appendChild(el);
+        });
+        const currentEl = document.querySelector('.map-node.current');
+        if (currentEl) container.scrollLeft = currentEl.offsetLeft - (container.clientWidth / 2) + 20;
+    }
+
+    // --- Core Systems: Stats & Inventory ---
+    function cleanString(str) { return str.toLowerCase().replace(/[.,!?;\[\]]/g, "").trim(); }
+    function calculateCurrentWeight() { return gameState.inventory.reduce((total, item) => total + item.weight, 0); }
+
+    function recalculatePassives() {
+        dynamicStats = { maxHp: gameState.baseMaxHp, maxMp: gameState.baseMaxMp, maxWeight: gameState.baseWeight, damageBoost: 0 };
+        gameState.inventory.forEach(item => {
+            if (item.type === "gear") {
+                if (item.effect === "max_hp") dynamicStats.maxHp += item.amount;
+                if (item.effect === "max_mp") dynamicStats.maxMp += item.amount;
+                if (item.effect === "carry_capacity") dynamicStats.maxWeight += item.amount;
+                if (item.effect === "damage_boost") dynamicStats.damageBoost += item.amount;
+            }
+        });
+        gameState.hp = Math.min(gameState.hp, dynamicStats.maxHp);
+        gameState.mp = Math.min(gameState.mp, dynamicStats.maxMp);
+    }
+
+    function updateStats() {
+        const currentWeight = calculateCurrentWeight();
+        document.getElementById('level-text').innerText = gameState.level;
+        document.getElementById('exp-text').innerText = `${Math.floor(gameState.exp)}/${getExpNeeded(gameState.level)}`;
+        document.getElementById('hp-text').innerText = `${Math.max(0, gameState.hp)}/${dynamicStats.maxHp}`;
+        document.getElementById('mp-text').innerText = `${Math.max(0, gameState.mp)}/${dynamicStats.maxMp}`;
+        document.getElementById('dmg-text').innerText = `${gameState.baseDamage + dynamicStats.damageBoost}`;
+        document.getElementById('weight-text').innerText = `${currentWeight}/${dynamicStats.maxWeight}`;
+        document.getElementById('wallet-balance').innerText = gameState.wallet.toFixed(2);
+        
+        document.getElementById('weight-text').style.color = currentWeight > dynamicStats.maxWeight ? "#e74c3c" : "#fff";
+
+        document.getElementById('hp-bar').style.width = `${Math.max(0, (gameState.hp / dynamicStats.maxHp) * 100)}%`;
+        document.getElementById('mp-bar').style.width = `${Math.max(0, (gameState.mp / dynamicStats.maxMp) * 100)}%`;
+        document.getElementById('exp-bar').style.width = `${Math.max(0, (gameState.exp / getExpNeeded(gameState.level)) * 100)}%`;
+        
+        let buffHtml = "";
+        if (activeBuffs.shield) buffHtml += `<span class="buff-badge">Ward Active (Damage Nullified)</span>`;
+        document.getElementById('status-effects').innerHTML = buffHtml;
+    }
+
+    function updateInventoryDisplay() {
+        const inventoryList = document.getElementById('inventory-list');
+        inventoryList.innerHTML = "";
+        if (gameState.inventory.length === 0) {
+            inventoryList.innerHTML = "<tr><td colspan='5'>Your bag is empty.</td></tr>"; return;
+        }
+        gameState.inventory.forEach((item, index) => {
+            let actionHtml = "";
+            if (item.type === "consumable") {
+                actionHtml = `<button class="btn-small use-btn" onclick="useItem(${index})">Use</button> `;
+            } else if (item.type === "gear") {
+                actionHtml = `<span style="color:#f39c12; font-size:12px;">Equipped</span> `;
+            }
+            actionHtml += `<button class="btn-small drop-btn" onclick="dropItem(${index})">Drop</button>`;
+            const row = document.createElement('tr');
+            row.innerHTML = `<td style="font-weight:bold; color:#aaddff;">${item.name}</td><td style="font-style:italic;">${item.power}</td><td>${item.weight} lbs</td><td>$${item.value.toFixed(2)}</td><td>${actionHtml}</td>`;
+            inventoryList.appendChild(row);
+        });
+    }
+
+    function updateSpellsDisplay() {
+        const activeContainer = document.getElementById('active-spells');
+        const libraryContainer = document.getElementById('spell-library');
+        activeContainer.innerHTML = ""; libraryContainer.innerHTML = "";
+        
+        if (gameState.spells.length === 0) {
+            activeContainer.innerHTML = "<p style='color:#888; font-size:13px;'>No spells learned. Reach Level 5.</p>";
+            libraryContainer.innerHTML = "<p style='color:#888;'>Explore the dungeon to unlock magic.</p>";
+            return;
+        }
+
+        gameState.spells.forEach((spell, idx) => {
+            // Library View
+            libraryContainer.innerHTML += `<div style="margin-bottom:8px;"><strong>${spell.name}</strong> (Cost: ${spell.cost} MP)<br><span style="color:#bbb;">${spell.desc}</span></div>`;
+            
+            // Combat View
+            const canCast = gameState.mp >= spell.cost;
+            activeContainer.innerHTML += `<button class="spell-btn" ${canCast ? '' : 'disabled'} onclick="castSpell(${idx})">${spell.name} (${spell.cost} MP)</button>`;
+        });
+    }
+
+    function dropItem(index) {
+        gameState.inventory.splice(index, 1); saveGameState();
+        document.getElementById('feedback').innerHTML = "<span class='info'>Item dropped.</span>";
+    }
+
+    function useItem(index) {
+        const item = gameState.inventory[index];
+        if (item.hpHeal) gameState.hp = Math.min(dynamicStats.maxHp, gameState.hp + item.hpHeal);
+        if (item.mpHeal) gameState.mp = Math.min(dynamicStats.maxMp, gameState.mp + item.mpHeal);
+        gameState.inventory.splice(index, 1);
+        document.getElementById('feedback').innerHTML = `<span class='success'>Consumed ${item.name}.</span>`;
+        saveGameState(); if(document.querySelector('.peddler-section')) loadPeddlerUI(); 
+    }
+
+    // --- Magic System ---
+    function castSpell(index) {
+        const spell = gameState.spells[index];
+        if (gameState.mp < spell.cost) return;
+        
+        gameState.mp -= spell.cost;
+        let fb = `<span class="info">Casted ${spell.name}!</span><br>`;
+        
+        if (spell.effect === "heal") {
+            gameState.hp = Math.min(dynamicStats.maxHp, gameState.hp + spell.value);
+            fb += `Restored ${spell.value} HP.`;
+        } else if (spell.effect === "shield") {
+            activeBuffs.shield = true;
+            fb += `A protective ward surrounds you.`;
+        } else if (spell.effect === "solve") {
+            fb += `The magic forces the correct answer into reality!`;
+            document.getElementById('feedback').innerHTML = fb;
+            saveGameState();
+            submitAnswer(gameState.map[gameState.currentNodeId].type === 'boss', true); // auto-win
+            return;
+        }
+        
+        document.getElementById('feedback').innerHTML = fb;
+        saveGameState();
+    }
+
+    // --- Room Logic ---
+    function loadRoom(nodeId) {
+        document.getElementById('feedback').innerText = "";
+        const node = gameState.map[nodeId];
+        document.getElementById('combat-ui').style.display = "flex";
+        
+        if (node.completed) {
+            document.getElementById('room-description').innerHTML = `<p>You have already cleared this room. The path forward awaits.</p>`;
+            document.getElementById('grammar-task').innerHTML = "";
+            document.getElementById('input-container').innerHTML = "";
+            return;
+        }
+
+        if (node.type === 'entrance') {
+            document.getElementById('room-description').innerHTML = `<p>The heavy doors slam shut behind you. The air is damp. You must push forward.</p>`;
+            document.getElementById('grammar-task').innerHTML = "";
+            document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Step into the dark...</button>`;
+        } else if (node.type === 'encounter') {
+            setupEncounterRoom("Shadow Encounter", `A level ${gameState.level} linguistic anomaly blocks your path.`);
+        } else if (node.type === 'boss') {
+            setupEncounterRoom("Floor Boss: The Syntax Behemoth", `A massive amalgamation of terrible grammar towers over the staircase.`);
+        } else if (node.type === 'inn') {
+            setupInnRoom();
+        } else if (node.type === 'peddler') {
+            setupPeddlerRoom();
+        }
+    }
+
+    function completeCurrentNode() {
+        gameState.map[gameState.currentNodeId].completed = true;
+        activeBuffs.shield = false; // Reset buffs
+        
+        if (gameState.map[gameState.currentNodeId].type === 'boss') {
+            document.getElementById('room-description').innerHTML = `<h2>Boss Defeated!</h2><p>The creature dissolves. You find the stairs leading down.</p>`;
+            document.getElementById('grammar-task').innerHTML = "";
+            document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="descendFloor()">Descend to Floor ${gameState.floor + 1}</button>`;
+            saveGameState(); renderMap(); return;
+        }
+
+        if (gameState.currentNodeId + 1 < gameState.map.length) {
+            gameState.currentNodeId++; saveGameState(); renderMap(); loadRoom(gameState.currentNodeId);
+        }
+    }
+
+    function descendFloor() {
+        generateMap(gameState.floor + 1); saveGameState(); renderMap(); loadRoom(0);
+    }
+
+    // --- Encounter Logic ---
+    function setupEncounterRoom(title, desc) {
+        const qIndex = Math.floor(Math.random() * questionDatabase.length);
+        currentQuestionData = questionDatabase[qIndex];
+        const isBoss = gameState.map[gameState.currentNodeId].type === 'boss';
+
+        document.getElementById('room-description').innerHTML = `<h2>${title}</h2><p>${desc}</p>`;
+        document.getElementById('grammar-task').innerHTML = `<span class="challenge-type">${currentQuestionData.type} Challenge</span><br>${currentQuestionData.question}`;
+        
+        document.getElementById('input-container').innerHTML = `
+            <input type="text" id="player-input" placeholder="Enter your answer here..." autocomplete="off">
+            <button class="action-btn" onclick="submitAnswer(${isBoss}, false)">Submit Answer</button>
+        `;
+
+        document.getElementById('player-input').focus();
+        document.getElementById('player-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') submitAnswer(isBoss, false);
+        });
+        updateSpellsDisplay();
+    }
+
+    function submitAnswer(isBoss, autoWin) {
+        let isCorrect = false;
+        if (autoWin) {
+            isCorrect = true;
+        } else {
+            const playerAnswer = document.getElementById('player-input').value;
+            if (playerAnswer.trim() === "") {
+                document.getElementById('feedback').innerHTML = "<span class='failure'>You must provide an answer.</span>"; return;
+            }
+            const cleanedPlayerAnswer = cleanString(playerAnswer);
+            isCorrect = currentQuestionData.correctAnswers.some(ans => cleanString(ans) === cleanedPlayerAnswer);
+        }
+
+        const feedbackElement = document.getElementById('feedback');
+
+        if (isCorrect) {
+            let rewardsHtml = gainRewards(20, 30, isBoss);
+            
+            // Random Gear Drop
+            if (Math.random() > 0.3) {
+                const item = generateGearDrop();
+                if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight) {
+                    gameState.inventory.push(item);
+                    rewardsHtml += `<br>Loot found: <strong>${item.name}</strong> added to bag.`;
+                } else {
+                    rewardsHtml += `<br>Loot found: <strong>${item.name}</strong>. Bag too heavy, left behind.`;
+                }
+            }
+            
+            feedbackElement.innerHTML = `<div class='success'>Flawless Execution!<br>${rewardsHtml}</div>`;
+            document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Continue</button>`;
+            saveGameState();
+        } else {
+            if (activeBuffs.shield) {
+                feedbackElement.innerHTML = `<div class='info'>Incorrect! The magic ward absorbed the blow! The ward dissipates.</div>`;
+                activeBuffs.shield = false;
+            } else {
+                let dmg = (15 * gameState.floor) + Math.floor(gameState.level * 2);
+                if (isBoss) dmg *= 2; 
+                gameState.hp -= dmg;
+                feedbackElement.innerHTML = `<div class='failure'>Incorrect! You take ${dmg} damage.<br><strong>The correct answer is:</strong> "${currentQuestionData.correctAnswers[0]}"</div>`;
+                
+                if (gameState.hp <= 0) { clearSaveAndDie(); return; } 
+                else { document.getElementById('input-container').innerHTML = `<button class="action-btn" style="background-color:#e74c3c;" onclick="completeCurrentNode()">Flee to next room...</button>`; }
+            }
+            saveGameState();
+        }
+    }
+
+    // --- Special Rooms (Inn / Peddler) ---
+    function setupInnRoom() {
+        document.getElementById('room-description').innerHTML = `<h2>The False Creek Inn</h2><p>A safe haven. Fully restore your HP and MP for $60.00 CAD.</p>`;
+        document.getElementById('grammar-task').innerHTML = "";
+        document.getElementById('input-container').innerHTML = `
+            <button class="action-btn" onclick="restAtInn()">Rest ($60.00 CAD)</button>
+            <button class="action-btn" style="background-color: #7f8c8d;" onclick="completeCurrentNode()">Leave the Inn</button>
+        `;
+    }
+
+    function restAtInn() {
+        const feedbackElement = document.getElementById('feedback');
+        if (gameState.wallet >= 60) {
+            if (gameState.hp >= dynamicStats.maxHp && gameState.mp >= dynamicStats.maxMp) {
+                feedbackElement.innerHTML = "<span class='info'>You are already fully rested.</span>";
+            } else {
+                gameState.wallet -= 60;
+                gameState.hp = dynamicStats.maxHp; gameState.mp = dynamicStats.maxMp;
+                feedbackElement.innerHTML = "<span class='success'>You rest and recover all your HP and MP.</span>";
+                saveGameState();
+                document.getElementById('input-container').innerHTML = `<button class="action-btn" onclick="completeCurrentNode()">Continue Journey</button>`;
+            }
+        } else {
+            feedbackElement.innerHTML = "<span class='failure'>You do not have enough CAD.</span>";
+        }
+    }
+
+    function setupPeddlerRoom() {
+        document.getElementById('room-description').innerHTML = `<h2>The Commercial Drive Peddler</h2><p>"Greetings, traveler! Buying or selling?"</p>`;
+        document.getElementById('grammar-task').innerHTML = "";
+        loadPeddlerUI();
+    }
+
+    function loadPeddlerUI() {
+        let interactionHTML = `<div class="peddler-section">`;
+        
+        interactionHTML += `<div class="shop-column"><h3>Buy Items</h3>`;
+        peddlerInventory.forEach((item, index) => {
+            interactionHTML += `
+                <div class="shop-item">
+                    <div class="shop-item-details">
+                        <span class="shop-item-name">${item.name} - $${item.value.toFixed(2)}</span>
+                        <span class="shop-item-power">${item.power} (${item.weight} lbs)</span>
+                    </div>
+                    <button class="btn-small buy-btn" onclick="buyItem(${index})">Buy</button>
+                </div>
+            `;
+        });
+        interactionHTML += `</div>`;
+
+        interactionHTML += `<div class="shop-column"><h3>Sell Items</h3>`;
+        if (gameState.inventory.length === 0) {
+            interactionHTML += `<p>Your bag is empty.</p>`;
+        } else {
+            gameState.inventory.forEach((item, index) => {
+                interactionHTML += `
+                    <div class="shop-item">
+                        <div class="shop-item-details"><span class="shop-item-name">${item.name}</span><span class="shop-item-power">+ $${item.value.toFixed(2)}</span></div>
+                        <button class="btn-small use-btn" onclick="sellItem(${index})">Sell</button>
+                    </div>
+                `;
+            });
+        }
+        interactionHTML += `</div></div><br><button class="action-btn" style="background-color: #7f8c8d;" onclick="completeCurrentNode()">Leave Shop</button>`;
+        document.getElementById('input-container').innerHTML = interactionHTML;
+    }
+
+    function buyItem(index) {
+        const item = peddlerInventory[index];
+        const feedbackElement = document.getElementById('feedback');
+        
+        if (gameState.wallet >= item.value) {
+            if (calculateCurrentWeight() + item.weight <= dynamicStats.maxWeight || item.effect === "carry_capacity") {
+                gameState.wallet -= item.value; gameState.inventory.push({...item});
+                saveGameState(); loadPeddlerUI(); 
+                feedbackElement.innerHTML = `<span class='success'>You purchased ${item.name}!</span>`;
+            } else {
+                feedbackElement.innerHTML = `<span class='failure'>Your bag is too heavy to carry the ${item.name}.</span>`;
+            }
+        } else {
+            feedbackElement.innerHTML = `<span class='failure'>You cannot afford the ${item.name}.</span>`;
+        }
+    }
+
+    function sellItem(index) {
+        const item = gameState.inventory[index];
+        gameState.wallet += item.value; gameState.inventory.splice(index, 1);
+        saveGameState(); loadPeddlerUI(); 
+        document.getElementById('feedback').innerHTML = `<span class='success'>You sold the ${item.name} for $${item.value.toFixed(2)} CAD.</span>`;
+    }
+</script>
+
+</body>
+</html>
