@@ -243,66 +243,6 @@
             border-radius: 8px;
             line-height: 1.5;
         }
-        
-        /* Floating Sticky Bar - Left Aligned & Vertical */
-        .sticky-vocab-bar {
-            position: fixed;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 2px solid #1976d2;
-            border-radius: 12px;
-            padding: 15px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            z-index: 1000;
-        }
-        .sticky-item {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.85rem;
-            line-height: 1.3;
-            color: #333;
-            padding: 0;
-            transition: transform 0.1s;
-        }
-        .sticky-item:hover {
-            transform: scale(1.05);
-        }
-        .sticky-item:active {
-            transform: scale(0.95);
-        }
-        .sticky-item strong {
-            color: #d32f2f;
-            font-size: 1.1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-        .sticky-icon {
-            font-size: 1.1rem;
-        }
-        .sticky-item span.desc {
-            color: #666;
-            font-size: 0.75rem;
-            display: block;
-            margin-top: 2px;
-        }
-        
-        /* Media query for smaller screens to make the container responsive to the sidebar */
-        @media (min-width: 650px) {
-            .container {
-                margin-left: 80px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -534,24 +474,6 @@
         I stand <strong>in front of (前面)</strong> my friend.<br>
         There is a cup of coffee <strong>in front of (前面)</strong> me.
     </div>
-</div>
-
-<div class="sticky-vocab-bar">
-    <button class="sticky-item" onclick="playText('喺')">
-        <strong><span class="sticky-icon">🔊</span> 喺</strong>
-        (hai2)
-        <span class="desc">At / In / On</span>
-    </button>
-    <button class="sticky-item" onclick="playText('入面')">
-        <strong><span class="sticky-icon">🔊</span> 入面</strong>
-        (jap6 min6)
-        <span class="desc">Inside</span>
-    </button>
-    <button class="sticky-item" onclick="playText('前面')">
-        <strong><span class="sticky-icon">🔊</span> 前面</strong>
-        (cin4 min6)
-        <span class="desc">In front of</span>
-    </button>
 </div>
 
 <script>
