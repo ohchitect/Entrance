@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: Beginner Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 0.9rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 200px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #d32f2f; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #b71c1c; }
+        .prep-section {
+            background-color: #e3f2fd; border-left: 4px solid #1976d2;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #1565c0; font-size: 1.1rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.4; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .vocab-item {
+            background: white; padding: 10px 8px; border-radius: 8px; font-size: 0.9rem;
+            border: 2px solid #bbdefb; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #e3f2fd; border-color: #2196f3; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #1976d2; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #d32f2f;
+            padding: 15px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.2rem; line-height: 1.8; margin-bottom: 10px; color: #1a1a1a; }
+        .jyutping { color: #666; font-size: 0.9rem; line-height: 1.6; }
+        .highlight { color: #1976d2; text-decoration: underline; background-color: #e3f2fd; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 20px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 4px; }
+        .translation-box { margin-top: 30px; font-size: 0.9rem; color: #555; background: #eee; padding: 15px; border-radius: 8px; line-height: 1.5; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+        .nav-btn { background: #1976d2; color: white; border: none; border-radius: 8px; padding: 12px 20px; font-weight: bold; cursor: pointer; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+</div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "Working in Construction", topic: "Action Verbs (做 - to do/work)",
+        img: "https://images.unsplash.com/photo-1541888087588-926c45731671",
+        grammarDesc: "<strong>Verbs (動詞):</strong> Expressing actions. <br>做 (zou6): to do/work<br>開會 (hoi1 wui2): to have a meeting",
+        vocab: [
+            {c: "建築", j: "gin3 zuk1", e: "Construction"}, {c: "經理", j: "ging1 lei5", e: "Manager"},
+            {c: "做嘢", j: "zou6 je5", e: "Working"}, {c: "開會", j: "hoi1 wui2", e: "Meeting"},
+            {c: "地盤", j: "dei6 pun4", e: "Site"}, {c: "老闆", j: "lou5 baan2", e: "Boss"},
+            {c: "圖則", j: "tou4 zak1", e: "Drawings"}, {c: "辛苦", j: "san1 fu2", e: "Hard work"},
+            {c: "溫哥華", j: "Wan1 go1 waa4", e: "Vancouver"}, {c: "返工", j: "faan1 gung1", e: "Go to work"}
+        ],
+        story: "我喺溫哥華做建築經理。<br>今日老闆 Alex 叫我開會。<br>我要去地盤睇圖則。",
+        jyutping: "Ngo5 hai2 Wan1 go1 waa4 <span class='highlight'>zou6</span> gin3 zuk1 ging1 lei5.<br>Gam1 jat6 lou5 baan2 Alex giu3 ngo5 <span class='highlight'>hoi1 wui2</span>.<br>Ngo5 jiu3 heoi3 dei6 pun4 tai2 tou4 zak1.",
+        english: "I work as a construction manager in Vancouver.<br>Today boss Alex told me to have a meeting.<br>I need to go to the site to look at drawings.",
+        quizzes: [
+            { q: "老闆叫我做咩？", e: "(What did the boss tell me to do?)", options: [{c: "開會", e: "(Have a meeting)", correct: true}, {c: "買咖啡", e: "(Buy coffee)", correct: false}, {c: "瞓覺", e: "(Sleep)", correct: false}] },
+            { q: "我去邊度睇圖則？", e: "(Where do I go to look at drawings?)", options: [{c: "地盤", e: "(Construction site)", correct: true}, {c: "屋企", e: "(Home)", correct: false}, {c: "餐廳", e: "(Restaurant)", correct: false}] },
+            { q: "我喺邊度做嘢？", e: "(Where do I work?)", options: [{c: "溫哥華", e: "(Vancouver)", correct: true}, {c: "多倫多", e: "(Toronto)", correct: false}, {c: "香港", e: "(Hong Kong)", correct: false}] },
+            { q: "老闆叫咩名？", e: "(What is the boss's name?)", options: [{c: "Alex", e: "(Alex)", correct: true}, {c: "Jamie", e: "(Jamie)", correct: false}, {c: "Paul", e: "(Paul)", correct: false}] },
+            { q: "我做咩職位？", e: "(What is my position?)", options: [{c: "建築經理", e: "(Construction manager)", correct: true}, {c: "醫生", e: "(Doctor)", correct: false}, {c: "老師", e: "(Teacher)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "Ordering Tim Hortons", topic: "Location Prepositions (喺 - at/in)",
+        img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24",
+        grammarDesc: "<strong>Prepositions (介詞):</strong> Expressing where things are.<br>喺 (hai2): At / In / On<br>入面 (jap6 min6): Inside",
+        vocab: [
+            {c: "凍", j: "dung3", e: "Cold"}, {c: "咖啡店", j: "gaa3 fe1 dim3", e: "Coffee shop"},
+            {c: "朋友", j: "pang4 jau5", e: "Friend"}, {c: "舖頭", j: "pou3 tau2", e: "Store"},
+            {c: "暖", j: "nyun5", e: "Warm"}, {c: "買嘢飲", j: "maai5 je5 jam2", e: "Buy drinks"},
+            {c: "坐", j: "co5", e: "To sit"}, {c: "櫃檯", j: "gwai6 toi2", e: "Counter"},
+            {c: "企", j: "kei5", e: "To stand"}, {c: "杯", j: "bui1", e: "Cup"}
+        ],
+        story: "今日溫哥華好凍，好多人喺 Tim Hortons。<br>我同朋友坐喺入面買嘢飲。<br>我前面有一杯咖啡。",
+        jyutping: "Gam1 jat6 Wan1 go1 waa4 hou2 dung3, hou2 do1 jan4 <span class='highlight'>hai2</span> Tim Hortons.<br>Ngo5 tung4 pang4 jau5 co5 <span class='highlight'>hai2</span> jap6 min6 maai5 je5 jam2.<br>Ngo5 cin4 min6 jau5 jat1 bui1 gaa3 fe1.",
+        english: "Today Vancouver is very cold, lots of people are at Tim Hortons.<br>My friend and I sit inside to buy drinks.<br>There is a cup of coffee in front of me.",
+        quizzes: [
+            { q: "點解大家去入面？", e: "(Why does everyone go inside?)", options: [{c: "因為好暖", e: "(Because it's warm)", correct: true}, {c: "因為好平", e: "(Because it's cheap)", correct: false}, {c: "因為有車", e: "(Because there are cars)", correct: false}] },
+            { q: "我前面有咩？", e: "(What is in front of me?)", options: [{c: "咖啡", e: "(Coffee)", correct: true}, {c: "朋友", e: "(Friend)", correct: false}, {c: "櫃檯", e: "(Counter)", correct: false}] },
+            { q: "今日天氣點樣？", e: "(How is the weather today?)", options: [{c: "好凍", e: "(Very cold)", correct: true}, {c: "好熱", e: "(Very hot)", correct: false}, {c: "落雨", e: "(Raining)", correct: false}] },
+            { q: "我同邊個一齊？", e: "(Who am I with?)", options: [{c: "朋友", e: "(Friend)", correct: true}, {c: "老闆", e: "(Boss)", correct: false}, {c: "家人", e: "(Family)", correct: false}] },
+            { q: "我哋坐喺邊度？", e: "(Where are we sitting?)", options: [{c: "入面", e: "(Inside)", correct: true}, {c: "出面", e: "(Outside)", correct: false}, {c: "車度", e: "(In the car)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Wedding Planning at the Park", topic: "Future Tense (會 - will)",
+        img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed",
+        grammarDesc: "<strong>Future (將來式):</strong> Expressing plans.<br>會 (wui5): Will<br>準備 (zeon2 bei6): Prepare",
+        vocab: [
+            {c: "結婚", j: "git3 fan1", e: "Marry"}, {c: "公園", j: "gung1 jyun2", e: "Park"},
+            {c: "八月", j: "baat3 jyut6", e: "August"}, {c: "未婚夫", j: "mei6 fan1 fu1", e: "Fiancé"},
+            {c: "請客", j: "cing2 haak3", e: "Invite guests"}, {c: "百五", j: "baak3 ng5", e: "150"},
+            {c: "靚", j: "leng3", e: "Beautiful"}, {c: "準備", j: "zeon2 bei6", e: "Prepare"},
+            {c: "開心", j: "hoi1 sam1", e: "Happy"}, {c: "行禮", j: "haang4 lai5", e: "Ceremony"}
+        ],
+        story: "二零二六年八月我會結婚。<br>我同未婚夫 Jamie 會喺伊利沙伯王后公園行禮。<br>我哋會請一百五十個客人。",
+        jyutping: "Ji6 ling4 ji6 luk6 nin4 baat3 jyut6 ngo5 <span class='highlight'>wui5</span> git3 fan1.<br>Ngo5 tung4 mei6 fan1 fu1 Jamie <span class='highlight'>wui5</span> hai2 Ji1 lei6 saa1 baak3 wong4 hau6 gung1 jyun2 haang4 lai5.<br>Ngo5 dei6 <span class='highlight'>wui5</span> cing2 jat1 baak3 ng5 sap6 go3 haak3 jan4.",
+        english: "In August 2026 I will get married.<br>My fiancé Jamie and I will have the ceremony at Queen Elizabeth Park.<br>We will invite 150 guests.",
+        quizzes: [
+            { q: "我幾時結婚？", e: "(When am I getting married?)", options: [{c: "八月", e: "(August)", correct: true}, {c: "十月", e: "(October)", correct: false}, {c: "聽日", e: "(Tomorrow)", correct: false}] },
+            { q: "我會請幾多個人？", e: "(How many people will I invite?)", options: [{c: "一百五十個", e: "(150)", correct: true}, {c: "十個", e: "(10)", correct: false}, {c: "五十個", e: "(50)", correct: false}] },
+            { q: "我喺邊度行禮？", e: "(Where will the ceremony be?)", options: [{c: "公園", e: "(Park)", correct: true}, {c: "餐廳", e: "(Restaurant)", correct: false}, {c: "酒店", e: "(Hotel)", correct: false}] },
+            { q: "我未婚夫叫咩名？", e: "(What is my fiancé's name?)", options: [{c: "Jamie", e: "(Jamie)", correct: true}, {c: "Alex", e: "(Alex)", correct: false}, {c: "Peter", e: "(Peter)", correct: false}] },
+            { q: "邊個結婚？", e: "(Who is getting married?)", options: [{c: "我", e: "(Me)", correct: true}, {c: "老闆", e: "(Boss)", correct: false}, {c: "朋友", e: "(Friend)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Interior Design & Millwork", topic: "Adjectives (好 - very)",
+        img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6",
+        grammarDesc: "<strong>Adjectives (形容詞):</strong> Describing things.<br>好 (hou2): Very<br>靚 (leng3): Pretty/Nice",
+        vocab: [
+            {c: "木工", j: "muk6 gung1", e: "Millwork"}, {c: "設計", j: "cit3 gai3", e: "Design"},
+            {c: "牆紙", j: "coeng4 zi2", e: "Wallpaper"}, {c: "燈", j: "dang1", e: "Light"},
+            {c: "辦公室", j: "baan6 gung1 sat1", e: "Office"}, {c: "靚", j: "leng3", e: "Pretty"},
+            {c: "貴", j: "gwai3", e: "Expensive"}, {c: "新", j: "san1", e: "New"},
+            {c: "顏色", j: "ngaan4 sik1", e: "Color"}, {c: "揀", j: "gaan2", e: "Choose"}
+        ],
+        story: "呢個辦公室設計好靚。<br>牆紙同木工都好貴。<br>我幫客揀咗新嘅燈。",
+        jyutping: "Ni1 go3 baan6 gung1 sat1 cit3 gai3 <span class='highlight'>hou2</span> leng3.<br>Coeng4 zi2 tung4 muk6 gung1 dou1 <span class='highlight'>hou2</span> gwai3.<br>Ngo5 bong1 haak3 gaan2 zo2 san1 ge3 dang1.",
+        english: "This office design is very pretty.<br>The wallpaper and millwork are both very expensive.<br>I helped the client choose new lights.",
+        quizzes: [
+            { q: "辦公室設計點樣？", e: "(How is the office design?)", options: [{c: "好靚", e: "(Very pretty)", correct: true}, {c: "好凍", e: "(Very cold)", correct: false}, {c: "好舊", e: "(Very old)", correct: false}] },
+            { q: "咩嘢好貴？", e: "(What is very expensive?)", options: [{c: "牆紙同木工", e: "(Wallpaper and millwork)", correct: true}, {c: "咖啡", e: "(Coffee)", correct: false}, {c: "電腦", e: "(Computer)", correct: false}] },
+            { q: "我幫客揀咩？", e: "(What did I help the client choose?)", options: [{c: "新嘅燈", e: "(New lights)", correct: true}, {c: "新車", e: "(New car)", correct: false}, {c: "水", e: "(Water)", correct: false}] },
+            { q: "咩地方裝修？", e: "(Where is the renovation?)", options: [{c: "辦公室", e: "(Office)", correct: true}, {c: "屋企", e: "(Home)", correct: false}, {c: "公園", e: "(Park)", correct: false}] },
+            { q: "燈係點樣嘅？", e: "(How are the lights?)", options: [{c: "新嘅", e: "(New)", correct: true}, {c: "舊嘅", e: "(Old)", correct: false}, {c: "平嘅", e: "(Cheap)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Playing Video Games", topic: "Desire (想 - want to)",
+        img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f",
+        grammarDesc: "<strong>Desire (意願):</strong> Expressing what you want.<br>想 (soeng2): Want to<br>玩 (waan2): Play",
+        vocab: [
+            {c: "打機", j: "daa2 gei1", e: "Play games"}, {c: "手機", j: "sau2 gei1", e: "Mobile phone"},
+            {c: "想", j: "soeng2", e: "Want"}, {c: "電影", j: "din6 jing2", e: "Movie"},
+            {c: "幾時", j: "gei2 si4", e: "When"}, {c: "出", j: "ceot1", e: "Release"},
+            {c: "恐怖", j: "hung2 bou3", e: "Scary"}, {c: "好玩", j: "hou2 waan2", e: "Fun"},
+            {c: "等", j: "dang2", e: "Wait"}, {c: "夜晚", j: "je6 maan5", e: "Night"}
+        ],
+        story: "我夜晚好想打機。<br>我想知 Silent Hill 電影幾時出。<br>我都等緊 Mabinogi 手機版。",
+        jyutping: "Ngo5 je6 maan5 hou2 <span class='highlight'>soeng2</span> daa2 gei1.<br>Ngo5 <span class='highlight'>soeng2</span> zi1 Silent Hill din6 jing2 gei2 si4 ceot1.<br>Ngo5 dou1 dang2 gan2 Mabinogi sau2 gei1 baan2.",
+        english: "I really want to play games at night.<br>I want to know when the Silent Hill movie comes out.<br>I am also waiting for the Mabinogi mobile version.",
+        quizzes: [
+            { q: "我夜晚想做咩？", e: "(What do I want to do at night?)", options: [{c: "打機", e: "(Play games)", correct: true}, {c: "返工", e: "(Go to work)", correct: false}, {c: "開會", e: "(Have a meeting)", correct: false}] },
+            { q: "我等緊咩手機遊戲？", e: "(What mobile game am I waiting for?)", options: [{c: "Mabinogi", e: "(Mabinogi)", correct: true}, {c: "Silent Hill", e: "(Silent Hill)", correct: false}, {c: "Tim Hortons", e: "(Tim Hortons)", correct: false}] },
+            { q: "我想知咩電影幾時出？", e: "(What movie release do I want to know?)", options: [{c: "Silent Hill", e: "(Silent Hill)", correct: true}, {c: "Batman", e: "(Batman)", correct: false}, {c: "Iron Man", e: "(Iron Man)", correct: false}] },
+            { q: "我幾時打機？", e: "(When do I play games?)", options: [{c: "夜晚", e: "(Night)", correct: true}, {c: "朝早", e: "(Morning)", correct: false}, {c: "晏晝", e: "(Afternoon)", correct: false}] },
+            { q: "Mabinogi 係咩版本？", e: "(What version is Mabinogi?)", options: [{c: "手機版", e: "(Mobile version)", correct: true}, {c: "電腦版", e: "(PC version)", correct: false}, {c: "電視版", e: "(TV version)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "Physiotherapy Clinic Project", topic: "Numbers & Costs",
+        img: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d",
+        grammarDesc: "<strong>Numbers (數字):</strong> Talking about costs.<br>幾多錢 (gei2 do1 cin2): How much money",
+        vocab: [
+            {c: "診所", j: "can2 so2", e: "Clinic"}, {c: "醫生", j: "ji1 sang1", e: "Doctor"},
+            {c: "病人", j: "beng6 jan4", e: "Patient"}, {c: "裝修", j: "zong1 sau1", e: "Renovation"},
+            {c: "幾多錢", j: "gei2 do1 cin2", e: "How much"}, {c: "成本", j: "sing4 bun2", e: "Cost"},
+            {c: "報價", j: "bou3 gaa3", e: "Quote"}, {c: "快", j: "faai3", e: "Fast"},
+            {c: "搞掂", j: "gaau2 dim6", e: "Finished"}, {c: "物理治療", j: "mat6 lei5 zi6 liu4", e: "Physiotherapy"}
+        ],
+        story: "我而家做緊物理治療診所裝修。<br>個客問我成本幾多錢。<br>我聽日會畀報價佢。",
+        jyutping: "Ngo5 ji4 gaa1 zou6 gan2 mat6 lei5 zi6 liu4 can2 so2 zong1 sau1.<br>Go3 haak3 man6 ngo5 sing4 bun2 <span class='highlight'>gei2 do1 cin2</span>.<br>Ngo5 ting1 jat6 wui5 bei2 bou3 gaa3 keoi5.",
+        english: "I am currently doing a physiotherapy clinic renovation.<br>The client asked me how much the cost is.<br>I will give them the quote tomorrow.",
+        quizzes: [
+            { q: "客問咩嘢？", e: "(What did the client ask?)", options: [{c: "幾多錢", e: "(How much money)", correct: true}, {c: "幾點", e: "(What time)", correct: false}, {c: "去邊", e: "(Go where)", correct: false}] },
+            { q: "我做緊咩裝修？", e: "(What renovation am I doing?)", options: [{c: "物理治療診所", e: "(Physiotherapy clinic)", correct: true}, {c: "辦公室", e: "(Office)", correct: false}, {c: "屋企", e: "(Home)", correct: false}] },
+            { q: "我幾時畀報價？", e: "(When will I give the quote?)", options: [{c: "聽日", e: "(Tomorrow)", correct: true}, {c: "今日", e: "(Today)", correct: false}, {c: "下星期", e: "(Next week)", correct: false}] },
+            { q: "邊個問成本？", e: "(Who asked about the cost?)", options: [{c: "客", e: "(Client)", correct: true}, {c: "老闆", e: "(Boss)", correct: false}, {c: "朋友", e: "(Friend)", correct: false}] },
+            { q: "裝修緊咩地方？", e: "(What place is being renovated?)", options: [{c: "診所", e: "(Clinic)", correct: true}, {c: "地盤", e: "(Site)", correct: false}, {c: "餐廳", e: "(Restaurant)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Filing Taxes in Canada", topic: "Time words (舊年 - Last year)",
+        img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f",
+        grammarDesc: "<strong>Time Words (時間詞):</strong> When things happen.<br>舊年 (gau6 nin2): Last year<br>十月 (sap6 jyut6): October",
+        vocab: [
+            {c: "交稅", j: "gaau1 seoi3", e: "Pay tax"}, {c: "舊年", j: "gau6 nin2", e: "Last year"},
+            {c: "十月", j: "sap6 jyut6", e: "October"}, {c: "來到", j: "lei4 dou3", e: "Arrived"},
+            {c: "加拿大", j: "Gaa1 naa4 daai6", e: "Canada"}, {c: "第一次", j: "dai6 jat1 ci3", e: "First time"},
+            {c: "表格", j: "biu2 gaak3", e: "Form"}, {c: "麻煩", j: "maa4 faan4", e: "Troublesome"},
+            {c: "錢", j: "cin2", e: "Money"}, {c: "居民", j: "geoi1 man4", e: "Resident"}
+        ],
+        story: "我舊年十月來到加拿大。<br>呢個係我第一次交稅。<br>填表格覺得好麻煩。",
+        jyutping: "Ngo5 <span class='highlight'>gau6 nin2 sap6 jyut6</span> lei4 dou3 Gaa1 naa4 daai6.<br>Ni1 go3 hai6 ngo5 dai6 jat1 ci3 gaau1 seoi3.<br>Tin4 biu2 gaak3 gok3 dak1 hou2 maa4 faan4.",
+        english: "I arrived in Canada last year in October.<br>This is my first time filing taxes.<br>Filling out the forms feels very troublesome.",
+        quizzes: [
+            { q: "我幾時來到加拿大？", e: "(When did I arrive in Canada?)", options: [{c: "舊年十月", e: "(Last year October)", correct: true}, {c: "今日", e: "(Today)", correct: false}, {c: "八月", e: "(August)", correct: false}] },
+            { q: "我覺得填表格點？", e: "(How do I feel about filling forms?)", options: [{c: "好麻煩", e: "(Very troublesome)", correct: true}, {c: "好快", e: "(Very fast)", correct: false}, {c: "好開心", e: "(Very happy)", correct: false}] },
+            { q: "呢個係第幾次交稅？", e: "(Which time is this to pay tax?)", options: [{c: "第一次", e: "(First time)", correct: true}, {c: "第二次", e: "(Second time)", correct: false}, {c: "第三次", e: "(Third time)", correct: false}] },
+            { q: "我來咗邊個國家？", e: "(Which country did I come to?)", options: [{c: "加拿大", e: "(Canada)", correct: true}, {c: "英國", e: "(UK)", correct: false}, {c: "美國", e: "(USA)", correct: false}] },
+            { q: "我要交咩？", e: "(What do I have to pay?)", options: [{c: "稅", e: "(Tax)", correct: true}, {c: "租", e: "(Rent)", correct: false}, {c: "水費", e: "(Water bill)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "Buying a Tesla", topic: "Questions (可唔可以 - Can or cannot)",
+        img: "https://images.unsplash.com/photo-1560958089-b8a1929cea89",
+        grammarDesc: "<strong>Questions (問題):</strong> Asking for ability/permission.<br>可唔可以 (ho2 m4 ho2 ji5): Can I?",
+        vocab: [
+            {c: "買車", j: "maai5 ce1", e: "Buy car"}, {c: "電動車", j: "din6 dung6 ce1", e: "Electric car"},
+            {c: "貸款", j: "taai3 fun2", e: "Loan"}, {c: "簽證", j: "cim1 zing3", e: "Visa"},
+            {c: "臨時", j: "lam4 si4", e: "Temporary"}, {c: "可唔可以", j: "ho2 m4 ho2 ji5", e: "Can or cannot"},
+            {c: "批", j: "pai1", e: "Approve"}, {c: "試車", j: "si3 ce1", e: "Test drive"},
+            {c: "黑色", j: "hak1 sik1", e: "Black"}, {c: "貴", j: "gwai3", e: "Expensive"}
+        ],
+        story: "我想喺溫哥華買一部 Tesla。<br>我係臨時居民。<br>我想知可唔可以申請貸款？",
+        jyutping: "Ngo5 soeng2 hai2 Wan1 go1 waa4 maai5 jat1 bou6 Tesla.<br>Ngo5 hai6 lam4 si4 geoi1 man4.<br>Ngo5 soeng2 zi1 <span class='highlight'>ho2 m4 ho2 ji5</span> san1 cing2 taai3 fun2?",
+        english: "I want to buy a Tesla in Vancouver.<br>I am a temporary resident.<br>I want to know if I can apply for a loan?",
+        quizzes: [
+            { q: "我想買咩車？", e: "(What car do I want to buy?)", options: [{c: "Tesla", e: "(Tesla)", correct: true}, {c: "單車", e: "(Bicycle)", correct: false}, {c: "巴士", e: "(Bus)", correct: false}] },
+            { q: "我係咩身份？", e: "(What is my status?)", options: [{c: "臨時居民", e: "(Temporary resident)", correct: true}, {c: "遊客", e: "(Tourist)", correct: false}, {c: "老闆", e: "(Boss)", correct: false}] },
+            { q: "我想申請咩？", e: "(What do I want to apply for?)", options: [{c: "貸款", e: "(Loan)", correct: true}, {c: "簽證", e: "(Visa)", correct: false}, {c: "信用卡", e: "(Credit card)", correct: false}] },
+            { q: "喺邊度買車？", e: "(Where to buy the car?)", options: [{c: "溫哥華", e: "(Vancouver)", correct: true}, {c: "香港", e: "(Hong Kong)", correct: false}, {c: "日本", e: "(Japan)", correct: false}] },
+            { q: "邊個想買車？", e: "(Who wants to buy a car?)", options: [{c: "我", e: "(Me)", correct: true}, {c: "朋友", e: "(Friend)", correct: false}, {c: "家人", e: "(Family)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Banff Honeymoon", topic: "Duration (幾耐 - How long)",
+        img: "https://images.unsplash.com/photo-1549887552-cb127140e69b",
+        grammarDesc: "<strong>Duration (時間長度):</strong> Asking about time.<br>幾耐 (gei2 noi6): How long",
+        vocab: [
+            {c: "度蜜月", j: "dou6 mat6 jyut6", e: "Honeymoon"}, {c: "旅行", j: "leoi5 hang4", e: "Travel"},
+            {c: "酒店", j: "zau2 dim3", e: "Hotel"}, {c: "風景", j: "fung1 ging2", e: "Scenery"},
+            {c: "山", j: "saan1", e: "Mountain"}, {c: "兩日", j: "loeng5 jat6", e: "Two days"},
+            {c: "推薦", j: "teoi1 zin3", e: "Recommend"}, {c: "揸車", j: "zaa1 ce1", e: "Drive"},
+            {c: "影相", j: "jing2 soeng2", e: "Take photos"}, {c: "遠", j: "jyun5", e: "Far"}
+        ],
+        story: "結婚之後我哋會去 Banff 度蜜月。<br>我哋會住兩日酒店。<br>大家有冇好酒店推薦？",
+        jyutping: "Git3 fan1 zi1 hau6 ngo5 dei6 wui5 heoi3 Banff dou6 mat6 jyut6.<br>Ngo5 dei6 wui5 zyu6 <span class='highlight'>loeng5 jat6</span> zau2 dim3.<br>Daai6 gaa1 jau5 mou5 hou2 zau2 dim3 teoi1 zin3?",
+        english: "After getting married, we will go to Banff for our honeymoon.<br>We will stay in a hotel for two days.<br>Does anyone have good hotel recommendations?",
+        quizzes: [
+            { q: "我哋會去邊度度蜜月？", e: "(Where will we go for the honeymoon?)", options: [{c: "Banff", e: "(Banff)", correct: true}, {c: "溫哥華", e: "(Vancouver)", correct: false}, {c: "地盤", e: "(Site)", correct: false}] },
+            { q: "住幾多日酒店？", e: "(How many days staying in hotel?)", options: [{c: "兩日", e: "(Two days)", correct: true}, {c: "十日", e: "(Ten days)", correct: false}, {c: "五日", e: "(Five days)", correct: false}] },
+            { q: "幾時去度蜜月？", e: "(When going for honeymoon?)", options: [{c: "結婚之後", e: "(After getting married)", correct: true}, {c: "今日", e: "(Today)", correct: false}, {c: "聽日", e: "(Tomorrow)", correct: false}] },
+            { q: "我要大家推薦咩？", e: "(What do I want people to recommend?)", options: [{c: "酒店", e: "(Hotel)", correct: true}, {c: "餐廳", e: "(Restaurant)", correct: false}, {c: "車", e: "(Car)", correct: false}] },
+            { q: "去 Banff 做咩？", e: "(What to do in Banff?)", options: [{c: "度蜜月", e: "(Honeymoon)", correct: true}, {c: "開會", e: "(Meeting)", correct: false}, {c: "買嘢", e: "(Shopping)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Relaxing with ASMR", topic: "Continuous Tense (緊 - -ing)",
+        img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
+        grammarDesc: "<strong>Continuous (進行式):</strong> Actions happening now.<br>聽緊 (teng1 gan2): Listening<br>睇緊 (tai2 gan2): Watching",
+        vocab: [
+            {c: "聽", j: "teng1", e: "Listen"}, {c: "聲音", j: "sing1 jam1", e: "Sound"},
+            {c: "睇片", j: "tai2 pin2", e: "Watch video"}, {c: "放鬆", j: "fong3 sung1", e: "Relax"},
+            {c: "瞓覺", j: "fan3 gaau3", e: "Sleep"}, {c: "舒服", j: "syu1 fuk6", e: "Comfortable"},
+            {c: "耳機", j: "ji5 gei1", e: "Headphones"}, {c: "安靜", j: "on1 zing6", e: "Quiet"},
+            {c: "週末", j: "zau1 mut6", e: "Weekend"}, {c: "鍾意", j: "zung1 ji3", e: "Like"}
+        ],
+        story: "週末我喺屋企放鬆。<br>我戴住耳機聽緊 ASMR。<br>聽完覺得好好瞓。",
+        jyutping: "Zau1 mut6 ngo5 hai2 uk1 kei2 fong3 sung1.<br>Ngo5 daai3 zyu6 ji5 gei1 <span class='highlight'>teng1 gan2</span> ASMR.<br>Teng1 jyun4 gok3 dak1 hou2 hou2 fan3.",
+        english: "On the weekend I relax at home.<br>I am wearing headphones listening to ASMR.<br>After listening, it's very easy to sleep.",
+        quizzes: [
+            { q: "我聽緊咩？", e: "(What am I listening to?)", options: [{c: "ASMR", e: "(ASMR)", correct: true}, {c: "新聞", e: "(News)", correct: false}, {c: "收音機", e: "(Radio)", correct: false}] },
+            { q: "我用咩聽？", e: "(What do I use to listen?)", options: [{c: "耳機", e: "(Headphones)", correct: true}, {c: "電話", e: "(Phone)", correct: false}, {c: "電腦", e: "(Computer)", correct: false}] },
+            { q: "我週末喺邊度？", e: "(Where am I on the weekend?)", options: [{c: "屋企", e: "(Home)", correct: true}, {c: "公司", e: "(Office)", correct: false}, {c: "公園", e: "(Park)", correct: false}] },
+            { q: "聽完覺得點？", e: "(How does it feel after listening?)", options: [{c: "好好瞓", e: "(Easy to sleep)", correct: true}, {c: "好精神", e: "(Very energetic)", correct: false}, {c: "好嬲", e: "(Very angry)", correct: false}] },
+            { q: "幾時放鬆？", e: "(When to relax?)", options: [{c: "週末", e: "(Weekend)", correct: true}, {c: "星期一", e: "(Monday)", correct: false}, {c: "每日", e: "(Every day)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Using the iPhone 15", topic: "Using tools (用 - to use)",
+        img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
+        grammarDesc: "<strong>Using (使用):</strong> Tools and instruments.<br>用 (jung6): Use",
+        vocab: [
+            {c: "用", j: "jung6", e: "Use"}, {c: "手機", j: "sau2 gei1", e: "Phone"},
+            {c: "影相", j: "jing2 soeng2", e: "Take photo"}, {c: "新", j: "san1", e: "New"},
+            {c: "快", j: "faai3", e: "Fast"}, {c: "打字", j: "daa2 zi6", e: "Type"},
+            {c: "上網", j: "soeng5 mong5", e: "Go online"}, {c: "功能", j: "gung1 nang4", e: "Function"},
+            {c: "朋友", j: "pang4 jau5", e: "Friend"}, {c: "傾偈", j: "king1 gai2", e: "Chat"}
+        ],
+        story: "我買咗部新嘅 iPhone 15。<br>我用手機同朋友傾偈。<br>相機影相好靚。",
+        jyutping: "Ngo5 maai5 zo2 bou6 san1 ge3 iPhone 15.<br>Ngo5 <span class='highlight'>jung6</span> sau2 gei1 tung4 pang4 jau5 king1 gai2.<br>Soeng2 gei1 jing2 soeng2 hou2 leng3.",
+        english: "I bought a new iPhone 15.<br>I use the phone to chat with friends.<br>The camera takes beautiful photos.",
+        quizzes: [
+            { q: "我用手機做咩？", e: "(What do I use the phone for?)", options: [{c: "同朋友傾偈", e: "(Chat with friends)", correct: true}, {c: "做木工", e: "(Do millwork)", correct: false}, {c: "交稅", e: "(Pay taxes)", correct: false}] },
+            { q: "我買咗咩新手機？", e: "(What new phone did I buy?)", options: [{c: "iPhone 15", e: "(iPhone 15)", correct: true}, {c: "Samsung", e: "(Samsung)", correct: false}, {c: "Sony", e: "(Sony)", correct: false}] },
+            { q: "相機影相點樣？", e: "(How does the camera take photos?)", options: [{c: "好靚", e: "(Beautiful)", correct: true}, {c: "好差", e: "(Very bad)", correct: false}, {c: "好黑", e: "(Very dark)", correct: false}] },
+            { q: "我同邊個傾偈？", e: "(Who am I chatting with?)", options: [{c: "朋友", e: "(Friend)", correct: true}, {c: "老闆", e: "(Boss)", correct: false}, {c: "客", e: "(Client)", correct: false}] },
+            { q: "部手機係點嘅？", e: "(How is the phone?)", options: [{c: "新嘅", e: "(New)", correct: true}, {c: "舊嘅", e: "(Old)", correct: false}, {c: "壞嘅", e: "(Broken)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Writing Emails for Projects", topic: "Conjunctions (同埋 - and)",
+        img: "https://images.unsplash.com/photo-1555421689-491a97ff2040",
+        grammarDesc: "<strong>Conjunctions (連接詞):</strong> Connecting ideas.<br>同埋 (tung4 maai4): And",
+        vocab: [
+            {c: "寫", j: "se2", e: "Write"}, {c: "電郵", j: "din6 jau4", e: "Email"},
+            {c: "客", j: "haak3", e: "Client"}, {c: "同埋", j: "tung4 maai4", e: "And"},
+            {c: "報告", j: "bou3 gou3", e: "Report"}, {c: "單位", j: "daan1 wai2", e: "Unit"},
+            {c: "跟進", j: "gan1 zeon3", e: "Follow up"}, {c: "問題", j: "man6 tai4", e: "Problem"},
+            {c: "清楚", j: "cing1 co2", e: "Clear"}, {c: "解釋", j: "gaai2 sik1", e: "Explain"}
+        ],
+        story: "我要寫電郵畀 Paul 同埋 Peter。<br>佢哋係 Luxe 單位嘅客。<br>我每星期都要寫報告。",
+        jyutping: "Ngo5 jiu3 se2 din6 jau4 bei2 Paul <span class='highlight'>tung4 maai4</span> Peter.<br>Keoi5 dei6 hai6 Luxe daan1 wai2 ge3 haak3.<br>Ngo5 mui5 sing1 kei4 dou1 jiu3 se2 bou3 gou3.",
+        english: "I need to write emails to Paul and Peter.<br>They are clients for the Luxe units.<br>I have to write reports every week.",
+        quizzes: [
+            { q: "我要寫電郵畀邊個？", e: "(Who do I need to write emails to?)", options: [{c: "Paul 同埋 Peter", e: "(Paul and Peter)", correct: true}, {c: "醫生", e: "(Doctor)", correct: false}, {c: "未婚夫", e: "(Fiancé)", correct: false}] },
+            { q: "我每星期要寫咩？", e: "(What do I write every week?)", options: [{c: "報告", e: "(Report)", correct: true}, {c: "功課", e: "(Homework)", correct: false}, {c: "信", e: "(Letter)", correct: false}] },
+            { q: "佢哋係咩單位嘅客？", e: "(Which unit are they clients of?)", options: [{c: "Luxe", e: "(Luxe)", correct: true}, {c: "Tim Hortons", e: "(Tim Hortons)", correct: false}, {c: "診所", e: "(Clinic)", correct: false}] },
+            { q: "隔幾耐寫一次報告？", e: "(How often do I write a report?)", options: [{c: "每星期", e: "(Every week)", correct: true}, {c: "每日", e: "(Every day)", correct: false}, {c: "每月", e: "(Every month)", correct: false}] },
+            { q: "我寫咩畀客？", e: "(What do I write to the client?)", options: [{c: "電郵", e: "(Email)", correct: true}, {c: "支票", e: "(Cheque)", correct: false}, {c: "菜單", e: "(Menu)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Vancouver Rain", topic: "Weather (落雨 - Raining)",
+        img: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0",
+        grammarDesc: "<strong>Weather (天氣):</strong> Describing conditions.<br>落雨 (lok6 jyu5): Raining",
+        vocab: [
+            {c: "落雨", j: "lok6 jyu5", e: "Rain"}, {c: "把遮", j: "baa2 ze1", e: "Umbrella"},
+            {c: "濕", j: "sap1", e: "Wet"}, {c: "冬天", j: "dung1 tin1", e: "Winter"},
+            {c: "麻煩", j: "maa4 faan4", e: "Troublesome"}, {c: "出街", j: "ceot1 gaai1", e: "Go out"},
+            {c: "帶", j: "daai3", e: "Bring"}, {c: "灰", j: "fui1", e: "Grey"},
+            {c: "心情", j: "sam1 cing4", e: "Mood"}, {c: "返屋企", j: "faan1 uk1 kei2", e: "Go home"}
+        ],
+        story: "溫哥華冬天成日落雨。<br>出街一定要帶把遮。<br>落雨搞到地盤好濕。",
+        jyutping: "Wan1 go1 waa4 dung1 tin1 seng4 jat6 <span class='highlight'>lok6 jyu5</span>.<br>Ceot1 gaai1 jat1 ding6 jiu3 daai3 baa2 ze1.<br><span class='highlight'>lok6 jyu5</span> gaau2 dou3 dei6 pun4 hou2 sap1.",
+        english: "It rains all the time in winter in Vancouver.<br>You must bring an umbrella when going out.<br>The rain makes the construction site very wet.",
+        quizzes: [
+            { q: "出街一定要帶咩？", e: "(What must you bring when going out?)", options: [{c: "把遮", e: "(Umbrella)", correct: true}, {c: "圖則", e: "(Drawings)", correct: false}, {c: "咖啡", e: "(Coffee)", correct: false}] },
+            { q: "溫哥華幾時成日落雨？", e: "(When does it rain a lot in Vancouver?)", options: [{c: "冬天", e: "(Winter)", correct: true}, {c: "夏天", e: "(Summer)", correct: false}, {c: "秋天", e: "(Autumn)", correct: false}] },
+            { q: "落雨搞到地盤點樣？", e: "(How does the rain make the site?)", options: [{c: "好濕", e: "(Very wet)", correct: true}, {c: "好熱", e: "(Very hot)", correct: false}, {c: "好靚", e: "(Very pretty)", correct: false}] },
+            { q: "邊度冬天成日落雨？", e: "(Where rains a lot in winter?)", options: [{c: "溫哥華", e: "(Vancouver)", correct: true}, {c: "多倫多", e: "(Toronto)", correct: false}, {c: "卡加利", e: "(Calgary)", correct: false}] },
+            { q: "地盤點解好濕？", e: "(Why is the site wet?)", options: [{c: "因為落雨", e: "(Because of rain)", correct: true}, {c: "因為洗地", e: "(Because of washing floor)", correct: false}, {c: "因為倒水", e: "(Because of spilling water)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Talking to Friends", topic: "Possession (嘅 - 's / belonging to)",
+        img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac",
+        grammarDesc: "<strong>Possession (擁有):</strong> Showing ownership.<br>嘅 (ge3): 's / belonging to",
+        vocab: [
+            {c: "朋友", j: "pang4 jau5", e: "Friend"}, {c: "介紹", j: "gaai3 siu6", e: "Introduce"},
+            {c: "幫手", j: "bong1 sau2", e: "Help"}, {c: "意見", j: "ji3 gin3", e: "Opinion"},
+            {c: "多謝", j: "do1 ze6", e: "Thank you"}, {c: "食飯", j: "sik6 faan6", e: "Eat meal"},
+            {c: "好食", j: "hou2 sik6", e: "Delicious"}, {c: "餐廳", j: "caan1 teng1", e: "Restaurant"},
+            {c: "見面", j: "gin3 min6", e: "Meet"}, {c: "傾", j: "king1", e: "Chat"}
+        ],
+        story: "我同我嘅朋友 Jordan 食飯。<br>呢間係佢介紹嘅餐廳。<br>啲嘢食真係好好食。",
+        jyutping: "Ngo5 tung4 ngo5 <span class='highlight'>ge3</span> pang4 jau5 Jordan sik6 faan6.<br>Ni1 gaan1 hai6 keoi5 gaai3 siu6 <span class='highlight'>ge3</span> caan1 teng1.<br>Di1 je5 sik6 zan1 hai6 hou2 hou2 sik6.",
+        english: "I am eating with my friend Jordan.<br>This is the restaurant he recommended.<br>The food is really delicious.",
+        quizzes: [
+            { q: "間餐廳係邊個介紹嘅？", e: "(Who recommended the restaurant?)", options: [{c: "朋友 Jordan", e: "(Friend Jordan)", correct: true}, {c: "老闆 Alex", e: "(Boss Alex)", correct: false}, {c: "病人", e: "(Patient)", correct: false}] },
+            { q: "啲嘢食點樣？", e: "(How is the food?)", options: [{c: "好好食", e: "(Delicious)", correct: true}, {c: "好難食", e: "(Terrible)", correct: false}, {c: "好辣", e: "(Spicy)", correct: false}] },
+            { q: "我同邊個食飯？", e: "(Who am I eating with?)", options: [{c: "朋友 Jordan", e: "(Friend Jordan)", correct: true}, {c: "未婚夫", e: "(Fiancé)", correct: false}, {c: "同事", e: "(Colleague)", correct: false}] },
+            { q: "邊度啲嘢食好食？", e: "(Where is the food delicious?)", options: [{c: "餐廳", e: "(Restaurant)", correct: true}, {c: "地盤", e: "(Site)", correct: false}, {c: "診所", e: "(Clinic)", correct: false}] },
+            { q: "邊個介紹餐廳？", e: "(Who recommended the restaurant?)", options: [{c: "Jordan", e: "(Jordan)", correct: true}, {c: "Paul", e: "(Paul)", correct: false}, {c: "Peter", e: "(Peter)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Learning Cantonese", topic: "Ability (識 - know how to)",
+        img: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8",
+        grammarDesc: "<strong>Ability (能力):</strong> Knowing how to do something.<br>識 (sik1): Know how to / Can",
+        vocab: [
+            {c: "學", j: "hok6", e: "Learn"}, {c: "廣東話", j: "gwong2 dung1 waa2", e: "Cantonese"},
+            {c: "識", j: "sik1", e: "Know how"}, {c: "講", j: "gong2", e: "Speak"},
+            {c: "聽", j: "teng1", e: "Listen"}, {c: "難", j: "naan4", e: "Difficult"},
+            {c: "每日", j: "mui5 jat6", e: "Every day"}, {c: "練習", j: "lin6 zaap6", e: "Practice"},
+            {c: "進步", j: "zeon3 bou6", e: "Progress"}, {c: "叻", j: "lek1", e: "Smart/Good at"}
+        ],
+        story: "我每日都會學廣東話。<br>我而家識講少少。<br>我要繼續練習。",
+        jyutping: "Ngo5 mui5 jat6 dou1 wui5 hok6 gwong2 dung1 waa2.<br>Ngo5 ji4 gaa1 <span class='highlight'>sik1</span> gong2 siu2 siu2.<br>Ngo5 jiu3 gai3 zuk6 lin6 zaap6.",
+        english: "I learn Cantonese every day.<br>I know how to speak a little bit now.<br>I need to continue practicing.",
+        quizzes: [
+            { q: "我而家識做咩？", e: "(What do I know how to do now?)", options: [{c: "講少少廣東話", e: "(Speak a little Cantonese)", correct: true}, {c: "揸飛機", e: "(Fly a plane)", correct: false}, {c: "起樓", e: "(Build a building)", correct: false}] },
+            { q: "我幾時學廣東話？", e: "(When do I learn Cantonese?)", options: [{c: "每日", e: "(Every day)", correct: true}, {c: "星期日", e: "(Sunday)", correct: false}, {c: "過年", e: "(New Year)", correct: false}] },
+            { q: "我要繼續做咩？", e: "(What must I continue to do?)", options: [{c: "練習", e: "(Practice)", correct: true}, {c: "瞓覺", e: "(Sleep)", correct: false}, {c: "睇電視", e: "(Watch TV)", correct: false}] },
+            { q: "我學咩語言？", e: "(What language am I learning?)", options: [{c: "廣東話", e: "(Cantonese)", correct: true}, {c: "法文", e: "(French)", correct: false}, {c: "日文", e: "(Japanese)", correct: false}] },
+            { q: "我識講幾多？", e: "(How much can I speak?)", options: [{c: "少少", e: "(A little bit)", correct: true}, {c: "好多", e: "(A lot)", correct: false}, {c: "全部", e: "(Everything)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>☕ Beginner Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Story Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
