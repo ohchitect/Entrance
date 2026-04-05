@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: Business Level</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #eceff1;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 850px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 40px 35px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #37474f; padding-bottom: 15px; }
+        .header h1 { font-size: 1.9rem; margin: 0 0 8px 0; color: #263238; font-weight: 800; }
+        .header p { font-size: 1.05rem; color: #546e7a; margin: 0; }
+        .news-image {
+            width: 100%; height: 280px; border-radius: 8px;
+            object-fit: cover; margin-bottom: 25px; border: 1px solid #cfd8dc;
+        }
+        .action-btn {
+            background: #263238; color: white; border: none; border-radius: 8px;
+            padding: 18px; width: 100%; font-weight: 700; font-size: 1.15rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 25px; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #37474f; box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .prep-section {
+            background-color: #f5f7f8; border-left: 5px solid #455a64;
+            padding: 20px; margin-bottom: 25px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #263238; font-size: 1.25rem; margin-bottom: 12px; }
+        .prep-section p { font-size: 1rem; margin: 8px 0; line-height: 1.6; color: #37474f; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .vocab-item {
+            background: white; padding: 12px 15px; border-radius: 6px; font-size: 0.95rem;
+            border: 1px solid #b0bec5; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 5px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #eceff1; border-color: #78909c; }
+        .vocab-item:active { transform: scale(0.97); }
+        .vocab-item span.icon { font-size: 0.9rem; color: #455a64; margin-bottom: 2px; }
+        .script-box {
+            background-color: #fafafa; border-left: 5px solid #263238;
+            padding: 25px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.15rem; line-height: 2.2; margin-bottom: 20px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #546e7a; font-size: 0.95rem; line-height: 2.0; text-align: justify; border-top: 1px solid #ddd; padding-top: 15px; }
+        .highlight { color: #d32f2f; text-decoration: none; font-weight: 800; background-color: #ffebee; padding: 2px 6px; border-radius: 4px; }
+        .quiz-section { border-top: 2px solid #cfd8dc; padding-top: 30px; }
+        .quiz-question { margin-bottom: 30px; background: #fff; padding: 20px; border: 1px solid #eceff1; border-radius: 8px; }
+        .question-text { font-weight: 700; margin-bottom: 15px; font-size: 1.15rem; color: #263238; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px; line-height: 1.5; }
+        .play-btn-small { background: #eceff1; border: 1px solid #cfd8dc; border-radius: 4px; cursor: pointer; font-size: 1.1rem; padding: 2px 8px; transition: all 0.2s; }
+        .play-btn-small:hover { background: #cfd8dc; transform: scale(1.05); }
+        .play-btn-small:active { transform: scale(0.95); }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option-row { display: flex; gap: 12px; align-items: stretch; }
+        .play-btn-option { background: #f5f7f8; border: 1px solid #cfd8dc; border-radius: 6px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 1px solid #b0bec5; border-radius: 6px; padding: 15px; font-size: 1rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #37474f; transition: all 0.2s; line-height: 1.5; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #43a047; color: #1b5e20; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #e53935; color: #b71c1c; }
+        .eng-trans { font-size: 0.9rem; color: #78909c; font-weight: normal; display: block; width: 100%; margin-top: 6px; }
+        .translation-box { margin-top: 35px; font-size: 1rem; color: #455a64; background: #eceff1; padding: 25px; border-radius: 8px; line-height: 1.8; text-align: justify; border-left: 4px solid #90a4ae; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; }
+        .nav-btn { background: #455a64; color: white; border: none; border-radius: 6px; padding: 15px 30px; font-weight: bold; cursor: pointer; font-size: 1.05rem; transition: background 0.2s; }
+        .nav-btn:hover { background: #263238; }
+        .nav-btn:disabled { background: #cfd8dc; cursor: not-allowed; color: #90a4ae; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "Project Kick-off Meeting", topic: "Regarding (關於 - Concerning/Regarding)",
+        img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
+        grammarDesc: "<strong>Setting the Agenda:</strong> Introducing a topic in a formal setting.<br>關於 (gwaan1 jyu1) means 'Regarding' or 'Concerning'.",
+        vocab: [
+            {c: "項目", j: "hong6 muk6", e: "Project"}, {c: "進度", j: "zeon3 dou6", e: "Progress / Schedule"},
+            {c: "建築牌照", j: "gin3 zuk1 paai4 ziu3", e: "Building permit"}, {c: "市政府", j: "si5 zing3 fu2", e: "City Hall / City Government"},
+            {c: "審批", j: "sam2 pai1", e: "Approval"}, {c: "報價", j: "bou3 gaa3", e: "Quote / Quotation"},
+            {c: "供應商", j: "gung1 jing3 soeng1", e: "Supplier"}, {c: "交貨期", j: "gaau1 fo3 kei4", e: "Delivery lead time"},
+            {c: "動工", j: "dung6 gung1", e: "Commence construction"}, {c: "關於", j: "gwaan1 jyu1", e: "Regarding"}
+        ],
+        story: "各位同事，早晨。今日我哋開呢個大會，主要係為咗討論溫哥華市中心新寫字樓嘅項目。<br>關於前期嘅準備工作，我哋已經完成咗大部分嘅圖則設計。<br>不過，喺申請建築牌照方面，市政府嗰邊嘅審批進度比預期慢咗少少。<br>我已經派咗專人去跟進，希望下個星期會有確實嘅回覆。<br>與此同時，工程部需要提前聯絡供應商，確定建築材料嘅報價同埋交貨期。<br>特別係木工同埋鋼材，據講最近嘅運輸時間拉長咗。<br>我哋嘅目標係下個月初可以正式動工。<br>如果大家對個時間表有任何疑問，可以而家提出嚟。<br>冇問題嘅話，我哋就按照呢個計劃去執行。",
+        jyutping: "Gok3 wai2 tung4 sik6, zou2 san4. Gam1 jat6 ngo5 dei6 hoi1 ni1 go3 daai6 wui2, zyu2 jiu3 hai6 wai6 zo2 tou2 leon6 Wan1 go1 waa4 si5 zung1 sam1 san1 se2 zi6 lau4 ge3 hong6 muk6.<br><span class='highlight'>Gwaan1 jyu1</span> cin4 kei4 ge3 zeon2 bei6 gung1 zok3, ngo5 dei6 ji5 ging1 jyun4 sing4 zo2 daai6 bou6 fan6 ge3 tou4 zak1 cit3 gai3.<br>Bat1 gwo3, hai2 san1 cing2 gin3 zuk1 paai4 ziu3 fong1 min6, si5 zing3 fu2 go2 bin1 ge3 sam2 pai1 zeon3 dou6 bei2 jyu6 kei4 maan6 zo2 siu2 siu2.<br>Ngo5 ji5 ging1 paai3 zo2 zyun1 jan4 heoi3 gan1 zeon3, hei1 mong6 haa6 go3 sing1 kei4 wui5 jau5 kok3 sat6 ge3 wui4 fuk1.<br>Jyu5 ci2 tung4 si4, gung1 cing4 bou6 seoi1 jiu3 tai4 cin4 lyun4 lok3 gung1 jing3 soeng1, kok3 ding6 gin3 zuk1 coi4 liu2 ge3 bou3 gaa3 tung4 maai4 gaau1 fo3 kei4.<br>Dak6 bit6 hai6 muk6 gung1 tung4 maai4 gong3 coi4, geoi3 gong2 zeoi3 gan6 ge3 wan6 syu1 si4 gaan3 laai1 coeng4 zo2.<br>Ngo5 dei6 ge3 muk6 biu1 hai6 haa6 go3 jyut6 co1 ho2 ji5 zing3 sik1 dung6 gung1.<br>Jyu4 gwo2 daai6 gaa1 deoi3 go3 si4 gaan3 biu2 jau5 jam6 ho4 ji4 man6, ho2 ji5 ji4 gaa1 tai4 ceot1 lei4.<br>Mou5 man6 tai4 ge3 waa2, ngo5 dei6 zau6 on3 zaau3 ni1 go3 gai3 waak6 heoi3 zap1 hang4.",
+        english: "Good morning, colleagues. We are holding this general meeting today mainly to discuss the new office building project in downtown Vancouver.<br>Regarding the preliminary preparation work, we have already completed most of the floor plan designs.<br>However, in terms of applying for the building permit, City Hall's approval progress is a bit slower than expected.<br>I have already dispatched dedicated staff to follow up, hoping to have a definitive reply by next week.<br>At the same time, the engineering department needs to contact suppliers in advance to confirm the quotes and delivery lead times for construction materials.<br>Especially for millwork and steel, it is said that transportation times have lengthened recently.<br>Our target is to officially commence construction early next month.<br>If everyone has any doubts about the timeline, you can raise them now.<br>If there are no problems, we will execute according to this plan.",
+        quizzes: [
+            { q: "今日開會主要係討論咩嘢？", e: "(What is the main discussion of today's meeting?)", options: [{c: "溫哥華市中心新寫字樓嘅項目", e: "(The new office building project in downtown Vancouver)", correct: true}, {c: "公司嘅週年晚宴安排", e: "(The company's annual dinner arrangement)", correct: false}, {c: "員工嘅薪酬調整", e: "(Employees' salary adjustments)", correct: false}] },
+            { q: "關於前期準備工作，目前完成咗咩？", e: "(Regarding preliminary prep work, what is currently completed?)", options: [{c: "已經完成咗大部分嘅圖則設計", e: "(Already completed most of the floor plan designs)", correct: true}, {c: "已經起好咗成棟樓", e: "(Already built the entire building)", correct: false}, {c: "已經買晒所有傢俬", e: "(Already bought all the furniture)", correct: false}] },
+            { q: "邊方面嘅進度比預期慢咗？", e: "(Which aspect's progress is slower than expected?)", options: [{c: "市政府審批建築牌照嘅進度", e: "(City Hall's approval progress for the building permit)", correct: true}, {c: "畫圖則嘅進度", e: "(The progress of drawing floor plans)", correct: false}, {c: "招聘工人嘅進度", e: "(The progress of hiring workers)", correct: false}] },
+            { q: "工程部需要提前聯絡供應商確定咩嘢？", e: "(What does the engineering dept need to contact suppliers in advance to confirm?)", options: [{c: "建築材料嘅報價同埋交貨期", e: "(Quotes and delivery lead times for construction materials)", correct: true}, {c: "供應商老闆嘅行程", e: "(The supplier boss's schedule)", correct: false}, {c: "地盤嘅午餐飯盒菜單", e: "(The lunch box menu for the site)", correct: false}] },
+            { q: "「動工」係咩意思？", e: "(What does 'dung gung' mean?)", options: [{c: "正式開始進行建築工程", e: "(Officially commence construction work)", correct: true}, {c: "停止所有工作", e: "(Stop all work)", correct: false}, {c: "開會傾偈", e: "(Have a meeting to chat)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "Client Email: Quote Follow-Up", topic: "Polite Requests (煩請 - Please trouble you to)",
+        img: "https://images.unsplash.com/photo-1557200134-90327ee9fafa",
+        grammarDesc: "<strong>Formal Correspondence:</strong> Making a polite but firm request.<br>煩請 (faan4 cing2) is a professional way to say 'Please be troubled to / Kindly...'",
+        vocab: [
+            {c: "煩請", j: "faan4 cing2", e: "Kindly / Please"}, {c: "過目", j: "gwo3 muk6", e: "Look over / Review"},
+            {c: "附件", j: "fu6 gin2", e: "Attachment"}, {c: "針對", j: "zam1 deoi3", e: "Aimed at / In response to"},
+            {c: "木工", j: "muk6 gung1", e: "Millwork"}, {c: "扣除", j: "kau3 ceoi4", e: "Deduct"},
+            {c: "尾數", j: "mei5 sou3", e: "Balance / Remaining amount"}, {c: "發票", j: "faat3 piu3", e: "Invoice"},
+            {c: "耽誤", j: "daam1 ng6", e: "Delay / Hold up"}, {c: "簽名作實", j: "cim1 meng2 zok3 sat6", e: "Sign to confirm"}
+        ],
+        story: "Paul，你好。煩請你過目附件入面嘅最新報價單。<br>針對你上次提出關於 Luxe 單位木工設計嘅修改要求，我哋嘅團隊已經重新調整咗預算。<br>扣除咗之前已經支付嘅首期訂金，尾數嘅金額已經清楚列明喺發票嘅最底。<br>據我所知，部分特別訂製嘅歐洲材料需要較長嘅運輸時間。<br>供應商話大約要等四至六個星期先會送到溫哥華。<br>所以，為咗唔好耽誤成個裝修工程嘅進度，我哋強烈建議盡快落實呢份報價。<br>如果你對各項條款冇異議，煩請你簽名作實，並且安排支付第二期嘅款項。<br>一收到你嘅確認，我哋就會即刻安排師傅度尺同埋落訂買料。<br>有任何疑問歡迎隨時聯絡我，多謝合作。",
+        jyutping: "Paul, nei5 hou2. <span class='highlight'>Faan4 cing2</span> nei5 gwo3 muk6 fu6 gin2 jap6 min6 ge3 zeoi3 san1 bou3 gaa3 daan1.<br>Zam1 deoi3 nei5 soeng6 ci3 tai4 ceot1 gwaan1 jyu1 Luxe daan1 wai2 muk6 gung1 cit3 gai3 ge3 sau1 goi2 jiu1 kau4, ngo5 dei6 ge3 tyun4 deoi2 ji5 ging1 cung4 san1 tiu4 zing2 zo2 jyu6 syun3.<br>Kau3 ceoi4 zo2 zi1 cin4 ji5 ging1 zi1 fu6 ge3 sau2 kei4 deng6 gam1, mei5 sou3 ge3 gam1 ngaak2 ji5 ging1 cing1 co2 lit6 ming4 hai2 faat3 piu3 ge3 zeoi3 dai2.<br>Geoi3 ngo5 so2 zi1, bou6 fan6 dak6 bit6 deng6 zai3 ge3 au1 zau1 coi4 liu2 seoi1 jiu3 gaau3 coeng4 ge3 wan6 syu1 si4 gaan3.<br>Gung1 jing3 soeng1 waa6 daai6 joek3 jiu3 dang2 sei3 zi3 luk6 go3 sing1 kei4 sin1 wui5 sung3 dou3 Wan1 go1 waa4.<br>So2 ji5, wai6 zo2 m4 hou2 daam1 ng6 seng4 go3 zong1 sau1 gung1 cing4 ge3 zeon3 dou6, ngo5 dei6 koeng4 lit6 gin3 ji5 zeon6 faai3 lok6 sat6 ni1 fan6 bou3 gaa3.<br>Jyu4 gwo2 nei5 deoi3 gok3 hong6 tiu4 fun2 mou5 ji6 ji5, <span class='highlight'>faan4 cing2</span> nei5 cim1 meng2 zok3 sat6, bing6 ce2 on1 paai4 zi1 fu6 dai6 ji6 kei4 ge3 fun2 hong6.<br>Jat1 sau1 dou2 nei5 ge3 kok3 jing6, ngo5 dei6 zau6 wui5 zik1 hak1 on1 paai4 si1 fu2 dou6 cek3 tung4 maai4 lok6 deng3 maai5 liu2.<br>Jau5 jam6 ho4 ji4 man6 fun1 jing4 ceoi4 si4 lyun4 lok3 ngo5, do1 ze6 hap6 zok3.",
+        english: "Hello Paul. Kindly review the latest quotation in the attachment.<br>In response to the modification requests you brought up last time regarding the millwork design for the Luxe unit, our team has readjusted the budget.<br>Deducting the initial deposit that was already paid, the remaining balance amount has been clearly listed at the very bottom of the invoice.<br>As far as I know, some specially custom-ordered European materials require a longer transportation time.<br>The supplier said it will take about 4 to 6 weeks to be delivered to Vancouver.<br>Therefore, in order not to delay the progress of the whole renovation project, we strongly suggest finalizing this quote as soon as possible.<br>If you have no objections to the various terms, kindly sign to confirm, and arrange payment for the second installment.<br>Once we receive your confirmation, we will immediately arrange the master tradesmen to take measurements and place orders to buy materials.<br>If you have any doubts, welcome to contact me anytime. Thank you for your cooperation.",
+        quizzes: [
+            { q: "電郵嘅附件入面有咩文件？", e: "(What document is in the email's attachment?)", options: [{c: "最新嘅報價單同發票", e: "(The latest quotation and invoice)", correct: true}, {c: "公司嘅宣傳單張", e: "(The company's promotional flyer)", correct: false}, {c: "員工嘅履歷表", e: "(Employee's resume)", correct: false}] },
+            { q: "點解預算要重新調整？", e: "(Why did the budget have to be readjusted?)", options: [{c: "因為客人對木工設計提出咗修改要求", e: "(Because the client requested modifications to the millwork design)", correct: true}, {c: "因為加咗好多行政費", e: "(Because a lot of admin fees were added)", correct: false}, {c: "因為計錯咗數", e: "(Because the calculation was wrong)", correct: false}] },
+            { q: "尾數金額係點樣計算出嚟嘅？", e: "(How is the balance amount calculated?)", options: [{c: "總數扣除咗之前已經支付嘅首期訂金", e: "(Total minus the initial deposit already paid)", correct: true}, {c: "加上咗全部嘅利息", e: "(Adding all the interest)", correct: false}, {c: "隨便估算一個數", e: "(Randomly estimating a number)", correct: false}] },
+            { q: "點解作者強烈建議盡快落實報價？", e: "(Why does the author strongly suggest finalizing the quote ASAP?)", options: [{c: "因為特別材料運輸時間長，唔想耽誤工程進度", e: "(Because special materials take long to ship, don't want to delay progress)", correct: true}, {c: "因為公司等錢用", e: "(Because the company is desperate for money)", correct: false}, {c: "因為報價聽日就會過期", e: "(Because the quote expires tomorrow)", correct: false}] },
+            { q: "「煩請」喺商業書信入面表達咩語氣？", e: "(What tone does 'faan cing' express in business correspondence?)", options: [{c: "客氣且專業地請求對方做某件事", e: "(Politely and professionally requesting the other party to do something)", correct: true}, {c: "極度憤怒嘅命令", e: "(An extremely angry command)", correct: false}, {c: "隨意嘅問候", e: "(A casual greeting)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Reporting Progress to Supervisor", topic: "Knowledge/Fact (據我所知 - As far as I know)",
+        img: "https://images.unsplash.com/photo-1573164713988-8665fc963095",
+        grammarDesc: "<strong>Information Reporting:</strong> Stating facts based on your current understanding.<br>據我所知 (geoi3 ngo5 so2 zi1) means 'As far as I know / Based on what I know'.",
+        vocab: [
+            {c: "匯報", j: "wui6 bou3", e: "Report"}, {c: "據我所知", j: "geoi3 ngo5 so2 zi1", e: "As far as I know"},
+            {c: "安裝", j: "on1 zong1", e: "Install"}, {c: "濕度", j: "sap1 dou6", e: "Humidity"},
+            {c: "滲水", j: "sam3 seoi2", e: "Water leakage / Seepage"}, {c: "抽濕機", j: "cau1 sap1 gei1", e: "Dehumidifier"},
+            {c: "工序", j: "gung1 zeoi6", e: "Process / Procedure"}, {c: "地磚", j: "dei6 zyun1", e: "Floor tiles"},
+            {c: "密切留意", j: "mat6 cit3 lau4 ji3", e: "Monitor closely"}, {c: "延遲", j: "jin4 ci4", e: "Delay"}
+        ],
+        story: "Alex，我想同你匯報一下物理治療診所裝修嘅最新狀況。<br>現場嘅冷氣系統同埋水喉已經安裝完畢，通過咗初步測試。<br>但係油漆判頭今朝打畀我，話牆身嘅濕度太高，暫時未可以開工髹油。<br>據我所知，呢個係因為大廈嘅中央冷氣喉管早幾日有輕微滲水。<br>雖然管理處已經派人整好咗個漏水點，但係啲石膏板同牆身需要時間徹底乾透。<br>我已經安排咗三部大型抽濕機喺現場日夜運作，盡量加快個進度。<br>不過，為咗確保油漆嘅質量唔會起泡，我估計油漆工程需要延遲三日先可以正式開始。<br>至於其他不受濕度影響嘅工序，例如鋪地磚同埋裝走廊燈，我哋會安排師傅提早入場做住先，避免工人停工。<br>我會密切留意住現場個濕度讀數，一有最新消息或者需要改 schedule，會即刻話你知。",
+        jyutping: "Alex, ngo5 soeng2 tung4 nei5 wui6 bou3 jat1 haa5 mat6 lei5 zi6 liu4 can2 so2 zong1 sau1 ge3 zeoi3 san1 zong6 fong3.<br>Jin6 coeng4 ge3 laang5 hei3 hai6 tung2 tung4 maai4 seoi2 hau4 ji5 ging1 on1 zong1 jyun4 bat1, tung1 gwo3 zo2 co1 bou6 cak1 si3.<br>Daan6 hai6 jau4 cat1 pun3 tau4 gam1 ziu1 daa2 bei2 ngo5, waa6 coeng4 san1 ge3 sap1 dou6 taai3 gou1, zaam6 si4 mei6 ho2 ji5 hoi1 gung1 jau4 jau2.<br><span class='highlight'>Geoi3 ngo5 so2 zi1</span>, ni1 go3 hai6 jan1 wai6 daai6 haa6 ge3 zung1 joeng1 laang5 hei3 hau4 gun2 zou2 gei2 jat6 jau5 hing1 mei4 sam3 seoi2.<br>Seoi1 jin4 gun2 lei5 cyu3 ji5 ging1 paai3 jan4 zing2 hou2 zo2 go3 lau6 seoi2 dim2, daan6 hai6 di1 sek6 gou1 baan2 tung4 coeng4 san1 seoi1 jiu3 si4 gaan3 cit3 dai2 gon1 tau3.<br>Ngo5 ji5 ging1 on1 paai4 zo2 saam1 bou6 daai6 jing4 cau1 sap1 gei1 hai2 jin6 coeng4 jat6 je6 wan6 zok3, zeon6 loeng6 gaa1 faai3 go3 zeon3 dou6.<br>Bat1 gwo3, wai6 zo2 kok3 bou2 jau4 cat1 ge3 zat1 loeng6 m4 wui5 hei2 pou5, ngo5 gu2 gai3 jau4 cat1 gung1 cing4 seoi1 jiu3 jin4 ci4 saam1 jat6 sin1 ho2 ji5 zing3 sik1 hoi1 ci2.<br>Zi3 jyu1 kei4 taa1 bat1 sau6 sap1 dou6 jing2 hoeng2 ge3 gung1 zeoi6, lai6 jyu4 pou1 dei6 zyun1 tung4 maai4 zong1 zau2 long2 dang1, ngo5 dei6 wui5 on1 paai4 si1 fu2 tai4 zou2 jap6 coeng4 zou6 zyu6 sin1, bei6 min5 gung1 jan4 ting4 gung1.<br>Ngo5 wui5 mat6 cit3 lau4 ji3 zyu6 jin6 coeng4 go3 sap1 dou6 duk6 sou3, jat1 jau5 zeoi3 san1 siu1 sik1 waak6 ze2 seoi1 jiu3 goi2 schedule, wui5 zik1 hak1 waa6 nei5 zi1.",
+        english: "Alex, I want to report to you the latest status of the physiotherapy clinic renovation.<br>The AC system and plumbing on-site have been installed and passed preliminary testing.<br>However, the painting contractor called me this morning, saying the wall humidity is too high, so they temporarily cannot start painting.<br>As far as I know, this is because the building's central AC pipes had a slight seepage a few days ago.<br>Although management has already sent someone to fix the leak, the drywall and walls need time to dry thoroughly.<br>I have already arranged for three large dehumidifiers to operate day and night on-site to speed up the progress as much as possible.<br>However, to ensure the paint quality won't bubble, I estimate the painting work needs to be delayed by 3 days before officially starting.<br>As for other processes not affected by humidity, like laying floor tiles and installing hallway lights, we will arrange the tradesmen to enter early and work on those first, avoiding work stoppage.<br>I will closely monitor the humidity readings on-site; as soon as there is news or a need to change the schedule, I will let you know immediately.",
+        quizzes: [
+            { q: "點解油漆工人暫時未可以開工？", e: "(Why can't the painters start work temporarily?)", options: [{c: "因為牆身濕度太高", e: "(Because the wall humidity is too high)", correct: true}, {c: "因為未買到油漆", e: "(Because they haven't bought the paint yet)", correct: false}, {c: "因為未出糧", e: "(Because they haven't been paid)", correct: false}] },
+            { q: "導致牆身濕度高嘅根本原因係咩？", e: "(What is the root cause leading to high wall humidity?)", options: [{c: "大廈中央喉管早幾日有輕微滲水", e: "(The building's central pipes had a slight seepage a few days ago)", correct: true}, {c: "琴日落大雨", e: "(It rained heavily yesterday)", correct: false}, {c: "工人倒瀉水", e: "(Workers spilled water)", correct: false}] },
+            { q: "作者採取咗咩措施去加快進度？", e: "(What measure did the author take to speed up progress?)", options: [{c: "安排大型抽濕機喺現場日夜運作", e: "(Arranged large dehumidifiers to operate day and night on-site)", correct: true}, {c: "叫工人用風筒吹乾塊牆", e: "(Told workers to use hair dryers to dry the wall)", correct: false}, {c: "直接油上去算數", e: "(Just painted over it and called it a day)", correct: false}] },
+            { q: "為咗避免工人停工，作者有咩安排？", e: "(To avoid work stoppage, what arrangement did the author make?)", options: [{c: "安排做唔受濕度影響嘅工序，例如鋪地磚", e: "(Arranged processes not affected by humidity, like laying floor tiles)", correct: true}, {c: "叫所有工人放假三日", e: "(Told all workers to take a 3-day holiday)", correct: false}, {c: "叫油漆工人去幫手做冷氣", e: "(Told painters to help with AC work)", correct: false}] },
+            { q: "「據我所知」通常用嚟表達咩語氣？", e: "(What tone does 'geoi ngo so zi' usually express?)", options: [{c: "根據自己目前掌握嘅資訊去陳述事實，保留客觀性", e: "(Stating facts based on currently held info, maintaining objectivity)", correct: true}, {c: "百分之百肯定，絕對冇錯", e: "(100% certain, absolutely no mistakes)", correct: false}, {c: "純粹係自己亂咁估", e: "(Purely random guessing by oneself)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Handling Supplier Delays", topic: "Alternative Solution (既然... 就不如 - Since... might as well)",
+        img: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+        grammarDesc: "<strong>Problem Solving:</strong> Proposing a pivot when faced with a roadblock.<br>既然 (gei3 jin4) [A]... 就不如 (zau6 bat1 jyu4) [B] means 'Since [A is a problem], we might as well [do B instead]'.",
+        vocab: [
+            {c: "物流", j: "mat6 lau4", e: "Logistics"}, {c: "缺貨", j: "kyut3 fo3", e: "Out of stock"},
+            {c: "既然", j: "gei3 jin4", e: "Since / Given that"}, {c: "就不如", j: "zau6 bat1 jyu4", e: "Might as well"},
+            {c: "替代方案", j: "tai3 doi6 fong1 on3", e: "Alternative solution"}, {c: "成本", j: "sing4 bun2", e: "Cost"},
+            {c: "差價", j: "caa1 gaa3", e: "Price difference"}, {c: "妥協", j: "to5 hip3", e: "Compromise"},
+            {c: "客房", j: "haak3 fong4", e: "Guest room / Client's room"}, {c: "拍板", j: "paak3 baan2", e: "Make a final decision / Give the green light"}
+        ],
+        story: "今日收到物流公司嘅電郵，話我哋為酒店大堂訂嗰批意大利大理石遇到清關延誤。<br>原本預計下個禮拜到溫哥華，而家起碼要等多半個月，供應商嗰邊亦都出現缺貨情況。<br>我同設計團隊開咗個緊急會議，評估過工程進度。<br>既然原定嘅材料一定趕唔切交貨，我哋就不如啟動替代方案 (Plan B)。<br>我哋喺本地搵到一款顏色同紋理都非常接近嘅花崗岩。<br>雖然成本比原來嘅預算貴咗 15%，但係可以即刻安排送貨，保證大堂嘅裝修可以如期完工。<br>為咗表示誠意，我哋會同供應商談判，要求佢哋承擔部分差價。<br>喺質量方面我哋絕對唔會妥協，呢款本地石材嘅耐用度其實仲好過原先嗰款。<br>我已經將兩塊辦 (samples) 放咗喺客房，等老細今晏親自睇過拍板。<br>做 project 管理，遇到突發事最緊要轉數快，唔好死咕咕等運到。",
+        jyutping: "Gam1 jat6 sau1 dou2 mat6 lau4 gung1 si1 ge3 din6 jau4, waa6 ngo5 dei6 wai6 zau2 dim3 daai6 tong4 deng6 go2 pai1 ji3 daai6 lei6 daai6 lei5 sek6 jyu6 dou2 cing1 gwaan1 jin4 ng6.<br>Jyun4 bun2 jyu6 gai3 haa6 go3 lai5 baai3 dou3 Wan1 go1 waa4, ji4 gaa1 hei2 maa5 jiu3 dang2 do1 bun3 go3 jyut6, gung1 jing3 soeng1 go2 bin1 jik6 dou1 ceot1 jin6 kyut3 fo3 cing4 fong3.<br>Ngo5 tung4 cit3 gai3 tyun4 deoi2 hoi1 zo2 go3 gan2 gap1 wui6 ji5, ping4 gu2 gwo3 gung1 cing4 zeon3 dou6.<br><span class='highlight'>Gei3 jin4</span> jyun4 ding6 ge3 coi4 liu2 jat1 ding6 gon2 m4 cit3 gaau1 fo3, ngo5 dei6 <span class='highlight'>zau6 bat1 jyu4</span> kai2 dung6 tai3 doi6 fong1 on3 (Plan B).<br>Ngo5 dei6 hai2 bun2 dei6 wan2 dou2 jat1 fun2 ngaan4 sik1 tung4 man4 lei5 dou1 fei1 soeng4 zip3 gan6 ge3 faa1 gong1 ngaam4.<br>Seoi1 jin4 sing4 bun2 bei2 jyun4 loi4 ge3 jyu6 syun3 gwai3 zo2 15%, daan6 hai6 ho2 ji5 zik1 hak1 on1 paai4 sung3 fo3, bou2 zing3 daai6 tong4 ge3 zong1 sau1 ho2 ji5 jyu4 kei4 jyun4 gung1.<br>Wai6 zo2 biu2 si6 sing4 ji3, ngo5 dei6 wui5 tung4 gung1 jing3 soeng1 taam4 pun3, jiu1 kau4 keoi5 dei6 sing4 daam1 bou6 fan6 caa1 gaa3.<br>Hai2 zat1 loeng6 fong1 min6 ngo5 dei6 zyut6 deoi3 m4 wui5 to5 hip3, ni1 fun2 bun2 dei6 sek6 coi4 ge3 noi6 jung6 dou6 kei4 sat6 zung6 hou2 gwo3 jyun4 sin1 go2 fun2.<br>Ngo5 ji5 ging1 zoeng1 loeng5 faai3 baan2 (samples) fong3 zo2 hai2 haak3 fong4, dang2 lou5 sai3 gam1 aan3 can1 zi6 tai2 gwo3 paak3 baan2.<br>Zou6 project gun2 lei5, jyu6 dou2 dat6 faat3 si6 zeoi3 gan2 jiu3 zyun3 sou3 faai3, m4 hou2 sei2 gu1 gu1 dang2 wan6 dou3.",
+        english: "Today I received an email from the logistics company saying the batch of Italian marble we ordered for the hotel lobby encountered customs clearance delays.<br>It was originally expected to arrive in Vancouver next week, now it will take at least half a month more, and the supplier is also experiencing out-of-stock situations.<br>I held an emergency meeting with the design team to evaluate the project progress.<br>Since the originally scheduled materials definitely cannot be delivered in time, we might as well activate the alternative solution (Plan B).<br>We found a local granite with a color and texture very close to the original.<br>Although the cost is 15% more expensive than the original budget, it can be delivered immediately, guaranteeing the lobby renovation can be finished on schedule.<br>To show sincerity, we will negotiate with the supplier to require them to bear part of the price difference.<br>In terms of quality we will absolutely not compromise; the durability of this local stone is actually even better than the original one.<br>I have already placed two samples in the guest room, waiting for the boss to personally review and make the final decision this afternoon.<br>Doing project management, when encountering sudden events the most important thing is to think fast on your feet, don't just stubbornly wait for luck to arrive.",
+        quizzes: [
+            { q: "原本訂購嘅大理石遇到咩問題？", e: "(What problem did the originally ordered marble encounter?)", options: [{c: "清關延誤同埋供應商缺貨", e: "(Customs clearance delays and supplier out-of-stock)", correct: true}, {c: "送到嚟全部爛晒", e: "(Arrived completely broken)", correct: false}, {c: "顏色完全唔啱", e: "(The color was completely wrong)", correct: false}] },
+            { q: "作者提出嘅替代方案係咩？", e: "(What is the alternative solution proposed by the author?)", options: [{c: "用本地搵到嘅花崗岩代替", e: "(Use locally found granite as a substitute)", correct: true}, {c: "鋪木地板算數", e: "(Just lay wood flooring and be done with it)", correct: false}, {c: "等大理石送到先開工", e: "(Wait for the marble to arrive before starting work)", correct: false}] },
+            { q: "新方案對成本同進度有咩影響？", e: "(What impact does the new plan have on cost and schedule?)", options: [{c: "成本貴咗 15%，但保證可以如期完工", e: "(Cost is 15% higher, but guarantees finishing on schedule)", correct: true}, {c: "成本平咗，但會嚴重延遲", e: "(Cost is cheaper, but will severely delay)", correct: false}, {c: "完全冇影響", e: "(Absolutely no impact)", correct: false}] },
+            { q: "作者打算點樣處理超出嘅差價？", e: "(How does the author plan to handle the excess price difference?)", options: [{c: "同供應商談判，要求佢哋承擔部分差價", e: "(Negotiate with supplier, ask them to bear part of the difference)", correct: true}, {c: "叫業主自己畀", e: "(Tell the client to pay for it themselves)", correct: false}, {c: "喺工人嘅人工入面扣", e: "(Deduct it from the workers' wages)", correct: false}] },
+            { q: "「既然... 就不如」喺解決問題時發揮咩作用？", e: "(What role does 'Since... might as well' play in problem-solving?)", options: [{c: "接受已發生嘅阻礙，果斷轉換方向採取另一種行動", e: "(Accept the occurred obstacle, decisively pivot and take another action)", correct: true}, {c: "表示無能為力，放棄解決", e: "(Express helplessness, give up on solving it)", correct: false}, {c: "要求別人道歉", e: "(Demand someone to apologize)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Reviewing Budgets", topic: "Analysis (比起... 其實 - Compared to... actually)",
+        img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f",
+        grammarDesc: "<strong>Financial Analysis:</strong> Re-evaluating cost perspectives.<br>比起 (bei2 hei2) [A]... 其實 (kei4 sat6) [B] means 'Compared to [A]... actually [B is the true situation]'.",
+        vocab: [
+            {c: "預算", j: "jyu6 syun3", e: "Budget"}, {c: "超支", j: "ciu1 zi1", e: "Over budget / Overspend"},
+            {c: "比起", j: "bei2 hei2", e: "Compared to"}, {c: "其實", j: "kei4 sat6", e: "Actually"},
+            {c: "長遠嚟講", j: "coeng4 jyun5 lei4 gong2", e: "In the long run"}, {c: "投資", j: "tau4 zi1", e: "Investment"},
+            {c: "維修費", j: "wai4 sau1 fai3", e: "Maintenance fee"}, {c: "壽命", j: "sau6 ming6", e: "Lifespan"},
+            {c: "性價比", j: "sing3 gaa3 bei2", e: "Cost-effectiveness / Value for money"}, {c: "審批", j: "sam2 pai1", e: "Approval / Audit"}
+        ],
+        story: "老闆，我哋琴日收到電機工程顧問交過嚟嘅最終預算案。<br>初初睇份 report，個總數確實比我哋原本嘅估算高咗大約 8%。<br>但係當我詳細 breakdown 每一個 cost code 之後，發現主要嘅增幅係嚟自升級咗嘅智能冷氣同通風系統。<br>比起用舊款嘅平價機，其實呢套新系統嘅能源效率高好多。<br>雖然前期嘅設備採購同埋安裝費貴咗，但長遠嚟講，佢每個月可以幫大廈慳返起碼 20% 嘅電費。<br>而且新機嘅保養期長達十年，變相慳咗一大筆未來嘅維修費。<br>所以我認為，呢個唔係超支，而係一項回報率極高嘅長線投資。<br>綜合考慮佢嘅使用壽命同埋節能效果，呢個選項嘅性價比絕對係最高嘅。<br>我已經將詳細嘅 ROI (投資回報率) 計算表附上，希望你可以喺今個星期內審批，等我哋可以盡快落單。",
+        jyutping: "Lou5 sai3, ngo5 dei6 kam4 jat6 sau1 dou2 din6 gei1 gung1 cing4 gu3 man6 gaau1 gwo3 lei4 ge3 zeoi3 zung1 jyu6 syun3 on3.<br>Co1 co1 tai2 fan6 report, go3 zung2 sou3 kok3 sat6 bei2 ngo5 dei6 jyun4 bun2 ge3 gu2 syun3 gou1 zo2 daai6 joek3 8%.<br>Daan6 hai6 dong1 ngo5 coeng4 sai3 breakdown mui5 jat1 go3 cost code zi1 hau6, faat3 jin6 zyu2 jiu3 ge3 zang1 fuk1 hai6 lei4 zi6 sing1 kap1 zo2 ge3 zi3 nang4 laang5 hei3 tung4 tung1 fung1 hai6 tung2.<br><span class='highlight'>Bei2 hei2</span> jung6 gau6 fun2 ge3 peng4 gaa3 gei1, <span class='highlight'>kei4 sat6</span> ni1 tou3 san1 hai6 tung2 ge3 nang4 jyun4 haau6 leot2 gou1 hou2 do1.<br>Seoi1 jin4 cin4 kei4 ge3 cit3 bei6 coi2 gau3 tung4 maai4 on1 zong1 fai3 gwai3 zo2, daan6 coeng4 jyun5 lei4 gong2, keoi5 mui5 go3 jyut6 ho2 ji5 bong1 daai6 haa6 haan1 faan1 hei2 maa5 20% ge3 din6 fai3.<br>Ji4 ce2 san1 gei1 ge3 bou2 joeng5 kei4 coeng4 daat6 sap6 nin4, bin3 soeng3 haan1 zo2 jat1 daai6 bat1 mei6 loi4 ge3 wai4 sau1 fai3.<br>So2 ji5 ngo5 jing6 wai4, ni1 go3 m4 hai6 ciu1 zi1, ji4 hai6 jat1 hong6 wui4 bou3 leot2 gik6 gou1 ge3 coeng4 sin3 tau4 zi1.<br>Zung3 hap6 haau2 leoi6 keoi5 ge3 si2 jung6 sau6 ming6 tung4 maai4 zit3 nang4 haau6 gwo2, ni1 go3 syun2 hong6 ge3 sing3 gaa3 bei2 zyut6 deoi3 hai6 zeoi3 gou1 ge3.<br>Ngo5 ji5 ging1 zoeng1 coeng4 sai3 ge3 ROI (tau4 zi1 wui4 bou3 leot2) gai3 syun3 biu2 fu6 soeng5, hei1 mong6 nei5 ho2 ji5 hai2 gam1 go3 sing1 kei4 noi6 sam2 pai1, dang2 ngo5 dei6 ho2 ji5 zeon6 faai3 lok6 daan1.",
+        english: "Boss, yesterday we received the final budget proposal submitted by the MEP (Mechanical, Electrical, Plumbing) engineering consultant.<br>Looking at the report initially, the total number is indeed about 8% higher than our original estimate.<br>But when I detailed the breakdown of every cost code, I found the main increase comes from the upgraded smart AC and ventilation system.<br>Compared to using older cheap machines, actually this new system's energy efficiency is much higher.<br>Although the upfront equipment procurement and installation fees are more expensive, in the long run, it can help the building save at least 20% on electricity bills every month.<br>Moreover, the new machine's warranty period is as long as 10 years, which effectively saves a large sum of future maintenance fees.<br>Therefore I think, this is not an overspend, but a long-term investment with an extremely high rate of return.<br>Comprehensively considering its lifespan and energy-saving effects, this option's cost-effectiveness is absolutely the highest.<br>I have already attached the detailed ROI (Return on Investment) calculation spreadsheet, hoping you can approve it within this week so we can place the order ASAP.",
+        quizzes: [
+            { q: "預算案嘅總數比原先估計高咗幾多？", e: "(How much higher was the budget total than originally estimated?)", options: [{c: "大約 8%", e: "(About 8%)", correct: true}, {c: "大約 20%", e: "(About 20%)", correct: false}, {c: "大約 50%", e: "(About 50%)", correct: false}] },
+            { q: "預算增加嘅主要原因係咩？", e: "(What is the main reason for the budget increase?)", options: [{c: "升級咗智能冷氣同通風系統", e: "(Upgraded smart AC and ventilation system)", correct: true}, {c: "買咗好多新電腦畀員工", e: "(Bought a lot of new computers for staff)", correct: false}, {c: "因為要賠錢畀客人", e: "(Because of having to compensate the client)", correct: false}] },
+            { q: "新系統喺長遠嚟講有咩好處？", e: "(What is the benefit of the new system in the long run?)", options: [{c: "每個月慳 20% 電費，仲有十年保養慳維修費", e: "(Saves 20% electricity monthly, 10-yr warranty saves maintenance fees)", correct: true}, {c: "完全唔需要用電", e: "(Absolutely does not need to use electricity)", correct: false}, {c: "外觀顏色非常靚", e: "(The exterior color is very pretty)", correct: false}] },
+            { q: "作者點樣定性呢筆表面上嘅「超支」？", e: "(How does the author characterize this superficial 'overspend'?)", options: [{c: "認為係一項回報率極高嘅長線投資", e: "(Considers it a long-term investment with an extremely high rate of return)", correct: true}, {c: "認為係顧問呃錢嘅手段", e: "(Considers it a scam by the consultant to get money)", correct: false}, {c: "認為係無可避免嘅浪費", e: "(Considers it an unavoidable waste)", correct: false}] },
+            { q: "「比起... 其實...」用嚟表達咩邏輯分析？", e: "(What logical analysis does 'Compared to... actually...' express?)", options: [{c: "對比表面劣勢與實際深層優勢，糾正直覺盲點", e: "(Contrasting superficial flaws with actual deep advantages, correcting intuitive blind spots)", correct: true}, {c: "表示兩樣嘢都買唔起", e: "(Expressing inability to afford either thing)", correct: false}, {c: "要求老闆加人工", e: "(Demanding a salary raise from the boss)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "Performance Review", topic: "Highlighting Achievements (值得一提嘅係 - Worth mentioning is)",
+        img: "https://images.unsplash.com/photo-1542744094-3a31f272c490",
+        grammarDesc: "<strong>Self-Evaluation:</strong> Drawing attention to key successes.<br>值得一提嘅係 (zik6 dak1 jat1 tai4 ge3 hai6) means 'It is worth mentioning that...'",
+        vocab: [
+            {c: "工作表現", j: "gung1 zok3 biu2 jin6", e: "Work performance"}, {c: "評估", j: "ping4 gu2", e: "Evaluation / Review"},
+            {c: "值得一提嘅係", j: "zik6 dak1 jat1 tai4 ge3 hai6", e: "It is worth mentioning that"}, {c: "協調", j: "hip3 tiu4", e: "Coordinate"},
+            {c: "跨部門", j: "kwaa1 bou6 mun4", e: "Cross-departmental"}, {c: "效率", j: "haau6 leot2", e: "Efficiency"},
+            {c: "樽頸", j: "zeon1 geng2", e: "Bottleneck"}, {c: "主動", j: "zyu2 dung6", e: "Proactive"},
+            {c: "優化", j: "jau1 faa3", e: "Optimize"}, {c: "升職", j: "sing1 zik1", e: "Promotion"}
+        ],
+        story: "喺年度工作表現評估 (Annual Performance Review) 會議上，我向主管匯報過去一年嘅工作成果。<br>今年我負責跟進三個大型建築項目，全部都能夠喺預算之內如期交付。<br>值得一提嘅係，喺 QKD Construction 嗰個項目入面，前期遇到嚴重嘅跨部門協調問題。<br>設計部同工程部之間嘅溝通出現咗樽頸，導致圖則審批不斷延誤。<br>我見到個情況，就主動介入，每個星期設立一個聯合進度會議，拉齊雙方嘅期望。<br>我仲幫公司優化咗內部嘅文件審批流程，將平均等待時間縮短咗三十個百分比。<br>呢個改變唔單止提高咗成個團隊嘅工作效率，仲大大減少咗出錯嘅機會。<br>基於呢啲具體嘅貢獻同埋數據支持，我希望公司可以考慮我下年度升職做 Senior Coordinator 嘅申請。<br>我相信自己具備帶領更大團隊同承擔更多責任嘅能力。",
+        jyutping: "Hai2 nin4 dou6 gung1 zok3 biu2 jin6 ping4 gu2 (Annual Performance Review) wui6 ji5 soeng6, ngo5 hoeng3 zyu2 gun2 wui6 bou3 gwo3 heoi3 jat1 nin4 ge3 gung1 zok3 sing4 gwo2.<br>Gam1 nin4 ngo5 fu6 zaak3 gan1 zeon3 saam1 go3 daai6 jing4 gin3 zuk1 hong6 muk6, cyun4 bou6 dou1 nang4 gau3 hai2 jyu6 syun3 zi1 noi6 jyu4 kei4 gaau1 fu6.<br><span class='highlight'>Zik6 dak1 jat1 tai4 ge3 hai6</span>, hai2 QKD Construction go2 go3 hong6 muk6 jap6 min6, cin4 kei4 jyu6 dou2 jim4 zung6 ge3 kwaa1 bou6 mun4 hip3 tiu4 man6 tai4.<br>Cit3 gai3 bou6 tung4 gung1 cing4 bou6 zi1 gaan1 ge3 gau1 tung1 ceot1 jin6 zo2 zeon1 geng2, dou6 zi3 tou4 zak1 sam2 pai1 bat1 dyun6 jin4 ng6.<br>Ngo5 gin3 dou2 go3 cing4 fong3, zau6 zyu2 dung6 gaai3 jap6, mui5 go3 sing1 kei4 cit3 laap6 jat1 go3 lyun4 hap6 zeon3 dou6 wui6 ji5, laai1 cai4 soeng1 fong1 ge3 kei4 mong6.<br>Ngo5 zung6 bong1 gung1 si1 jau1 faa3 zo2 noi6 bou6 ge3 man4 gin2 sam2 pai1 lau4 cing4, zoeng1 ping4 gwan1 dang2 doi6 si4 gaan3 suk1 dyun2 zo2 saam1 sap6 go3 baak3 fan6 bei2.<br>Ni1 go3 goi2 bin3 m4 daan1 zi2 tai4 gou1 zo2 seng4 go3 tyun4 deoi2 ge3 gung1 zok3 haau6 leot2, zung6 daai6 daai6 gaam2 siu2 zo2 ceot1 co3 ge3 gei1 wui6.<br>Gei1 jyu1 ni1 di1 geoi6 tai2 ge3 gung3 hin3 tung4 maai4 sou3 geoi3 zi1 ci4, ngo5 hei1 mong6 gung1 si1 ho2 ji5 haau2 leoi6 ngo5 haa6 nin4 dou6 sing1 zik1 zou6 Senior Coordinator ge3 san1 cing2.<br>Ngo5 soeng1 seon3 zi6 gei2 geoi6 bei6 daai3 ling5 gang3 daai6 tyun4 deoi2 tung4 sing4 daam1 gang3 do1 zaak3 jam6 ge3 nang4 lik6.",
+        english: "At the Annual Performance Review meeting, I reported my work results over the past year to my supervisor.<br>This year I was responsible for following up on three large-scale construction projects, all of which were able to be delivered on schedule and under budget.<br>It is worth mentioning that, in the QKD Construction project, we encountered severe cross-departmental coordination problems in the early stages.<br>A bottleneck appeared in the communication between the design department and the engineering department, leading to continuous delays in floor plan approvals.<br>Seeing the situation, I proactively intervened, setting up a joint progress meeting every week to align the expectations of both parties.<br>I also helped the company optimize the internal document approval process, shortening the average wait time by 30 percent.<br>This change not only improved the working efficiency of the entire team, but also greatly reduced the chance of making mistakes.<br>Based on these concrete contributions and data support, I hope the company can consider my application for promotion to Senior Coordinator next year.<br>I believe I possess the ability to lead a larger team and bear more responsibilities.",
+        quizzes: [
+            { q: "作者今年跟進嘅項目表現如何？", e: "(How was the performance of the projects the author followed up on this year?)", options: [{c: "全部都能夠喺預算之內如期交付", e: "(All were able to be delivered on schedule within budget)", correct: true}, {c: "全部都嚴重超支同延期", e: "(All severely over budget and delayed)", correct: false}, {c: "中途取消晒", e: "(Cancelled halfway through)", correct: false}] },
+            { q: "QKD 項目初期遇到咩最大困難？", e: "(What was the biggest difficulty the QKD project encountered early on?)", options: [{c: "跨部門溝通出現樽頸，導致圖則審批延誤", e: "(Cross-departmental communication bottleneck led to floor plan approval delays)", correct: true}, {c: "買錯咗建築材料", e: "(Bought the wrong construction materials)", correct: false}, {c: "冇人識畫圖", e: "(Nobody knew how to draw floor plans)", correct: false}] },
+            { q: "作者點樣主動解決跨部門溝通嘅問題？", e: "(How did the author proactively solve the cross-departmental communication problem?)", options: [{c: "每個星期設立聯合進度會議，拉齊雙方期望", e: "(Set up a weekly joint progress meeting to align both sides' expectations)", correct: true}, {c: "投訴設計部同事", e: "(Complained about the design department colleagues)", correct: false}, {c: "自己一個畫晒啲圖", e: "(Drew all the plans by themselves)", correct: false}] },
+            { q: "優化內部審批流程帶嚟咩具體嘅數據改善？", e: "(What concrete data improvement did optimizing the internal approval process bring?)", options: [{c: "將平均等待時間縮短咗三十個百分比", e: "(Shortened the average wait time by 30 percent)", correct: true}, {c: "慳咗公司一百萬", e: "(Saved the company 1 million dollars)", correct: false}, {c: "減少咗一半嘅員工", e: "(Reduced staff by half)", correct: false}] },
+            { q: "「值得一提嘅係」喺匯報時有咩策略性作用？", e: "(What strategic function does 'It is worth mentioning that' have when reporting?)", options: [{c: "引導上司將注意力集中喺自己最突出嘅成就同解決困難嘅能力上", e: "(Guiding the boss's attention to your most outstanding achievements and problem-solving skills)", correct: true}, {c: "用嚟講八卦是非", e: "(Used for telling gossip)", correct: false}, {c: "用嚟道歉認錯", e: "(Used to apologize and admit mistakes)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Networking & Introductions", topic: "Pleasantries (久仰大名 - I've heard a lot about you)",
+        img: "https://images.unsplash.com/photo-1515169067868-5387ec356754",
+        grammarDesc: "<strong>Business Etiquette:</strong> Formal greetings when meeting someone important.<br>久仰大名 (gau2 joeng5 daai6 ming4) is a formal idiom meaning 'I've heard great things about you for a long time'.",
+        vocab: [
+            {c: "應酬", j: "jing3 cau4", e: "Socialize / Entertain (business)"}, {c: "商會", j: "soeng1 wui2", e: "Chamber of Commerce"},
+            {c: "久仰大名", j: "gau2 joeng5 daai6 ming4", e: "I've heard a lot about you"}, {c: "幸會", j: "hang6 wui6", e: "Pleasure to meet you"},
+            {c: "名片", j: "ming4 pin2", e: "Business card"}, {c: "潛在客戶", j: "cim4 zoi6 haak3 wu6", e: "Potential client"},
+            {c: "承建商", j: "sing4 gin3 soeng1", e: "Contractor"}, {c: "合作空間", j: "hap6 zok3 hung1 gaan1", e: "Room for cooperation"},
+            {c: "跟進", j: "gan1 zeon3", e: "Follow up"}, {c: "互惠互利", j: "wu6 wai6 wu6 lei6", e: "Mutually beneficial"}
+        ],
+        story: "尋晚我代表 Contour Projects 去參加溫哥華華人建築商會嘅年度晚宴。<br>呢啲商務應酬係拓展人脈同埋接觸潛在客戶嘅大好機會。<br>喺酒會期間，老闆 Alex 介紹我認識一位本地好出名嘅大型發展商總監。<br>我雙手遞上名片，好客氣咁講：「陳總，幸會幸會，久仰大名！我哋公司一直都有留意你哋喺列治文最新嗰個商場項目，設計真係非常出色。」<br>陳總接過名片，笑住話多謝，仲問起我哋近期做緊咩工程。<br>我簡單介紹咗我哋團隊喺高端寫字樓 tenant improvement (租戶裝修) 方面嘅豐富經驗。<br>大家傾得好投契，發現雙方喺未來嘅項目度有極大嘅合作空間。<br>臨走前，我哋互相加咗 LinkedIn，我話：「希望遲啲有機會可以約陳總飲杯咖啡，詳細傾下點樣達致互惠互利。」<br>今朝一返到公司，我已經即刻發咗封 follow-up email 畀佢，打鐵趁熱。",
+        jyutping: "Cam4 maan5 ngo5 doi6 biu2 Contour Projects heoi3 caam1 gaa1 Wan1 go1 waa4 waa4 jan4 gin3 zuk1 soeng1 wui2 ge3 nin4 dou6 maan5 jin3.<br>Ni1 di1 soeng1 mou6 jing3 cau4 hai6 tok3 zin2 jan4 mak6 tung4 maai4 zip3 zuk1 cim4 zoi6 haak3 wu6 ge3 daai6 hou2 gei1 wui6.<br>Hai2 zau2 wui2 gei4 gaan1, lou5 baan2 Alex gaai3 siu6 ngo5 jing6 sik1 jat1 wai2 bun2 dei6 hou2 ceot1 meng2 ge3 daai6 jing4 faat3 zin2 soeng1 zung2 gaam1.<br>Ngo5 soeng1 sau2 dai6 soeng5 ming4 pin2, hou2 haak3 hei3 gam2 gong2: 「Can4 zung2, hang6 wui6 hang6 wui6, <span class='highlight'>gau2 joeng5 daai6 ming4</span>! Ngo5 dei6 gung1 si1 jat1 zik6 dou1 jau5 lau4 ji3 nei5 dei6 hai2 Lit6 zi6 mun4 zeoi3 san1 go2 go3 soeng1 coeng4 hong6 muk6, cit3 gai3 zan1 hai6 fei1 soeng4 ceot1 sik1.」<br>Can4 zung2 zip3 gwo3 ming4 pin2, siu3 zyu6 waa6 do1 ze6, zung6 man6 hei2 ngo5 dei6 zeoi3 gan6 zou6 gan2 me1 gung1 cing4.<br>Ngo5 gaan2 daan1 gaai3 siu6 zo2 ngo5 dei6 tyun4 deoi2 hai2 gou1 dyun1 se2 zi6 lau4 tenant improvement (zou1 wu6 zong1 sau1) fong1 min6 ge3 fung1 fu3 ging1 jim6.<br>Daai6 gaa1 king1 dak1 hou2 tau4 kai3, faat3 jin6 soeng1 fong1 hai2 mei6 loi4 ge3 hong6 muk6 dou6 jau5 gik6 daai6 ge3 hap6 zok3 hung1 gaan1.<br>Lam4 zau2 cin4, ngo5 dei6 wu6 soeng1 gaa1 zo2 LinkedIn, ngo5 waa6: 「Hei1 mong6 ci4 di1 jau5 gei1 wui6 ho2 ji5 joek3 Can4 zung2 jam2 bui1 gaa3 fe1, coeng4 sai3 king1 haa5 dim2 joeng2 daat6 zi3 wu6 wai6 wu6 lei6.」<br>Gam1 ziu1 jat1 faan1 dou3 gung1 si1, ngo5 ji5 ging1 zik1 hak1 faat3 zo2 fung1 follow-up email bei2 keoi5, daa2 tit3 can3 jit6.",
+        english: "Last night I represented Contour Projects to attend the annual dinner of the Vancouver Chinese Construction Association.<br>These business networking events are great opportunities to expand connections and contact potential clients.<br>During the cocktail reception, my boss Alex introduced me to a very famous local large-scale developer director.<br>I handed over my business card with both hands and politely said: 'Director Chan, a pleasure to meet you, I have heard a lot about you for a long time! Our company has always been paying attention to your newest mall project in Richmond, the design is truly outstanding.'<br>Director Chan accepted the card, smiled and said thanks, and also asked what projects we are currently doing.<br>I briefly introduced our team's rich experience in high-end office tenant improvements.<br>We hit it off very well in conversation, discovering that both sides have enormous room for cooperation in future projects.<br>Before leaving, we added each other on LinkedIn, and I said: 'I hope later we have the chance to invite Director Chan for a cup of coffee, to discuss in detail how to achieve mutual benefit.'<br>This morning as soon as I returned to the office, I immediately sent a follow-up email to him, striking while the iron is hot.",
+        quizzes: [
+            { q: "作者去參加商會晚宴嘅主要目的係咩？", e: "(What is the main purpose of the author attending the Chamber of Commerce dinner?)", options: [{c: "拓展人脈同埋接觸潛在客戶", e: "(To expand connections and contact potential clients)", correct: true}, {c: "去食免費嘅豪華晚餐", e: "(To eat a free luxurious dinner)", correct: false}, {c: "去投訴其他承建商", e: "(To complain about other contractors)", correct: false}] },
+            { q: "同陳總打招呼嗰陣，作者用咗咩說話嚟讚美對方？", e: "(When greeting Director Chan, what words did the author use to praise him?)", options: [{c: "話一直有留意佢哋喺列治文嘅商場項目，讚設計出色", e: "(Said they've been paying attention to his Richmond mall project, praised the design)", correct: true}, {c: "讚佢件西裝好靚", e: "(Praised his suit being very nice)", correct: false}, {c: "讚佢公司嘅股票升咗好多", e: "(Praised his company's stock going up a lot)", correct: false}] },
+            { q: "作者點樣介紹自己公司嘅專長？", e: "(How did the author introduce their own company's specialty?)", options: [{c: "介紹團隊喺高端寫字樓 tenant improvement 嘅豐富經驗", e: "(Introduced the team's rich experience in high-end office TI)", correct: true}, {c: "話公司專門起木屋", e: "(Said the company specializes in building wooden houses)", correct: false}, {c: "話公司係溫哥華最平嘅承建商", e: "(Said the company is the cheapest contractor in Vancouver)", correct: false}] },
+            { q: "第二朝返到公司，作者即刻做咗咩行動？", e: "(The next morning returning to the office, what action did the author take immediately?)", options: [{c: "發咗封 follow-up email 畀陳總，打鐵趁熱", e: "(Sent a follow-up email to Director Chan, striking while the iron is hot)", correct: true}, {c: "即刻打電話去簽約", e: "(Immediately called to sign a contract)", correct: false}, {c: "忘記晒尋晚發生嘅事", e: "(Forgot everything that happened last night)", correct: false}] },
+            { q: "「久仰大名」喺商業交際中代表咩意思？", e: "(What does 'gau joeng daai ming' mean in business networking?)", options: [{c: "客氣話，表示早就聽過對方嘅名氣同成就，表達尊重", e: "(Polite phrase meaning you've long heard of their fame and achievements, expressing respect)", correct: true}, {c: "表示對方個名好難讀", e: "(Means the person's name is hard to pronounce)", correct: false}, {c: "問對方叫咩名", e: "(Asking what the person's name is)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "Proposing a Design Solution", topic: "Targeted Action (針對 - Aimed at / Addressing)",
+        img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e",
+        grammarDesc: "<strong>Targeting Issues:</strong> Explaining solutions directly addressing a problem.<br>針對 (zam1 deoi3) means 'Aimed at' or 'In response to (a specific issue)'.",
+        vocab: [
+            {c: "針對", j: "zam1 deoi3", e: "Aimed at / Addressing"}, {c: "痛點", j: "tung3 dim2", e: "Pain point"},
+            {c: "方案", j: "fong1 on3", e: "Solution / Proposal"}, {c: "空間感", j: "hung1 gaan1 gam2", e: "Sense of space"},
+            {c: "局促", j: "guk6 cuk1", e: "Cramped / Confined"}, {c: "開放式", j: "hoi1 fong3 sik1", e: "Open-plan"},
+            {c: "採光", j: "coi2 gwong1", e: "Lighting / Daylighting"}, {c: "隔音", j: "gaak3 jam1", e: "Sound insulation"},
+            {c: "落地玻璃", j: "lok6 dei6 bo1 lei1", e: "Floor-to-ceiling glass"}, {c: "拍板", j: "paak3 baan2", e: "Approve / Decide"}
+        ],
+        story: "喺尋日同客戶嘅會議上，業主反映佢哋對目前辦公室嘅 layout 唔係好滿意。<br>佢哋覺得原先嘅設計太多間隔牆，令到成個工作環境好局促，員工之間溝通亦都唔方便。<br>針對客戶提出嘅呢啲痛點，我哋設計部連夜趕工，度咗一個全新嘅方案出嚟。<br>針對空間感不足嘅問題，我哋建議將中間嘅實體牆全部拆除，改為開放式 (Open-plan) 嘅工作區。<br>針對會議室採光同隔音嘅需求，我哋會採用雙層隔音嘅落地玻璃做間隔。<br>咁樣做既可以將自然光引入辦公室嘅每一個角落，又保證咗開會時嘅私隱度。<br>我仲特別安排咗 3D 渲染圖 (3D rendering)，等客戶可以直觀咁睇到裝修後嘅效果。<br>業主睇完新方案之後非常滿意，覺得完全解決咗佢哋嘅擔憂。<br>佢哋當場就拍板同意加錢做呢個升級改動，下個星期就可以正式訂料。",
+        jyutping: "Hai2 cam4 jat6 tung4 haak3 wu6 ge3 wui6 ji5 soeng6, jip6 zyu2 faan2 jing2 keoi5 dei6 deoi3 muk6 cin4 baan6 gung1 sat1 ge3 layout m4 hai6 hou2 mun5 ji3.<br>Keoi5 dei6 gok3 dak1 jyun4 sin1 ge3 cit3 gai3 taai3 do1 gaan3 gaak3 coeng4, ling6 dou3 seng4 go3 gung1 zok3 waan4 ging2 hou2 guk6 cuk1, jyun4 gung1 zi1 gaan1 gau1 tung1 jik6 dou1 m4 fong1 bin6.<br><span class='highlight'>Zam1 deoi3</span> haak3 wu6 tai4 ceot1 ge3 ni1 di1 tung3 dim2, ngo5 dei6 cit3 gai3 bou6 lin4 je6 gon2 gung1, dok6 zo2 jat1 go3 cyun4 san1 ge3 fong1 on3 ceot1 lei4.<br><span class='highlight'>Zam1 deoi3</span> hung1 gaan1 gam2 bat1 zuk1 ge3 man6 tai4, ngo5 dei6 gin3 ji5 zoeng1 zung1 gaan1 ge3 sat6 tai2 coeng4 cyun4 bou6 caak3 ceoi4, goi2 wai4 hoi1 fong3 sik1 (Open-plan) ge3 gung1 zok3 keoi1.<br><span class='highlight'>Zam1 deoi3</span> wui6 ji5 sat1 coi2 gwong1 tung4 gaak3 jam1 ge3 seoi1 kau4, ngo5 dei6 wui5 coi2 jung6 soeng1 cang4 gaak3 jam1 ge3 lok6 dei6 bo1 lei1 zou6 gaan3 gaak3.<br>Gam2 joeng2 zou6 gei3 ho2 ji5 zoeng1 zi6 jin4 gwong1 jan5 jap6 baan6 gung1 sat1 ge3 mui5 jat1 go3 gok3 lok6, jau6 bou2 zing3 zo2 hoi1 wui2 si4 ge3 si1 jan2 dou6.<br>Ngo5 zung6 dak6 bit6 on1 paai4 zo2 3D syun2 jin5 tou4 (3D rendering), dang2 haak3 wu6 ho2 ji5 zik6 gun1 gam2 tai2 dou2 zong1 sau1 hau6 ge3 haau6 gwo2.<br>Jip6 zyu2 tai2 jyun4 san1 fong1 on3 zi1 hau6 fei1 soeng4 mun5 ji3, gok3 dak1 jyun4 cyun4 gaai2 kyut3 zo2 keoi5 dei6 ge3 daam1 jau1.<br>Keoi5 dei6 dong1 coeng4 zau6 paak3 baan2 tung4 ji3 gaa1 cin2 zou6 ni1 go3 sing1 kap1 goi2 dung6, haa6 go3 sing1 kei4 zau6 ho2 ji5 zing3 sik1 deng6 liu2.",
+        english: "In yesterday's meeting with the client, the owners reflected that they were not very satisfied with the current office layout.<br>They felt the original design had too many partition walls, making the whole work environment very cramped, and communication between employees inconvenient.<br>Addressing these pain points raised by the client, our design department worked through the night and figured out a brand new solution.<br>Addressing the problem of insufficient sense of space, we suggest demolishing all the solid walls in the middle and changing to an Open-plan workspace.<br>Addressing the meeting room's needs for daylighting and sound insulation, we will adopt double-glazed floor-to-ceiling glass as partitions.<br>Doing it this way can both introduce natural light into every corner of the office, and guarantee privacy during meetings.<br>I also specially arranged for a 3D rendering, so the client can intuitively see the effect after renovation.<br>After seeing the new solution, the owners were very satisfied, feeling it completely solved their worries.<br>They approved it on the spot, agreeing to pay extra for this upgrade modification, and we can officially order materials next week.",
+        quizzes: [
+            { q: "客戶對原本嘅辦公室設計有咩唔滿意？", e: "(What was the client dissatisfied with regarding the original office design?)", options: [{c: "間隔牆太多，環境局促，溝通唔方便", e: "(Too many partition walls, cramped environment, inconvenient communication)", correct: true}, {c: "冷氣唔夠凍", e: "(The AC was not cold enough)", correct: false}, {c: "辦公室面積太細", e: "(The office area was too small)", correct: false}] },
+            { q: "針對空間感不足嘅問題，作者提出咗咩解決方案？", e: "(Addressing the lack of space, what solution did the author propose?)", options: [{c: "拆除實體牆，改為開放式工作區", e: "(Demolish solid walls, change to open-plan workspace)", correct: true}, {c: "將個天花板拆咗", e: "(Demolish the ceiling)", correct: false}, {c: "叫一半員工喺屋企做嘢", e: "(Tell half the employees to work from home)", correct: false}] },
+            { q: "點解會議室要用雙層隔音落地玻璃做間隔？", e: "(Why use double-glazed floor-to-ceiling glass for the meeting room partitions?)", options: [{c: "因為可以引入自然光，同時保證開會私隱度", e: "(Because it brings in natural light while guaranteeing meeting privacy)", correct: true}, {c: "因為玻璃最平", e: "(Because glass is the cheapest)", correct: false}, {c: "因為老闆鍾意睇出面", e: "(Because the boss likes looking outside)", correct: false}] },
+            { q: "作者用咩工具幫客戶更加直觀咁明白個設計？", e: "(What tool did the author use to help the client understand the design more intuitively?)", options: [{c: "準備咗 3D 渲染圖 (3D rendering)", e: "(Prepared a 3D rendering)", correct: true}, {c: "用紙皮砌咗個模型出嚟", e: "(Built a cardboard model)", correct: false}, {c: "帶佢哋去睇其他公司", e: "(Took them to see other companies)", correct: false}] },
+            { q: "「針對」喺商業提案中通常帶出咩邏輯？", e: "(What logic does 'Addressing / In response to' usually bring out in a business proposal?)", options: [{c: "直接回應客戶嘅具體痛點，提出度身訂造嘅解決辦法", e: "(Directly responding to the client's specific pain points, proposing tailored solutions)", correct: true}, {c: "批評客戶嘅要求唔合理", e: "(Criticizing the client's requests as unreasonable)", correct: false}, {c: "推卸責任畀其他部門", e: "(Shirking responsibility to other departments)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Structuring a Presentation", topic: "Structuring Points (首先... 其次... 最後 - First... Second... Finally)",
+        img: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4",
+        grammarDesc: "<strong>Presenting Clearly:</strong> Organizing ideas logically.<br>首先 (sau2 sin1), 其次 (kei4 ci3), 最後 (zeoi3 hau6) creates a professional 3-point structure.",
+        vocab: [
+            {c: "簡報", j: "gaan2 bou3", e: "Presentation / Briefing"}, {c: "首先", j: "sau2 sin1", e: "First of all"},
+            {c: "其次", j: "kei4 ci3", e: "Secondly"}, {c: "最後", j: "zeoi3 hau6", e: "Finally"},
+            {c: "招標", j: "ziu1 biu1", e: "Tender / Bidding"}, {c: "核心優勢", j: "hat6 sam1 jau1 sai3", e: "Core advantage"},
+            {c: "往績", j: "wong5 zik1", e: "Track record"}, {c: "風險管理", j: "fung1 him2 gun2 lei5", e: "Risk management"},
+            {c: "中標", j: "zung3 biu1", e: "Win a bid"}, {c: "說服力", j: "syut3 fuk6 lik6", e: "Persuasiveness"}
+        ],
+        story: "各位董事局成員，下晝好。今日我代表 Contour Projects 團隊，向大家進行呢次醫療中心擴建項目嘅投標簡報。<br>為咗令大家清楚明白我哋嘅方案，我會將內容分為三部分。<br>首先，我會分析我哋公司喺呢個項目上嘅核心優勢。<br>我哋擁有超過十年嘅醫療級別裝修經驗，往績良好，完全熟悉政府對診所排污同通風嘅嚴格法例要求。<br>其次，我會詳細講解我哋嘅工程時間表同埋預算控制策略。<br>我哋承諾採用分階段施工嘅模式，確保醫院喺裝修期間仍然可以維持基本嘅日常運作，將對病人嘅影響減到最低。<br>最後，我會重點講述我哋嘅風險管理機制。<br>針對近期建材短缺嘅危機，我哋已經同三家後備供應商簽訂咗預留協議，保證材料供應唔會斷鏈。<br>總括嚟講，我哋唔單止提供最具競爭力嘅價錢，仲提供最可靠嘅工程質素。<br>希望呢份充滿說服力嘅計劃書，可以贏得大家嘅信任，令我哋順利中標。",
+        jyutping: "Gok3 wai2 dung2 si6 guk6 sing4 jyun4, haa6 zau3 hou2. Gam1 jat6 ngo5 doi6 biu2 Contour Projects tyun4 deoi2, hoeng3 daai6 gaa1 zeon3 haang4 ni1 ci3 ji1 liu4 zung1 sam1 kwong3 gin3 hong6 muk6 ge3 tau4 biu1 gaan2 bou3.<br>Wai6 zo2 ling6 daai6 gaa1 cing1 co2 ming4 baak6 ngo5 dei6 ge3 fong1 on3, ngo5 wui5 zoeng1 noi6 jung4 fan1 wai4 saam1 bou6 fan6.<br><span class='highlight'>Sau2 sin1</span>, ngo5 wui5 fan1 sik1 ngo5 dei6 gung1 si1 hai2 ni1 go3 hong6 muk6 soeng6 ge3 hat6 sam1 jau1 sai3.<br>Ngo5 dei6 jung2 jau5 ciu1 gwo3 sap6 nin4 ge3 ji1 liu4 kap1 bit6 zong1 sau1 ging1 jim6, wong5 zik1 loeng4 hou2, jyun4 cyun4 suk6 sik1 zing3 fu2 deoi3 can2 so2 paai4 wu1 tung4 tung1 fung1 ge3 jim4 gaak3 faat3 lai6 jiu1 kau4.<br><span class='highlight'>Kei4 ci3</span>, ngo5 wui5 coeng4 sai3 gong2 gaai2 ngo5 dei6 ge3 gung1 cing4 si4 gaan3 biu2 tung4 maai4 jyu6 syun3 hung3 zai3 caak3 loek6.<br>Ngo5 dei6 sing4 nok6 coi2 jung6 fan1 gaai1 dyun6 si1 gung1 ge3 mou4 sik1, kok3 bou2 ji1 jyun2 hai2 zong1 sau1 gei4 gaan1 jing4 jin4 ho2 ji5 wai4 ci4 gei1 bun2 ge3 jat6 soeng4 wan6 zok3, zoeng1 deoi3 beng6 jan4 ge3 jing2 hoeng2 gaam2 dou3 zeoi3 dai1.<br><span class='highlight'>Zeoi3 hau6</span>, ngo5 wui5 zung6 dim2 gong2 seot6 ngo5 dei6 ge3 fung1 him2 gun2 lei5 gei1 zai3.<br>Zam1 deoi3 zeoi3 gan6 gin3 coi4 dyun2 kyut3 ge3 ngai4 gei1, ngo5 dei6 ji5 ging1 tung4 saam1 gaa1 hau6 bei6 gung1 jing3 soeng1 cim1 ding6 zo2 jyu6 lau4 hip3 ji5, bou2 zing3 coi4 liu2 gung1 jing3 m4 wui5 dyun6 lin2.<br>Zung2 kut3 lei4 gong2, ngo5 dei6 m4 daan1 zi2 ti4 gung1 zeoi3 geoi6 ging6 zang1 lik6 ge3 gaa3 cin4, zung6 ti4 gung1 zeoi3 ho2 kaau3 ge3 gung1 cing4 zat1 sou3.<br>Hei1 mong6 ni1 fan6 cung1 mun5 syut3 fuk6 lik6 ge3 gai3 waak6 syu1, ho2 ji5 jeng4 dak1 daai6 gaa1 ge3 seon3 jam6, ling6 ngo5 dei6 seon6 lei6 zung3 biu1.",
+        english: "Good afternoon, Board of Directors. Today I represent the Contour Projects team to deliver the bidding presentation for this medical center expansion project to everyone.<br>To make our proposal clearly understood by everyone, I will divide the content into three parts.<br>First of all, I will analyze our company's core advantages on this project.<br>We possess over 10 years of medical-grade renovation experience, a good track record, and are completely familiar with the government's strict legal requirements for clinic drainage and ventilation.<br>Secondly, I will explain in detail our construction schedule and budget control strategy.<br>We commit to adopting a phased construction model, ensuring the hospital can still maintain basic daily operations during the renovation, minimizing the impact on patients.<br>Finally, I will focus on describing our risk management mechanism.<br>Addressing the recent crisis of construction material shortages, we have already signed reservation agreements with three backup suppliers, guaranteeing the material supply chain won't break.<br>To sum up, we not only provide the most competitive price, but also provide the most reliable construction quality.<br>I hope this highly persuasive proposal can win everyone's trust and let us successfully win the bid.",
+        quizzes: [
+            { q: "作者做呢次簡報嘅主要目的係咩？", e: "(What is the main purpose of the author giving this presentation?)", options: [{c: "為醫療中心擴建項目進行投標，希望中標", e: "(To bid for the medical center expansion project, hoping to win)", correct: true}, {c: "匯報公司上個月嘅虧損", e: "(To report the company's losses last month)", correct: false}, {c: "介紹新入職嘅員工", e: "(To introduce newly hired employees)", correct: false}] },
+            { q: "簡報嘅第一部分（首先）講咗公司嘅咩優勢？", e: "(What company advantage was talked about in the first part (First of all)?)", options: [{c: "擁有超過十年醫療級別裝修經驗同熟悉法例", e: "(Possesses over 10 years medical-grade renovation experience and familiarity with laws)", correct: true}, {c: "公司嘅辦公室最大", e: "(The company's office is the biggest)", correct: false}, {c: "員工全部都識講法文", e: "(All employees know how to speak French)", correct: false}] },
+            { q: "為咗減低對病人嘅影響，工程會採用咩模式？（其次）", e: "(To reduce impact on patients, what model will the project use? (Secondly))", options: [{c: "分階段施工模式", e: "(Phased construction model)", correct: true}, {c: "半夜偷偷地施工", e: "(Secretly constructing in the middle of the night)", correct: false}, {c: "要求所有病人出院", e: "(Requiring all patients to be discharged)", correct: false}] },
+            { q: "針對建材短缺危機，公司有咩風險管理措施？（最後）", e: "(Addressing the material shortage crisis, what risk management measure does the company have? (Finally))", options: [{c: "同三家後備供應商簽訂預留協議", e: "(Signed reservation agreements with three backup suppliers)", correct: true}, {c: "自己開一間工廠整材料", e: "(Open their own factory to make materials)", correct: false}, {c: "用假材料頂住先", e: "(Use fake materials to hold over for now)", correct: false}] },
+            { q: "「首先... 其次... 最後」呢個結構對簡報有咩幫助？", e: "(What help does the 'First... Second... Finally' structure provide for a presentation?)", options: [{c: "令說話有邏輯層次，幫助聽眾清晰吸收資訊", e: "(Gives the speech logical layers, helps the audience absorb info clearly)", correct: true}, {c: "純粹為咗拖長講嘢嘅時間", e: "(Purely to drag out the speaking time)", correct: false}, {c: "令到氣氛變得好搞笑", e: "(Makes the atmosphere become very funny)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Delegating Tasks", topic: "Polite Directives (麻煩你跟進 - Please follow up on)",
+        img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
+        grammarDesc: "<strong>Delegating Professionally:</strong> Assigning tasks without sounding too bossy.<br>麻煩你跟進 (maa4 faan4 nei5 gan1 zeon3) means 'Please trouble you to follow up on...'",
+        vocab: [
+            {c: "委派", j: "wai2 paai3", e: "Delegate / Assign"}, {c: "跟進", j: "gan1 zeon3", e: "Follow up"},
+            {c: "麻煩你", j: "maa4 faan4 nei5", e: "Please (trouble you)"}, {c: "清單", j: "cing1 daan1", e: "List"},
+            {c: "地盤", j: "dei6 pun4", e: "Construction site"}, {c: "安全審查", j: "on1 cyun4 sam2 caa4", e: "Safety audit"},
+            {c: "判頭", j: "pun3 tau4", e: "Subcontractor"}, {c: "協調", j: "hip3 tiu4", e: "Coordinate"},
+            {c: "死線", j: "sei2 sin3", e: "Deadline"}, {c: "隨時匯報", j: "ceoi4 si4 wui6 bou3", e: "Report back anytime"}
+        ],
+        story: "早晨團隊。由於下個禮拜初政府嘅安全督察會嚟突擊巡查，我哋手頭上嘅工作非常緊迫。<br>為咗確保一切順利，我需要將幾項緊急任務委派畀大家。<br>Peter，麻煩你跟進地盤嘅安全審查清單。你今日之內要確保所有滅火筒同埋急救箱都冇過期，並且擺喺當眼處。<br>Mary，麻煩你跟進同機電判頭嘅協調工作。<br>我見到佢哋嘅電線仲未拉好，你催促佢哋一定要喺星期五嘅死線前完工，如果唔係會阻礙封天花嘅工序。<br>至於文件方面，我會親自負責核對所有建築圖則同埋保險證明，確保冇任何遺漏。<br>今次嘅任務好重要，大家分工合作，各司其職。<br>執行過程中如果遇到任何樽頸或者阻滯，唔好自己死頂，隨時匯報畀我聽。<br>我哋今晚臨收工前再開一個十分鐘嘅 stand-up meeting 對一對進度。<br>辛苦大家喇，Action！",
+        jyutping: "Zou2 san4 tyun4 deoi2. Jau4 jyu1 haa6 go3 lai5 baai3 co1 zing3 fu2 ge3 on1 cyun4 duk1 caat3 wui5 lei4 dat6 gik1 ceon4 caa4, ngo5 dei6 sau2 tau4 soeng6 ge3 gung1 zok3 fei1 soeng4 gan2 bik1.<br>Wai6 zo2 kok3 bou2 jat1 cai3 seon6 lei6, ngo5 seoi1 jiu3 zoeng1 gei2 hong6 gan2 gap1 jam6 mou6 wai2 paai3 bei2 daai6 gaa1.<br>Peter, <span class='highlight'>maa4 faan4 nei5 gan1 zeon3</span> dei6 pun4 ge3 on1 cyun4 sam2 caa4 cing1 daan1. Nei5 gam1 jat6 zi1 noi6 jiu3 kok3 bou2 so2 jau5 mit6 fo2 tung2 tung4 maai4 gap1 gau3 soeng1 dou1 mou5 gwo3 kei4, bing6 ce2 baai2 hai2 dong1 ngaan5 cyu3.<br>Mary, <span class='highlight'>maa4 faan4 nei5 gan1 zeon3</span> tung4 gei1 din6 pun3 tau4 ge3 hip3 tiu4 gung1 zok3.<br>Ngo5 gin3 dou2 keoi5 dei6 ge3 din6 sin3 zung6 mei6 laai1 hou2, nei5 ceoi1 cuk1 keoi5 dei6 jat1 ding6 jiu3 hai2 sing1 kei4 ng5 ge3 sei2 sin3 cin4 jyun4 gung1, jyu4 gwo2 m4 hai6 wui5 zo2 ngoi6 fung1 tin1 faa1 ge3 gung1 zeoi6.<br>Zi3 jyu1 man4 gin2 fong1 min6, ngo5 wui5 can1 zi6 fu6 zaak3 hat6 deoi3 so2 jau5 gin3 zuk1 tou4 zak1 tung4 maai4 bou2 him2 zing3 ming4, kok3 bou2 mou5 jam6 ho4 wai4 lau6.<br>Gam1 ci3 ge3 jam6 mou6 hou2 zung6 jiu3, daai6 gaa1 fan1 gung1 hap6 zok3, gok3 si1 kei4 zik1.<br>Zap1 hang4 gwo3 cing4 zung1 jyu4 gwo2 jyu6 dou2 jam6 ho4 zeon1 geng2 waak6 ze2 zo2 zai6, m4 hou2 zi6 gei2 sei2 deng2, ceoi4 si4 wui6 bou3 bei2 ngo5 teng1.<br>Ngo5 dei6 gam1 maan5 lam4 sau1 gung1 cin4 zoi3 hoi1 jat1 go3 sap6 fan1 zung1 ge3 stand-up meeting deoi3 jat1 deoi3 zeon3 dou6.<br>San1 fu2 daai6 gaa1 laa3, Action!",
+        english: "Morning team. Due to the government safety inspector coming for a surprise inspection early next week, our tasks on hand are very pressing.<br>To ensure everything goes smoothly, I need to delegate several urgent tasks to everyone.<br>Peter, please trouble you to follow up on the site's safety audit checklist. Within today, you must ensure all fire extinguishers and first aid kits are not expired and are placed in conspicuous spots.<br>Mary, please trouble you to follow up on the coordination work with the MEP subcontractor.<br>I see their electrical wires are still not pulled; you urge them that they must finish before Friday's deadline, otherwise it will obstruct the ceiling sealing process.<br>As for documents, I will personally be in charge of verifying all architectural drawings and insurance certificates, ensuring no omissions.<br>This mission is very important; everyone divide the work and cooperate, each doing their duty.<br>If you encounter any bottlenecks or obstacles during execution, don't just tough it out yourself, report back to me anytime.<br>We will have a 10-minute stand-up meeting again before getting off work tonight to sync up on progress.<br>Thanks for your hard work everyone, Action!",
+        quizzes: [
+            { q: "點解團隊手頭上嘅工作突然變得非常緊迫？", e: "(Why did the team's tasks suddenly become very pressing?)", options: [{c: "因為下星期初政府安全督察會嚟突擊巡查", e: "(Because gov safety inspector is coming for surprise inspection early next week)", correct: true}, {c: "因為老細聽日要視察", e: "(Because the boss is inspecting tomorrow)", correct: false}, {c: "因為要放長假", e: "(Because a long holiday is coming up)", correct: false}] },
+            { q: "Peter 被委派咗咩任務？", e: "(What task was Peter delegated?)", options: [{c: "跟進安全審查清單，檢查滅火筒同急救箱", e: "(Follow up on safety audit checklist, check fire extinguishers and first aid kits)", correct: true}, {c: "去買咖啡畀全組人", e: "(Go buy coffee for the whole team)", correct: false}, {c: "核對建築圖則", e: "(Verify architectural drawings)", correct: false}] },
+            { q: "如果 Mary 唔催促機電判頭星期五前完工，會有咩後果？", e: "(If Mary doesn't urge the MEP sub to finish by Friday, what is the consequence?)", options: [{c: "會阻礙封天花嘅工序", e: "(It will obstruct the ceiling sealing process)", correct: true}, {c: "會被罰款一萬蚊", e: "(Will be fined 10,000 dollars)", correct: false}, {c: "成棟樓會冧", e: "(The whole building will collapse)", correct: false}] },
+            { q: "作者（主管）自己會負責處理咩工作？", e: "(What work will the author (supervisor) personally handle?)", options: [{c: "親自核對所有建築圖則同保險證明", e: "(Personally verify all architectural drawings and insurance certificates)", correct: true}, {c: "落手落腳去拉電線", e: "(Get hands dirty and pull electrical wires)", correct: false}, {c: "喺辦公室負責打機", e: "(Responsible for playing games in the office)", correct: false}] },
+            { q: "「麻煩你跟進」喺職場上有咩溝通好處？", e: "(What communication benefit does 'maa faan nei gan zeon' have in the workplace?)", options: [{c: "語氣客氣而不失專業，有效委派工作", e: "(Tone is polite yet professional, effectively delegating work)", correct: true}, {c: "聽落去好惡，令員工驚", e: "(Sounds very fierce, making employees scared)", correct: false}, {c: "表示主管自己唔識做", e: "(Indicates the supervisor doesn't know how to do it)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Requesting Leave for Honeymoon", topic: "Given That (鑒於 - In light of / Given that)",
+        img: "https://images.unsplash.com/photo-1549887552-cb127140e69b",
+        grammarDesc: "<strong>Formal Justification:</strong> Providing a solid reason for a request.<br>鑒於 (gaam3 jyu1) means 'In light of' or 'Given that'.",
+        vocab: [
+            {c: "鑒於", j: "gaam3 jyu1", e: "In light of / Given that"}, {c: "年假", j: "nin4 gaa3", e: "Annual leave"},
+            {c: "審批", j: "sam2 pai1", e: "Approve"}, {c: "度蜜月", j: "dou6 mat6 jyut6", e: "Honeymoon"},
+            {c: "交接", j: "gaau1 zip3", e: "Handover"}, {c: "代理人", j: "doi6 lei5 jan4", e: "Back-up / Proxy"},
+            {c: "妥當", j: "to5 dong3", e: "Proper / Sound"}, {c: "淡季", j: "daam6 gwai3", e: "Off-season / Slow season"},
+            {c: "緊急聯絡", j: "gan2 gap1 lyun4 lok3", e: "Emergency contact"}, {c: "體諒", j: "tai2 loeng6", e: "Understand / Be considerate"}
+        ],
+        story: "Alex，我想同你傾下關於我下年申請年假嘅事。<br>鑒於我同 Jamie 計劃喺 2026 年 8 月中結婚，我想申請由 8 月 17 號至 21 號，一共五日嘅大假。<br>我哋預訂咗去 Banff 度蜜月，機票同酒店都已經準備好。<br>我知道 8 月通常係地盤開工嘅旺季，所以為咗將對公司運作嘅影響減到最低，我已經做咗詳細嘅交接計劃。<br>喺我放假期間，Peter 會做我嘅職務代理人 (Backup)。<br>所有進行中嘅文件、合約同埋供應商聯絡表，我都會喺放假前一個禮拜整理妥當，並且同 Peter 做一次徹底嘅 handover。<br>鑒於我過去一年都未放過長假，而且手頭上最大嘅 Luxe 裝修項目喺 7 月底就會完工交樓，8 月中相對係我工作上嘅小淡季。<br>如果遇到極度緊急嘅突發情況，Peter 可以透過 WhatsApp 緊急聯絡我。<br>希望公司可以體諒我嘅人生大事，盡早審批呢次年假申請，等我可以安心籌備婚禮。<br>多謝老細。",
+        jyutping: "Alex, ngo5 soeng2 tung4 nei5 king1 haa5 gwaan1 jyu1 ngo5 haa6 nin4 san1 cing2 nin4 gaa3 ge3 si6.<br><span class='highlight'>Gaam3 jyu1</span> ngo5 tung4 Jamie gai3 waak6 hai2 2026 nin4 8 jyut6 zung1 git3 fan1, ngo5 soeng2 san1 cing2 jau4 8 jyut6 17 hou6 zi3 21 hou6, jat1 gung6 ng5 jat6 ge3 daai6 gaa3.<br>Ngo5 dei6 jyu6 deng6 zo2 heoi3 Banff dou6 mat6 jyut6, gei1 piu3 tung4 zau2 dim3 dou1 ji5 ging1 zeon2 bei6 hou2.<br>Ngo5 zi1 dou3 8 jyut6 tung1 soeng4 hai6 dei6 pun4 hoi1 gung1 ge3 wong6 gwai3, so2 ji5 wai6 zo2 zoeng1 deoi3 gung1 si1 wan6 zok3 ge3 jing2 hoeng2 gaam2 dou3 zeoi3 dai1, ngo5 ji5 ging1 zou6 zo2 coeng4 sai3 ge3 gaau1 zip3 gai3 waak6.<br>Hai2 ngo5 fong3 gaa3 gei4 gaan1, Peter wui5 zou6 ngo5 ge3 zik1 mou6 doi6 lei5 jan4 (Backup).<br>So2 jau5 zeon3 haang4 zung1 ge3 man4 gin2, hap6 joek3 tung4 maai4 gung1 jing3 soeng1 lyun4 lok3 biu2, ngo5 dou1 wui5 hai2 fong3 gaa3 cin4 jat1 go3 lai5 baai3 zing2 lei5 to5 dong3, bing6 ce2 tung4 Peter zou6 jat1 ci3 cit3 dai2 ge3 handover.<br><span class='highlight'>Gaam3 jyu1</span> ngo5 gwo3 heoi3 jat1 nin4 dou1 mei6 fong3 gwo3 coeng4 gaa3, ji4 ce2 sau2 tau4 soeng6 zeoi3 daai6 ge3 Luxe zong1 sau1 hong6 muk6 hai2 7 jyut6 dai2 zau6 wui5 jyun4 gung1 gaau1 lau2, 8 jyut6 zung1 soeng1 deoi3 hai6 ngo5 gung1 zok3 soeng6 ge3 siu2 daam6 gwai3.<br>Jyu4 gwo2 jyu6 dou2 gik6 dou6 gan2 gap1 ge3 dat6 faat3 cing4 fong3, Peter ho2 ji5 tau3 gwo3 WhatsApp gan2 gap1 lyun4 lok3 ngo5.<br>Hei1 mong6 gung1 si1 ho2 ji5 tai2 loeng6 ngo5 ge3 jan4 sang1 daai6 si6, zeon6 zou2 sam2 pai1 ni1 ci3 nin4 gaa3 san1 cing2, dang2 ngo5 ho2 ji5 on1 sam1 cau4 bei6 fan1 lai5.<br>Do1 ze6 lou5 sai3.",
+        english: "Alex, I want to talk to you about applying for my annual leave next year.<br>In light of the fact that Jamie and I plan to get married in mid-August 2026, I want to apply for a total of 5 days of vacation from August 17th to the 21st.<br>We have booked to go to Banff for our honeymoon; flights and hotels are already prepared.<br>I know August is usually the peak season for construction sites starting work, so in order to minimize the impact on company operations, I have already made a detailed handover plan.<br>During my vacation, Peter will act as my proxy (Backup).<br>All ongoing documents, contracts, and supplier contact lists, I will properly organize one week before my leave, and do a thorough handover with Peter.<br>Given that I haven't taken a long vacation in the past year, and the biggest Luxe renovation project currently on hand will be completed and handed over at the end of July, mid-August is relatively a mini off-season for my work.<br>If extreme emergency situations arise, Peter can reach me for emergency contact via WhatsApp.<br>I hope the company can be considerate of my major life event, and approve this annual leave application as early as possible so I can plan the wedding with peace of mind.<br>Thanks boss.",
+        quizzes: [
+            { q: "作者申請 2026 年 8 月放假嘅主要原因係咩？", e: "(What is the main reason for the author applying for leave in August 2026?)", options: [{c: "準備結婚同埋去 Banff 度蜜月", e: "(Preparing to get married and go to Banff for honeymoon)", correct: true}, {c: "因為生病需要做手術", e: "(Because they are sick and need surgery)", correct: false}, {c: "打算辭職轉行", e: "(Planning to resign and change careers)", correct: false}] },
+            { q: "為咗減少對公司嘅影響，作者安排咗邊個做 Backup？", e: "(To reduce impact on the company, who did the author arrange as Backup?)", options: [{c: "Peter", e: "(Peter)", correct: true}, {c: "Jamie", e: "(Jamie)", correct: false}, {c: "Alex", e: "(Alex)", correct: false}] },
+            { q: "作者喺放假前一個禮拜會做咩重要工作？", e: "(What important work will the author do one week before leaving?)", options: [{c: "整理好文件同聯絡表，同 Backup 做徹底嘅交接 (Handover)", e: "(Organize docs/contacts, do a thorough handover with Backup)", correct: true}, {c: "清空自己張辦公枱", e: "(Empty out their own office desk)", correct: false}, {c: "將所有未做完嘅嘢掉晒", e: "(Throw away everything unfinished)", correct: false}] },
+            { q: "點解作者認為 8 月中去旅行喺工作安排上係合理嘅？", e: "(Why does the author think traveling in mid-August is reasonable work-wise?)", options: [{c: "因為最大嘅 Luxe 項目 7 月底交樓，8 月中相對係工作淡季", e: "(Because the biggest Luxe project hands over in late July; mid-August is relatively an off-season)", correct: true}, {c: "因為 8 月公司冇生意", e: "(Because the company has no business in August)", correct: false}, {c: "因為老細 8 月都唔喺度", e: "(Because the boss is also not around in August)", correct: false}] },
+            { q: "「鑒於」喺正式商業語境入面有咩作用？", e: "(What is the function of 'gaam jyu' in a formal business context?)", options: [{c: "引出一個重要嘅客觀事實，作為提出請求或決定嘅合理依據", e: "(Introduces an important objective fact as a reasonable basis for a request or decision)", correct: true}, {c: "用嚟表達極度憤怒", e: "(Used to express extreme anger)", correct: false}, {c: "純粹係講拜拜嘅用語", e: "(Purely a phrase to say goodbye)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Urging Permit Processing", topic: "Assertive Tone (催促 - Urge / Hasten)",
+        img: "https://images.unsplash.com/photo-1541888087588-926c45731671",
+        grammarDesc: "<strong>Following Up Firmly:</strong> Pushing for action without being rude.<br>催促 (ceoi1 cuk1) means 'to urge' or 'hasten'. Useful when dealing with bureaucracy.",
+        vocab: [
+            {c: "催促", j: "ceoi1 cuk1", e: "Urge / Hasten"}, {c: "建築許可證", j: "gin3 zuk1 heoi2 ho2 zing3", e: "Building permit"},
+            {c: "審批", j: "sam2 pai1", e: "Approve / Process"}, {c: "進展", j: "zeon3 zin2", e: "Progress / Update"},
+            {c: "卡住", j: "kaat1 zyu6", e: "Stuck / Held up"}, {c: "拖延", j: "to1 jin4", e: "Delay / Procrastinate"},
+            {c: "檔期", j: "dong3 kei4", e: "Schedule / Slot"}, {c: "補交", j: "bou2 gaau1", e: "Submit late / Make up for"},
+            {c: "部門", j: "bou6 mun4", e: "Department"}, {c: "通融", j: "tung1 jung4", e: "Accommodate / Bend the rules slightly"}
+        ],
+        story: "今日下晝我打咗個電話去溫哥華市政府嘅牌照部 (Permit Office)。<br>因為我哋上個月提交嘅一個辦公室 Tenant Improvement (TI) 建築許可證，到而家都仲未有任何進展。<br>我同負責審批嘅 Officer 講：「你好，我打嚟係想催促一下關於檔案編號 TI-202509 嘅審批進度。<br>我哋已經補交齊晒所有結構工程師要求嘅文件，但個系統狀態一直卡住喺『審核中』。<br>業主嗰邊非常心急，因為承建商嘅檔期已經排好晒，如果牌照再拖延落去，成個開工 schedule 就會亂晒大坑。<br>我知道你哋部門最近處理緊好多申請，工作量好大。<br>但係可唔可以麻煩你通融一下，幫我查清楚究竟仲欠缺咩資料，或者預計幾時可以批出嚟？<br>如果有任何技術問題，我哋嘅設計團隊可以即刻派人上嚟 City Hall 面談解決。」<br>對方聽完我嘅解釋，態度軟化咗，答應今日收工前會幫我將份 file 推上俾 Manager 簽名。<br>做 Construction Admin，有時真係要面皮厚啲，適當嘅催促絕對係推動進度嘅關鍵。",
+        jyutping: "Gam1 jat6 haa6 zau3 ngo5 daa2 zo2 go3 din6 waa2 heoi3 Wan1 go1 waa4 si5 zing3 fu2 ge3 paai4 ziu3 bou6 (Permit Office).<br>Jan1 wai6 ngo5 dei6 soeng6 go3 jyut6 tai4 gaau1 ge3 jat1 go3 baan6 gung1 sat1 Tenant Improvement (TI) gin3 zuk1 heoi2 ho2 zing3, dou3 ji4 gaa1 dou1 zung6 mei6 jau5 jam6 ho4 zeon3 zin2.<br>Ngo5 tung4 fu6 zaak3 sam2 pai1 ge3 Officer gong2: 「Nei5 hou2, ngo5 daa2 lei4 hai6 soeng2 <span class='highlight'>ceoi1 cuk1</span> jat1 haa5 gwaan1 jyu1 dong3 on3 pin1 hou6 TI-202509 ge3 sam2 pai1 zeon3 dou6.<br>Ngo5 dei6 ji5 ging1 bou2 gaau1 cai4 saai3 so2 jau5 git3 gau3 gung1 cing4 si1 jiu1 kau4 ge3 man4 gin2, daan6 go3 hai6 tung2 zong6 taai3 jat1 zik6 kaat1 zyu6 hai2 『sam2 hat6 zung1』.<br>Jip6 zyu2 go2 bin1 fei1 soeng4 sam1 gap1, jan1 wai6 sing4 gin3 soeng1 ge3 dong3 kei4 ji5 ging1 paai4 hou2 saai3, jyu4 gwo2 paai4 ziu3 zoi3 to1 jin4 lok6 heoi3, seng4 go3 hoi1 gung1 schedule zau6 wui5 lyun6 saai3 daai6 haang1.<br>Ngo5 zi1 dou3 nei5 dei6 bou6 mun4 zeoi3 gan6 cyu2 lei5 gan2 hou2 do1 san1 cing2, gung1 zok3 loeng6 hou2 daai6.<br>Daan6 hai6 ho2 m4 ho2 ji5 maa4 faan4 nei5 tung1 jung4 jat1 haa5, bong1 ngo5 caa4 cing1 co2 gau3 ging2 zung6 kim3 kyut3 me1 zi1 liu2, waak6 ze2 jyu6 gai3 gei2 si4 ho2 ji5 pai1 ceot1 lei4?<br>Jyu4 gwo2 jau5 jam6 ho4 gei6 seot6 man6 tai4, ngo5 dei6 ge3 cit3 gai3 tyun4 deoi2 ho2 ji5 zik1 hak1 paai3 jan4 soeng5 lei4 City Hall min6 taam4 gaai2 kyut3.」<br>Deoi3 fong1 teng1 jyun4 ngo5 ge3 gaai2 sik1, taai3 dou6 jyun5 faa3 zo2, daap3 jing3 gam1 jat6 sau1 gung1 cin4 wui5 bong1 ngo5 zoeng1 fan6 file teoi1 soeng5 bei2 Manager cim1 meng2.<br>Zou6 Construction Admin, jau5 si4 zan1 hai6 jiu3 min6 pei4 hau5 di1, sik1 dong3 ge3 ceoi1 cuk1 zyut6 deoi3 hai6 teoi1 dung6 zeon3 dou6 ge3 gwaan1 gin6.",
+        english: "This afternoon I made a phone call to the City of Vancouver's Permit Office.<br>Because an office Tenant Improvement (TI) building permit we submitted last month still hasn't had any progress until now.<br>I told the processing Officer: 'Hello, I'm calling because I want to urge the approval progress regarding file number TI-202509.<br>We have already submitted all the documents required by the structural engineer, but the system status has been stuck at 'Under Review'.<br>The client is very anxious, because the contractor's schedule is already fully booked; if the permit is delayed any further, the whole construction schedule will be in total chaos.<br>I know your department is currently processing many applications recently, and the workload is very heavy.<br>But could I please trouble you to be accommodating, help me find out exactly what information is still missing, or when it is estimated to be approved out?<br>If there are any technical issues, our design team can immediately send someone up to City Hall for a face-to-face meeting to resolve them.'<br>After hearing my explanation, the other party's attitude softened, and promised to help me push the file up to the Manager for signature before getting off work today.<br>Being a Construction Admin, sometimes you really have to be thick-skinned; appropriate urging is absolutely the key to driving progress.",
+        quizzes: [
+            { q: "作者打電話去市政府牌照部嘅目的係咩？", e: "(What was the author's purpose in calling the City Permit Office?)", options: [{c: "催促一個辦公室 TI 建築許可證嘅審批進度", e: "(To urge the approval progress of an office TI building permit)", correct: true}, {c: "投訴市政府嘅收費太貴", e: "(To complain the city's fees are too expensive)", correct: false}, {c: "約牌照部嘅人出去食飯", e: "(To invite the permit office staff out for a meal)", correct: false}] },
+            { q: "目前個牌照申請遇到咩問題？", e: "(What problem is the permit application currently encountering?)", options: [{c: "補交齊文件後，狀態依然卡住喺「審核中」", e: "(After submitting all docs, the status is still stuck in 'Under Review')", correct: true}, {c: "圖則畫得太差被拒絕咗", e: "(The floor plans were drawn too poorly and got rejected)", correct: false}, {c: "唔見咗成份檔案", e: "(The entire file got lost)", correct: false}] },
+            { q: "如果牌照繼續拖延，會導致咩嚴重後果？", e: "(If the permit continues to be delayed, what serious consequence will it lead to?)", options: [{c: "承建商檔期亂晒，影響成個開工 schedule", e: "(Contractor's schedule will be ruined, affecting the whole start date)", correct: true}, {c: "市政府會被拆除", e: "(City Hall will be demolished)", correct: false}, {c: "業主會被警察拉", e: "(The client will be arrested by the police)", correct: false}] },
+            { q: "作者提出咩方案去解決潛在嘅技術問題？", e: "(What solution did the author propose to resolve potential technical issues?)", options: [{c: "設計團隊可以即刻派人上 City Hall 面談解決", e: "(Design team can send someone to City Hall immediately for a face-to-face meeting)", correct: true}, {c: "放棄個項目", e: "(Give up the project)", correct: false}, {c: "叫市政府自己幫手畫圖", e: "(Tell the city to draw the plans themselves)", correct: false}] },
+            { q: "「通融」喺商業對話入面代表咩意思？", e: "(What does 'tung jung' represent in business dialogue?)", options: [{c: "請求對方喺規則許可範圍內給予方便或彈性處理", e: "(Requesting the other party to provide convenience or flexibility within the rules)", correct: true}, {c: "強逼對方借錢畀你", e: "(Forcing the other party to lend you money)", correct: false}, {c: "威脅要告上法庭", e: "(Threatening to sue in court)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Reviewing Contracts", topic: "Stipulations (條款 - Terms and conditions)",
+        img: "https://images.unsplash.com/photo-1555421689-491a97ff2040",
+        grammarDesc: "<strong>Legal Jargon:</strong> Discussing rules inside a formal agreement.<br>條款 (tiu4 fun2) refers to the specific clauses, terms, and conditions of a contract.",
+        vocab: [
+            {c: "合約", j: "hap6 joek3", e: "Contract"}, {c: "條款", j: "tiu4 fun2", e: "Terms / Clauses"},
+            {c: "細節", j: "sai3 zit3", e: "Details"}, {c: "判頭", j: "pun3 tau4", e: "Subcontractor"},
+            {c: "違約金", j: "wai4 joek3 gam1", e: "Penalty for breach of contract / Liquidated damages"}, {c: "保養期", j: "bou2 joeng5 kei4", e: "Warranty period"},
+            {c: "保障", j: "bou2 zoeng3", e: "Guarantee / Protect"}, {c: "魔鬼在細節", j: "mo1 gwai2 zoi6 sai3 zit3", e: "The devil is in the details"},
+            {c: "修改", j: "sau1 goi2", e: "Amend / Revise"}, {c: "雙方", j: "soeng1 fong1", e: "Both parties"}
+        ],
+        story: "今日上晝，我用咗兩個鐘頭去審核公司準備同冷氣判頭簽嗰份工程合約。<br>做 Construction Admin，審核合約絕對唔可以求其，因為魔鬼往往就藏喺細節入面。<br>我發現合約入面有幾項條款對我哋公司唔係好公平，必須要作出修改。<br>第一，關於工程延誤嘅違約金 (Liquidated Damages) 寫得太過含糊。<br>我要求加入具體數字，寫明如果判頭遲過死線交貨，每日需要賠償一千蚊加幣。<br>第二，合約原本只係提供一年嘅免費維修保養期 (Defect Liability Period)。<br>考慮到呢批新冷氣系統嘅價值，我要求將保養條款延長至兩年，以保障業主嘅長遠利益。<br>我將修改好嘅 draft 用紅筆 highlight 咗，發返畀判頭嘅法律代表睇。<br>只有喺雙方對所有細節條款都完全同意嘅情況下，我哋先會安排老細正式簽名。<br>合約就係我哋嘅護身符，寫得越清晰，將來發生爭拗嘅機會就越細。",
+        jyutping: "Gam1 ziu1 soeng6 zau3, ngo5 jung6 zo2 loeng5 go3 zung1 tau4 heoi3 sam2 hat6 gung1 si1 zeon2 bei6 tung4 laang5 hei3 pun3 tau4 cim1 go2 fan6 gung1 cing4 hap6 joek3.<br>Zou6 Construction Admin, sam2 hat6 hap6 joek3 zyut6 deoi3 m4 ho2 ji5 kau4 kei4, jan1 wai6 mo1 gwai2 wong5 wong5 zau6 cong4 hai2 sai3 zit3 jap6 min6.<br>Ngo5 faat3 jin6 hap6 joek3 jap6 min6 jau5 gei2 hong6 <span class='highlight'>tiu4 fun2</span> deoi3 ngo5 dei6 gung1 si1 m4 hai6 hou2 gung1 ping4, bit1 seoi1 jiu3 zok3 ceot1 sau1 goi2.<br>Dai6 jat1, gwaan1 jyu1 gung1 cing4 jin4 ng6 ge3 wai4 joek3 gam1 (Liquidated Damages) se2 dak1 taai3 gwo3 ham4 wu4.<br>Ngo5 jiu1 kau4 gaa1 jap6 geoi6 tai2 sou3 zi6, se2 ming4 jyu4 gwo2 pun3 tau4 ci4 gwo3 sei2 sin3 gaau1 fo3, mui5 jat6 seoi1 jiu3 pui4 soeng4 jat1 cin1 man1 Gaa1 bai6.<br>Dai6 ji6, hap6 joek3 jyun4 bun2 zi2 hai6 ti4 gung1 jat1 nin4 ge3 min5 fai3 wai4 sau1 bou2 joeng5 kei4 (Defect Liability Period).<br>Haau2 leoi6 dou3 ni1 pai1 san1 laang5 hei3 hai6 tung2 ge3 gaa3 zik6, ngo5 jiu1 kau4 zoeng1 bou2 joeng5 <span class='highlight'>tiu4 fun2</span> jin4 coeng4 zi3 loeng5 nin4, ji5 bou2 zoeng3 jip6 zyu2 ge3 coeng4 jyun5 lei6 jik1.<br>Ngo5 zoeng1 sau1 goi2 hou2 ge3 draft jung6 hung4 bat1 highlight zo2, faat3 faan1 bei2 pun3 tau4 ge3 faat3 leot6 doi6 biu2 tai2.<br>Zi2 jau5 hai2 soeng1 fong1 deoi3 soeng1 jau5 sai3 zit3 <span class='highlight'>tiu4 fun2</span> dou1 jyun4 cyun4 tung4 ji3 ge3 cing4 fong3 haa6, ngo5 dei6 sin1 wui5 on1 paai4 lou5 sai3 zing3 sik1 cim1 meng2.<br>Hap6 joek3 zau6 hai6 ngo5 dei6 ge3 wu6 san1 fu4, se2 dak1 jyut6 cing1 sik1, zoeng1 loi4 faat3 sang1 zaang1 aau3 ge3 gei1 wui6 zau6 jyut6 sai3.",
+        english: "This morning, I spent two hours reviewing the construction contract the company is preparing to sign with the AC subcontractor.<br>Being a Construction Admin, reviewing contracts absolutely cannot be done sloppily, because the devil is often hidden in the details.<br>I found that several clauses in the contract were not very fair to our company and must be amended.<br>First, the penalty for project delay (Liquidated Damages) was written too vaguely.<br>I requested adding a concrete number, explicitly stating that if the sub delivers past the deadline, they must compensate 1,000 CAD per day.<br>Second, the contract originally only provided a one-year free maintenance and warranty period (Defect Liability Period).<br>Considering the value of this new batch of AC systems, I requested extending the warranty clause to two years to protect the client's long-term interests.<br>I highlighted the amended draft with a red pen and sent it back to the sub's legal representative to review.<br>Only under the circumstance that both parties completely agree to all detail clauses, will we arrange for the boss to officially sign.<br>The contract is our protective amulet; the clearer it is written, the smaller the chance of disputes occurring in the future.",
+        quizzes: [
+            { q: "作者用咗兩個鐘頭做咩工作？", e: "(What did the author spend two hours doing?)", options: [{c: "審核準備同冷氣判頭簽嘅工程合約", e: "(Reviewing the construction contract prepared to be signed with the AC sub)", correct: true}, {c: "修理公司嘅冷氣機", e: "(Fixing the company's air conditioner)", correct: false}, {c: "同老闆傾加人工", e: "(Talking with the boss about a raise)", correct: false}] },
+            { q: "第一項被要求修改嘅「條款」係關於咩？", e: "(What was the first 'clause' requested to be amended about?)", options: [{c: "工程延誤嘅違約金寫得太含糊", e: "(The penalty for project delay was written too vaguely)", correct: true}, {c: "冷氣機嘅牌子唔啱", e: "(The brand of the AC was wrong)", correct: false}, {c: "工人嘅午餐補貼太少", e: "(The workers' lunch subsidy was too little)", correct: false}] },
+            { q: "為咗保障業主利益，作者要求保養期有咩改動？", e: "(To protect client interests, what change did the author request for the warranty period?)", options: [{c: "將一年嘅保養期延長至兩年", e: "(Extend the 1-year warranty period to 2 years)", correct: true}, {c: "完全取消保養期以減低成本", e: "(Cancel the warranty period completely to lower costs)", correct: false}, {c: "改為終身免費保養", e: "(Change to lifetime free maintenance)", correct: false}] },
+            { q: "喺咩情況下，作者先會安排老細正式簽名？", e: "(Under what circumstance will the author arrange for the boss to officially sign?)", options: [{c: "雙方對所有細節條款都完全同意", e: "(Both parties completely agree to all detail clauses)", correct: true}, {c: "老細心情好嗰陣", e: "(When the boss is in a good mood)", correct: false}, {c: "只要判頭肯減價", e: "(As long as the sub is willing to lower the price)", correct: false}] },
+            { q: "俗語「魔鬼在細節」喺商業審核上係咩意思？", e: "(What does the idiom 'the devil is in the details' mean in business auditing?)", options: [{c: "微小嘅字眼或條款容易被忽略，但往往會造成巨大嘅損失", e: "(Tiny wording or clauses are easily ignored, but often cause huge losses)", correct: true}, {c: "合約入面畫咗魔鬼嘅圖案", e: "(Pictures of devils are drawn in the contract)", correct: false}, {c: "判頭係一個好壞嘅人", e: "(The subcontractor is a very bad person)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Closing the Deal", topic: "Consensus (達成共識 - Reach a consensus)",
+        img: "https://images.unsplash.com/photo-1556761175-5973dc0f32b7",
+        grammarDesc: "<strong>Finalizing Agreements:</strong> Confirming a mutual agreement.<br>達成共識 (daat6 sing4 gung6 sik1) means 'To reach a consensus' or mutual agreement.",
+        vocab: [
+            {c: "談判", j: "taam4 pun3", e: "Negotiation"}, {c: "達成共識", j: "daat6 sing4 gung6 sik1", e: "Reach a consensus"},
+            {c: "讓步", j: "joeng6 bou6", e: "Concession / Yield"}, {c: "雙贏", j: "soeng1 jing4", e: "Win-win"},
+            {c: "合約", j: "hap6 joek3", e: "Contract"}, {c: "細節", j: "sai3 zit3", e: "Details"},
+            {c: "簽約", j: "cim1 joek3", e: "Sign a contract"}, {c: "里程碑", j: "lei5 cing4 bui1", e: "Milestone"},
+            {c: "慶祝", j: "hing3 zuk1", e: "Celebrate"}, {c: "合作愉快", j: "hap6 zok3 jyu6 faai3", e: "Pleasant cooperation"}
+        ],
+        story: "經過長達一個月嘅拉鋸同埋三次馬拉松式嘅會議，我哋終於同溫哥華最大嘅木材供應商完成咗談判。<br>喺最後一輪磋商入面，雙方都作出咗一定程度嘅讓步。<br>我哋答應增加首期嘅訂金比例，而佢哋就同意喺旺季期間優先處理我哋公司嘅訂單，並且提供九折嘅大客優惠。<br>雙方喺價錢同埋交貨期上順利達成共識，創造出一個完美嘅雙贏 (Win-win) 局面。<br>今日下晝，供應商嘅代表親自嚟到我哋 Contour Projects 嘅辦公室舉行簽約儀式。<br>當老闆 Alex 同對方交換簽好嘅合約嗰一刻，成個會議室都響起咗掌聲。<br>呢個係我哋公司今年拿下嘅最大一份建材合約，絕對係一個重要嘅里程碑。<br>為咗慶祝呢個難得嘅合作，Alex 決定今晚請成個項目團隊去市中心食海鮮大餐。<br>「合作愉快！」大家都舉起酒杯，為未來幾年嘅工程順利乾杯。<br>搞掂呢單大 project，今個週末終於可以放低公事，好好休息一下。",
+        jyutping: "Ging1 gwo3 coeng4 daat6 jat1 go3 jyut6 ge3 laai1 geoi3 tung4 maai4 saam1 ci3 maa5 laai1 cung4 sik1 ge3 wui6 ji5, ngo5 dei6 zung1 jyu1 tung4 Wan1 go1 waa4 zeoi3 daai6 ge3 muk6 coi4 gung1 jing3 soeng1 jyun4 sing4 zo2 taam4 pun3.<br>Hai2 zeoi3 hau6 jat1 leon4 co1 soeng1 jap6 min6, soeng1 fong1 dou1 zok3 ceot1 zo2 jat1 ding6 cing4 dou6 ge3 joeng6 bou6.<br>Ngo5 dei6 daap3 jing3 zang1 gaa1 sau2 kei4 ge3 deng6 gam1 bei2 lai6, ji4 keoi5 dei6 zau6 tung4 ji3 hai2 wong6 gwai3 gei4 gaan1 jau1 sin1 cyu2 lei5 ngo5 dei6 gung1 si1 ge3 deng6 daan1, bing6 ce2 ti4 gung1 gau2 zit3 ge3 daai6 haak3 jau1 wai6.<br>Soeng1 fong1 hai2 gaa3 cin4 tung4 maai4 gaau1 fo3 kei4 soeng6 seon6 lei6 <span class='highlight'>daat6 sing4 gung6 sik1</span>, cong3 zou6 ceot1 jat1 go3 jyun4 mei5 ge3 soeng1 jing4 (Win-win) guk6 min6.<br>Gam1 jat6 haa6 zau3, gung1 jing3 soeng1 ge3 doi6 biu2 can1 zi6 lei4 dou3 ngo5 dei6 Contour Projects ge3 baan6 gung1 sat1 geoi2 haang4 cim1 joek3 ji4 sik1.<br>Dong1 lou5 baan2 Alex tung4 deoi3 fong1 gaau1 wun6 cim1 hou2 ge3 hap6 joek3 go2 jat1 hak1, seng4 go3 wui6 ji5 sat1 dou1 hoeng2 hei2 zo2 zoeng2 sing1.<br>Ni1 go3 hai6 ngo5 dei6 gung1 si1 gam1 nin4 naa4 haa6 ge3 zeoi3 daai6 jat1 fan6 gin3 coi4 hap6 joek3, zyut6 deoi3 hai6 jat1 go3 zung6 jiu3 ge3 lei5 cing4 bui1.<br>Wai6 zo2 hing3 zuk1 ni1 go3 naan4 dak1 ge3 hap6 zok3, Alex kyut3 ding6 gam1 maan5 ceng2 seng4 go3 hong6 muk6 tyun4 deoi2 heoi3 si5 zung1 sam1 sik6 hoi2 sin1 daai6 caan1.<br>「Hap6 zok3 jyu6 faai3!」 Daai6 gaa1 dou1 geoi2 hei2 zau2 bui1, wai6 mei6 loi4 gei2 nin4 ge3 gung1 cing4 seon6 lei6 gon1 bui1.<br>Gaau2 dim6 ni1 daan1 daai6 project, gam1 go3 zau1 mut6 zung1 jyu1 ho2 ji5 fong3 dai1 gung1 si6, hou2 hou2 jau1 sik1 jat1 haa5.",
+        english: "After a month-long tug-of-war and three marathon-style meetings, we finally completed negotiations with Vancouver's largest lumber supplier.<br>In the final round of talks, both sides made a certain degree of concession.<br>We promised to increase the deposit percentage for the initial payment, while they agreed to prioritize processing our company's orders during the peak season, and provide a 10% off major client discount.<br>Both sides smoothly reached a consensus on price and delivery time, creating a perfect win-win situation.<br>This afternoon, the supplier's representative personally came to our Contour Projects office to hold the contract signing ceremony.<br>The moment boss Alex and the other party exchanged the signed contracts, applause rang out in the entire meeting room.<br>This is the largest construction material contract our company has landed this year, absolutely an important milestone.<br>To celebrate this hard-won cooperation, Alex decided to treat the whole project team to a big seafood dinner downtown tonight.<br>'Pleasant cooperation!' Everyone raised their wine glasses, toasting to the smooth construction in the coming years.<br>Getting this big project done, this weekend I can finally put down business matters and have a good rest.",
+        quizzes: [
+            { q: "呢次談判總共經歷咗幾耐時間？", e: "(How long did this negotiation take in total?)", options: [{c: "長達一個月嘅拉鋸同三次馬拉松會議", e: "(A month-long tug-of-war and 3 marathon meetings)", correct: true}, {c: "一個下晝就搞掂", e: "(Finished in one afternoon)", correct: false}, {c: "傾咗成個星期", e: "(Talked for a whole week)", correct: false}] },
+            { q: "為咗達成雙贏，雙方分別作出咗咩讓步？", e: "(To achieve a win-win, what concessions did both sides make respectively?)", options: [{c: "增加首期訂金，換取優先處理訂單同九折優惠", e: "(Increased initial deposit, in exchange for priority processing and 10% discount)", correct: true}, {c: "減人工去換取免費木材", e: "(Reduced wages to exchange for free lumber)", correct: false}, {c: "取消合約去換取現金", e: "(Cancelled the contract to exchange for cash)", correct: false}] },
+            { q: "「達成共識」代表雙方喺談判中去到咩階段？", e: "(What stage in the negotiation does 'reaching a consensus' represent both sides have reached?)", options: [{c: "大家喺價錢同交貨期等細節上取得一致同意", e: "(Everyone reached an agreement on details like price and delivery time)", correct: true}, {c: "談判破裂，大家反面", e: "(Negotiation broke down, falling out with each other)", correct: false}, {c: "啱啱開始互相介紹", e: "(Just starting to introduce each other)", correct: false}] },
+            { q: "為咗慶祝簽約成功，老闆 Alex 有咩安排？", e: "(To celebrate the successful signing, what arrangement did boss Alex make?)", options: [{c: "請成個項目團隊去市中心食海鮮大餐", e: "(Treat the whole project team to a big seafood dinner downtown)", correct: true}, {c: "放全公司一個月大假", e: "(Give the whole company a one-month long holiday)", correct: false}, {c: "每人派一部新手機", e: "(Give everyone a new smartphone)", correct: false}] },
+            { q: "「合作愉快」通常喺咩場合會講？", e: "(In what situation is 'hap zok jyu faai / pleasant cooperation' usually said?)", options: [{c: "成功簽約或者達成交易後，祝願未來工作順利時", e: "(After successfully signing a contract or closing a deal, wishing future work goes smoothly)", correct: true}, {c: "第一次見面打招呼嗰陣", e: "(When greeting someone for the very first time)", correct: false}, {c: "鬧緊交，想投訴對方嗰陣", e: "(When arguing, wanting to complain about the other party)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>💼 Business Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Business Grammar & Vocabulary</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Corporate Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Business Scenario Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Professional Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
