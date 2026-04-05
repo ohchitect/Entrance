@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Mission Hub</title>
+    <style>
+        :root {
+            /* Navy Gradation Background */
+            --bg-gradient: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            --active-color: #37474f;
+            --text-title: #2c3e50;
+            --text-desc: #7f8c8d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient); /* Navy gradation */
+            margin: 0;
+            padding: 40px 15px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* White rounded boundary container */
+        .main-container {
+            background-color: white;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 25px; /* Rounded boundary */
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            color: #95a5a6;
+            margin-bottom: 15px;
+            text-align: left; /* Left aligned label */
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 2 Columns, 5 Rows Grid for Difficulties */
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .diff-box {
+            background: white;
+            border: 1.5px solid #ddd;
+            padding: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center; /* Centered contents */
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centered contents */
+            gap: 5px;
+            box-sizing: border-box;
+        }
+
+        .diff-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .diff-box.active {
+            border-color: var(--active-color);
+            background-color: #f4f7f9;
+            border-width: 2.5px;
+        }
+
+        .diff-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        .diff-desc {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--text-desc);
+        }
+
+        /* STEP 2 - Level Section */
+        .level-section {
+            border-top: 1px solid #eee;
+            padding-top: 25px;
+        }
+
+        /* 5 Columns, 3 Rows Grid for Rectangular Levels */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .level-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 45px;
+            background: #fff;
+            border: 1.5px solid #ddd;
+            border-radius: 10px; /* Rectangular boxes */
+            text-decoration: none;
+            color: #444;
+            font-weight: 800;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .level-link:hover {
+            background: var(--active-color);
+            border-color: var(--active-color);
+            color: white;
+        }
+
+        /* Active highlight colors */
+        .active-d1 { --active-color: #ff9a9e; }
+        .active-d2 { --active-color: #a1c4fd; }
+        .active-d3 { --active-color: #84fab0; }
+        .active-d4 { --active-color: #fccb90; }
+        .active-d5 { --active-color: #e0c3fc; }
+        .active-d6 { --active-color: #4facfe; }
+        .active-d7 { --active-color: #f093fb; }
+        .active-d8 { --active-color: #667eea; }
+        .active-d9 { --active-color: #37474f; }
+        .active-d10 { --active-color: #b71c1c; }
+    </style>
+</head>
+<body class="active-d3">
+
+    <div class="main-container">
+        <h1>Mission Map</h1>
+
+        <div class="section-label">STEP 1: CHOOSE DIFFICULTY</div>
+        
+        <div class="difficulty-grid" id="difficultyList">
+            <div class="diff-box active" onclick="setDiff('beginner.html', 'd3', this)">
+                <div class="diff-title">☕ Beginner</div>
+                <div class="diff-desc">Daily basics</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('intermediate.html', 'd8', this)">
+                <div class="diff-title">📚 Intermediate</div>
+                <div class="diff-desc">Expanding skills</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('hard.html', 'd9', this)">
+                <div class="diff-title">🔥 Hard</div>
+                <div class="diff-desc">Advanced mastery</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('tourist.html', 'd5', this)">
+                <div class="diff-title">✈️ Tourist</div>
+                <div class="diff-desc">HK visitor scenarios</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('child.html', 'd1', this)">
+                <div class="diff-title">🧸 Child</div>
+                <div class="diff-desc">Young learners</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('elementary.html', 'd2', this)">
+                <div class="diff-title">🏫 Elementary</div>
+                <div class="diff-desc">School age basics</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('middle.html', 'd4', this)">
+                <div class="diff-title">🎒 Middle School</div>
+                <div class="diff-desc">Teen topics</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('high.html', 'd10', this)">
+                <div class="diff-title">🎓 High School</div>
+                <div class="diff-desc">Pre-adult life</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('uni.html', 'd7', this)">
+                <div class="diff-title">🏛️ University</div>
+                <div class="diff-desc">Academic level</div>
+            </div>
+            <div class="diff-box" onclick="setDiff('business.html', 'd6', this)">
+                <div class="diff-title">💼 Business</div>
+                <div class="diff-desc">Professional Cantonese</div>
+            </div>
+        </div>
+
+        <div class="level-section">
+            <div class="section-label" id="selectionLabel">STEP 2 — CHOOSE LEVEL FOR BEGINNER</div>
+            <div class="level-grid" id="levelGrid"></div>
+        </div>
+    </div>
+
+<script>
+    let currentFile = 'beginner.html';
+
+    function setDiff(file, colorId, box) {
+        currentFile = file;
+        document.querySelectorAll('.diff-box').forEach(b => b.classList.remove('active'));
+        box.classList.add('active');
+        document.body.className = `active-${colorId}`;
+        const titleText = box.querySelector('.diff-title').innerText.replace(/[^a-zA-Z\s]/g, '').trim();
+        document.getElementById('selectionLabel').innerText = `STEP 2 — CHOOSE LEVEL FOR ${titleText.toUpperCase()}`;
+        updateLinks();
+    }
+
+    function updateLinks() {
+        const grid = document.getElementById('levelGrid');
+        grid.innerHTML = '';
+        for(let i=1; i<=15; i++) {
+            const a = document.createElement('a');
+            a.href = `${currentFile}?level=${i}`;
+            a.className = 'level-link';
+            a.innerText = i;
+            grid.appendChild(a);
+        }
+    }
+
+    updateLinks();
+</script>
+</body>
+</html>

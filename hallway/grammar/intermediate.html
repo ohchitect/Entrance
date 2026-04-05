@@ -526,8 +526,33 @@ function loadMission(index) {
     window.scrollTo(0, 0);
 }
 
-window.onload = () => loadMission(0);
+
+
+// THIS IS THE MODIFIED SECTION
 window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+
+window.onload = () => {
+    // Force voices to initialize
+    window.speechSynthesis.getVoices();
+
+    // 1. Get the level from the URL (e.g., beginner.html?level=2)
+    const urlParams = new URLSearchParams(window.location.search);
+    const levelParam = urlParams.get('level');
+    
+    // 2. Convert that to a number
+    if (levelParam) {
+        const targetMissionIndex = parseInt(levelParam) - 1; // Level 2 is Index 1
+        
+        // 3. Check if that mission exists in your missionsData array
+        if (targetMissionIndex >= 0 && targetMissionIndex < missionsData.length) {
+            loadMission(targetMissionIndex);
+        } else {
+            loadMission(0); // Default to first mission if number is wrong
+        }
+    } else {
+        loadMission(0); // Default if no number is in URL
+    }
+};
 </script>
 
 </body>
