@@ -80,8 +80,7 @@
         .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
          .home-btn {
       position: absolute;
-      top: 15px;
-      right: 20px;
+      bottom: 15px; left: 50%; transform: translateX(-50%);
       background: #1976d2;
       color: white;
       text-decoration: none;
@@ -499,7 +498,7 @@ function loadMission(index) {
     `).join('');
 
     app.innerHTML = `
-        <a href='grammar.html' class='home-btn'>⬅ Home</a>
+        <a href='grammar.html' class='home-btn'>Home</a>
         <div class='header'>
             <h1>☕ Beginner Mission ${m.level} / 15</h1>
             <p>${m.title} (${m.topic})</p>
