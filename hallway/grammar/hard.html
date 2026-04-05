@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: Hard Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 600px; /* Slightly wider for more text */
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 0.9rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 200px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #e65100; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #e64a19; }
+        .prep-section {
+            background-color: #fff3e0; border-left: 4px solid #ef6c00;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #e65100; font-size: 1.1rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.4; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .vocab-item {
+            background: white; padding: 10px 8px; border-radius: 8px; font-size: 0.9rem;
+            border: 2px solid #ffe0b2; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #fff3e0; border-color: #fb8c00; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #e65100; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #e65100;
+            padding: 15px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.15rem; line-height: 1.9; margin-bottom: 15px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #666; font-size: 0.9rem; line-height: 1.6; text-align: justify; }
+        .highlight { color: #e65100; text-decoration: underline; background-color: #fff3e0; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 20px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 5px; line-height: 1.4; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; line-height: 1.4; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 4px; }
+        .translation-box { margin-top: 30px; font-size: 0.9rem; color: #555; background: #eee; padding: 15px; border-radius: 8px; line-height: 1.6; text-align: justify; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+        .nav-btn { background: #ef6c00; color: white; border: none; border-radius: 8px; padding: 12px 20px; font-weight: bold; cursor: pointer; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+</div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "Construction Permitting Issues", topic: "Passive Voice (俾 - to be done by)",
+        img: "https://images.unsplash.com/photo-1541888087588-926c45731671",
+        grammarDesc: "<strong>Passive Voice:</strong> Emphasizing the receiver of an action.<br>俾 (bei2) marks the passive voice. Example: 俾人罰錢 (To be fined by someone).",
+        vocab: [
+            {c: "入伙紙", j: "jap6 fo2 zi2", e: "Occupancy permit"}, {c: "市政府", j: "si5 zing3 fu2", e: "City government"},
+            {c: "查出", j: "caa4 ceot1", e: "Find out / Inspect"}, {c: "停工", j: "ting4 gung1", e: "Stop working"},
+            {c: "即刻", j: "zik1 hak1", e: "Immediately"}, {c: "聯絡", j: "lyun4 lok3", e: "Contact"},
+            {c: "解決", j: "gaai2 kyut3", e: "Solve"}, {c: "如果唔係", j: "jyu4 gwo2 m4 hai6", e: "Otherwise"},
+            {c: "罰錢", j: "fat6 cin2", e: "Fine / Penalty"}, {c: "影響", j: "jing2 hoeng2", e: "Affect"}
+        ],
+        story: "我哋喺溫哥華做建築，最麻煩就係申請入伙紙。<br>今日老闆 Alex 話，個地盤俾市政府查出有問題，所以要停工。<br>我哋而家要即刻聯絡市政府解釋，希望可以快啲解決。<br>如果唔係，個項目就會俾人罰錢，仲會影響進度。",
+        jyutping: "Ngo5 dei6 hai2 Wan1 go1 waa4 zou6 gin3 zuk1, zeoi3 maa4 faan4 zau6 hai6 san1 cing2 jap6 fo2 zi2.<br>Gam1 jat6 lou5 baan2 Alex waa6, go3 dei6 pun4 <span class='highlight'>bei2</span> si5 zing3 fu2 caa4 ceot1 jau5 man6 tai4, so2 ji5 jiu3 ting4 gung1.<br>Ngo5 dei6 ji4 gaa1 jiu3 zik1 hak1 lyun4 lok3 si5 zing3 fu2 gaai2 sik1, hei1 mong6 ho2 ji5 faai3 di1 gaai2 kyut3.<br>Jyu4 gwo2 m4 hai6, go3 hong6 muk6 zau6 wui5 <span class='highlight'>bei2</span> jan4 fat6 cin2, zung6 wui5 jing2 hoeng2 zeon3 dou6.",
+        english: "Working in construction in Vancouver, the most troublesome part is applying for the occupancy permit.<br>Today boss Alex said the site was inspected by the city government and found to have issues, so work must stop.<br>We need to contact the city government immediately to explain, hoping to resolve it quickly.<br>Otherwise, the project will be fined, which will also affect the schedule.",
+        quizzes: [
+            { q: "根據文章，做建築最麻煩嘅係咩？", e: "(According to the text, what is the most troublesome part of construction?)", options: [{c: "申請入伙紙", e: "(Applying for the occupancy permit)", correct: true}, {c: "聯絡老闆", e: "(Contacting the boss)", correct: false}, {c: "俾人罰錢", e: "(Getting fined)", correct: false}] },
+            { q: "點解地盤要停工？", e: "(Why does the construction site need to stop working?)", options: [{c: "因為俾市政府查出有問題", e: "(Because the city government found issues)", correct: true}, {c: "因為老闆 Alex 唔想做", e: "(Because boss Alex doesn't want to work)", correct: false}, {c: "因為工人要放假", e: "(Because workers need a holiday)", correct: false}] },
+            { q: "如果問題解決唔到會有咩後果？", e: "(What are the consequences if the issue isn't solved?)", options: [{c: "俾人罰錢同埋影響進度", e: "(Getting fined and affecting the schedule)", correct: true}, {c: "唔可以再喺溫哥華做嘢", e: "(Cannot work in Vancouver anymore)", correct: false}, {c: "要重新畫過啲圖則", e: "(Need to redraw the floor plans)", correct: false}] },
+            { q: "我哋而家需要採取咩行動？", e: "(What action do we need to take now?)", options: [{c: "即刻聯絡市政府解釋", e: "(Contact the city government immediately to explain)", correct: true}, {c: "即刻交罰款畀市政府", e: "(Pay the fine to the city government immediately)", correct: false}, {c: "搵其他地盤繼續開工", e: "(Find another site to continue working)", correct: false}] },
+            { q: "「俾人罰錢」喺文法上係咩意思？", e: "(What does 'bei jan fat cin' mean grammatically?)", options: [{c: "被動語態，即係被罰款", e: "(Passive voice, meaning being fined)", correct: true}, {c: "主動語態，即係去罰人錢", e: "(Active voice, meaning to fine someone)", correct: false}, {c: "過去式，即係已經罰咗錢", e: "(Past tense, meaning already fined)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "Wedding Budget Management", topic: "Not only... but also (唔單止... 仲)",
+        img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed",
+        grammarDesc: "<strong>Addition:</strong> Emphasizing multiple factors.<br>唔單止 (m4 daan1 zi2) ... 仲 (zung6) means 'Not only... but also'.",
+        vocab: [
+            {c: "唔單止", j: "m4 daan1 zi2", e: "Not only"}, {c: "仲", j: "zung6", e: "But also"},
+            {c: "簡單", j: "gaan2 daan1", e: "Simple"}, {c: "場地", j: "coeng4 dei6", e: "Venue"},
+            {c: "租金", j: "zou1 gam1", e: "Rent / Fee"}, {c: "佈置", j: "bou3 zi3", e: "Decoration"},
+            {c: "商量", j: "soeng1 loeng4", e: "Discuss"}, {c: "慳錢", j: "haan1 cin2", e: "Save money"},
+            {c: "親手", j: "can1 sau2", e: "With one's own hands"}, {c: "意義", j: "ji3 ji6", e: "Meaning"}
+        ],
+        story: "搞一個一百五十人嘅婚禮真係唔簡單。<br>喺伊利沙伯王后公園行禮，唔單止場地租金貴，仲要考慮佈置同埋影相嘅費用。<br>我同 Jamie 商量過，為咗慳錢，我哋決定自己親手做一部分嘅裝飾。<br>雖然辛苦少少，但係非常有意義。",
+        jyutping: "Gaau2 jat1 go3 jat1 baak3 ng5 sap6 jan4 ge3 fan1 lai5 zan1 hai6 m4 gaan2 daan1.<br>Hai2 Ji1 lei6 saa1 baak3 wong4 hau6 gung1 jyun2 haang4 lai5, <span class='highlight'>m4 daan1 zi2</span> coeng4 dei6 zou1 gam1 gwai3, <span class='highlight'>zung6</span> jiu3 haau2 leoi6 bou3 zi3 tung4 maai4 jing2 soeng2 ge3 fai3 jung6.<br>Ngo5 tung4 Jamie soeng1 loeng4 gwo3, wai6 zo2 haan1 cin2, ngo5 dei6 kyut3 ding6 zi6 gei2 can1 sau2 zou6 jat1 bou6 fan6 ge3 zong1 sik1.<br>Seoi1 jin4 san1 fu2 siu2 siu2, daan6 hai6 fei1 soeng4 jau5 ji3 ji6.",
+        english: "Organizing a 150-person wedding is really not simple.<br>Having the ceremony at Queen Elizabeth Park, not only is the venue rental expensive, but we also have to consider the costs of decoration and photography.<br>Jamie and I discussed it; in order to save money, we decided to make some of the decorations with our own hands.<br>Although it is a bit of hard work, it is extremely meaningful.",
+        quizzes: [
+            { q: "點解話喺公園行禮唔簡單？", e: "(Why is having the ceremony at the park not simple?)", options: [{c: "因為租金貴，仲要計佈置同影相費用", e: "(Because rent is high, and decoration/photo costs must be calculated)", correct: true}, {c: "因為公園唔俾太多人入去", e: "(Because the park doesn't allow too many people inside)", correct: false}, {c: "因為天氣成日落雨", e: "(Because the weather rains all the time)", correct: false}] },
+            { q: "作者同 Jamie 決定點樣慳錢？", e: "(How did the author and Jamie decide to save money?)", options: [{c: "自己親手做一部分嘅裝飾", e: "(Make some of the decorations with their own hands)", correct: true}, {c: "減少請客嘅人數", e: "(Reduce the number of invited guests)", correct: false}, {c: "唔請攝影師影相", e: "(Not hire a photographer to take photos)", correct: false}] },
+            { q: "「唔單止... 仲」用嚟表達咩語氣？", e: "(What tone does 'not only... but also' express?)", options: [{c: "遞進關係，強調有更多因素", e: "(Progressive relationship, emphasizing more factors)", correct: true}, {c: "轉折關係，表示相反意思", e: "(Adversative relationship, indicating opposite meaning)", correct: false}, {c: "因果關係，解釋事情原因", e: "(Causal relationship, explaining the reason)", correct: false}] },
+            { q: "作者覺得自己做裝飾感覺點樣？", e: "(How does the author feel about making the decorations themselves?)", options: [{c: "雖然辛苦，但係好有意義", e: "(Although hard work, it is very meaningful)", correct: true}, {c: "太麻煩，寧願俾錢人做", e: "(Too troublesome, would rather pay someone to do it)", correct: false}, {c: "好簡單，完全唔覺得辛苦", e: "(Very simple, doesn't feel like hard work at all)", correct: false}] },
+            { q: "佢哋邀請咗幾多個客人？", e: "(How many guests did they invite?)", options: [{c: "一百五十人", e: "(150 people)", correct: true}, {c: "五十人", e: "(50 people)", correct: false}, {c: "五百人", e: "(500 people)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Luxe Millwork Details", topic: "Concession (就算... 都 - Even if... still)",
+        img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6",
+        grammarDesc: "<strong>Concession:</strong> Stating a condition that doesn't change the outcome.<br>就算 (zau6 syun3) ... 都 (dou1) means 'Even if... still'.",
+        vocab: [
+            {c: "就算", j: "zau6 syun3", e: "Even if"}, {c: "都", j: "dou1", e: "Still / All"},
+            {c: "要求", j: "jiu1 kau4", e: "Requirement"}, {c: "材料", j: "coi4 liu2", e: "Material"},
+            {c: "圖則", j: "tou4 zak1", e: "Floor plan"}, {c: "特別", j: "dak6 bit6", e: "Special"},
+            {c: "重新", j: "cung4 san1", e: "Redo / Once more"}, {c: "詳細", j: "coeng4 sai3", e: "Detailed"},
+            {c: "解釋", j: "gaai2 sik1", e: "Explain"}, {c: "理念", j: "lei5 nim6", e: "Concept"}
+        ],
+        story: "關於 Luxe 單位嘅室內設計，客人 Paul 對木工嘅要求非常之高。<br>佢話就算價錢貴啲，都一定要用最好嘅材料。<br>因為呢個單位嘅圖則比較特別，所以我哋要重新畫過啲圖。<br>聽日開會我會詳細解釋個設計理念畀佢聽。",
+        jyutping: "Gwaan1 jyu1 Luxe daan1 wai2 ge3 sat1 noi6 cit3 gai3, haak3 jan4 Paul deoi3 muk6 gung1 ge3 jiu1 kau4 fei1 soeng4 zi1 gou1.<br>Keoi5 waa6 <span class='highlight'>zau6 syun3</span> gaa3 cin4 gwai3 di1, <span class='highlight'>dou1</span> jat1 ding6 jiu3 jung6 zeoi3 hou2 ge3 coi4 liu2.<br>Jan1 wai6 ni1 go3 daan1 wai2 ge3 tou4 zak1 bei2 gaau3 dak6 bit6, so2 ji5 ngo5 dei6 jiu3 cung4 san1 waak6 gwo3 di1 tou4.<br>Ting1 jat6 hoi1 wui2 ngo5 wui5 coeng4 sai3 gaai2 sik1 go3 cit3 gai3 lei5 nim6 bei2 keoi5 teng1.",
+        english: "Regarding the interior design of the Luxe unit, client Paul has extremely high requirements for the millwork.<br>He said that even if the price is a bit higher, we still absolutely must use the best materials.<br>Because the floor plan of this unit is quite special, we have to redraw the plans.<br>At tomorrow's meeting, I will explain the design concept to him in detail.",
+        quizzes: [
+            { q: "客人 Paul 對咩嘢有極高嘅要求？", e: "(What does client Paul have extremely high requirements for?)", options: [{c: "木工嘅材料同設計", e: "(Millwork materials and design)", correct: true}, {c: "工程嘅進度", e: "(The schedule of the project)", correct: false}, {c: "燈飾嘅顏色", e: "(The color of the lighting)", correct: false}] },
+            { q: "Paul 對價錢嘅態度係點樣？", e: "(What is Paul's attitude towards the price?)", options: [{c: "就算貴啲都要用最好嘅材料", e: "(Even if it's expensive, must use the best materials)", correct: true}, {c: "一定要最平，唔理質量", e: "(Must be the cheapest, regardless of quality)", correct: false}, {c: "只要係免費，乜都得", e: "(As long as it's free, anything works)", correct: false}] },
+            { q: "點解需要重新畫過啲圖？", e: "(Why is there a need to redraw the plans?)", options: [{c: "因為單位嘅圖則比較特別", e: "(Because the unit's floor plan is quite special)", correct: true}, {c: "因為之前畫錯咗尺寸", e: "(Because the dimensions were drawn wrong previously)", correct: false}, {c: "因為政府唔批張圖", e: "(Because the government didn't approve the drawing)", correct: false}] },
+            { q: "作者聽日開會打算做咩？", e: "(What does the author plan to do at tomorrow's meeting?)", options: [{c: "詳細解釋設計理念", e: "(Explain the design concept in detail)", correct: true}, {c: "要求客人畀多啲錢", e: "(Ask the client for more money)", correct: false}, {c: "取消呢個項目", e: "(Cancel this project)", correct: false}] },
+            { q: "「就算... 都」表達咗咩條件？", e: "(What condition does 'even if... still' express?)", options: [{c: "無論條件點變，結果都一樣", e: "(No matter how conditions change, the result is the same)", correct: true}, {c: "如果條件成立，結果就會改變", e: "(If the condition is met, the result will change)", correct: false}, {c: "只有喺呢個條件下先會發生", e: "(Will only happen under this condition)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Tesla Loan Nuances", topic: "Proportional Change (越... 越 - The more... the more)",
+        img: "https://images.unsplash.com/photo-1560958089-b8a1929cea89",
+        grammarDesc: "<strong>Proportionality:</strong> When two things change together.<br>越 (jyut6) ... 越 (jyut6) means 'The more [A], the more [B]'.",
+        vocab: [
+            {c: "身為", j: "san1 wai4", e: "As a..."}, {c: "汽車貸款", j: "hei3 ce1 taai3 fun2", e: "Car loan"},
+            {c: "越嚟越", j: "jyut6 lai4 jyut6", e: "More and more"}, {c: "審批", j: "sam2 pai1", e: "Approve / Vet"},
+            {c: "首期", j: "sau2 kei4", e: "Down payment"}, {c: "利息", j: "lei6 sik1", e: "Interest"},
+            {c: "平", j: "peng4", e: "Cheap / Low"}, {c: "齊晒", j: "cai4 saai3", e: "All complete"},
+            {c: "稅單", j: "seoi3 daan1", e: "Tax assessment"}, {c: "證明", j: "zing3 ming4", e: "Proof / Certificate"}
+        ],
+        story: "身為一個臨時居民，喺加拿大申請汽車貸款真係越嚟越難。<br>銀行要求嘅文件越多，審批嘅時間就越長。<br>我聽講如果首期畀得越多，利息就會越平。<br>為咗可以快啲揸到架黑色 Tesla，我準備齊晒所有稅單同埋工作證明去申請。",
+        jyutping: "San1 wai4 jat1 go3 lam4 si4 geoi1 man4, hai2 Gaa1 naa4 daai6 san1 cing2 hei3 ce1 taai3 fun2 zan1 hai6 <span class='highlight'>jyut6 lai4 jyut6</span> naan4.<br>Ngan4 hong4 jiu1 kau4 ge3 man4 gin2 <span class='highlight'>jyut6</span> do1, sam2 pai1 ge3 si4 gaan3 zau6 <span class='highlight'>jyut6</span> coeng4.<br>Ngo5 teng1 gong2 jyu4 gwo2 sau2 kei4 bei2 dak1 <span class='highlight'>jyut6</span> do1, lei6 sik1 zau6 wui5 <span class='highlight'>jyut6</span> peng4.<br>Wai6 zo2 ho2 ji5 faai3 di1 zaa1 dou2 gaa3 hak1 sik1 Tesla, ngo5 zeon2 bei6 cai4 saai3 so2 jau5 seoi3 daan1 tung4 maai4 gung1 zok3 zing3 ming4 heoi3 san1 cing2.",
+        english: "As a temporary resident, applying for a car loan in Canada is really getting harder and harder.<br>The more documents the bank requires, the longer the approval time becomes.<br>I heard that the more down payment you give, the lower the interest will be.<br>In order to drive the black Tesla sooner, I prepared all my tax assessments and proof of employment completely to apply.",
+        quizzes: [
+            { q: "臨時居民申請車貸面對咩困難？", e: "(What difficulty do temporary residents face applying for a car loan?)", options: [{c: "要求文件多，審批時間長", e: "(Many document requirements, long approval time)", correct: true}, {c: "銀行唔會借錢畀臨時居民", e: "(Banks won't lend money to temporary residents)", correct: false}, {c: "只能夠買二手車", e: "(Can only buy second-hand cars)", correct: false}] },
+            { q: "點樣可以令到利息平啲？", e: "(How can one make the interest lower?)", options: [{c: "首期畀多啲", e: "(Give more down payment)", correct: true}, {c: "分長啲時間還款", e: "(Repay over a longer time period)", correct: false}, {c: "買平啲嘅車", e: "(Buy a cheaper car)", correct: false}] },
+            { q: "作者準備咗咩文件去申請？", e: "(What documents did the author prepare to apply?)", options: [{c: "稅單同埋工作證明", e: "(Tax assessments and proof of employment)", correct: true}, {c: "出世紙同埋護照", e: "(Birth certificate and passport)", correct: false}, {c: "入伙紙同埋建築圖則", e: "(Occupancy permit and architectural drawings)", correct: false}] },
+            { q: "「越... 越」係用嚟表達咩關係？", e: "(What relationship does 'the more... the more' express?)", options: [{c: "比例變化，兩者一齊增加或減少", e: "(Proportional change, both increase or decrease together)", correct: true}, {c: "選擇關係，二選其一", e: "(Alternative relationship, choose one of two)", correct: false}, {c: "時間先後，發生完A先到B", e: "(Chronological sequence, A finishes before B happens)", correct: false}] },
+            { q: "作者買咩車？", e: "(What car is the author buying?)", options: [{c: "黑色 Tesla", e: "(Black Tesla)", correct: true}, {c: "白色 Tesla", e: "(White Tesla)", correct: false}, {c: "紅色跑車", e: "(Red sports car)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Banff Honeymoon Challenges", topic: "Contrast (雖然... 但係 - Although... but)",
+        img: "https://images.unsplash.com/photo-1549887552-cb127140e69b",
+        grammarDesc: "<strong>Contrast:</strong> Showing unexpected results.<br>雖然 (seoi1 jin4) ... 但係 (daan6 hai6) means 'Although... but'. Note: Cantonese uses both, unlike English.",
+        vocab: [
+            {c: "雖然", j: "seoi1 jin4", e: "Although"}, {c: "但係", j: "daan6 hai6", e: "But"},
+            {c: "季節", j: "gwai3 zit3", e: "Season"}, {c: "難訂", j: "naan4 deng6", e: "Hard to book"},
+            {c: "大部份", j: "daai6 bou6 fan6", e: "Majority / Most"}, {c: "好彩", j: "hou2 coi2", e: "Luckily"},
+            {c: "山腳", j: "saan1 goek3", e: "Foot of a mountain"}, {c: "民宿", j: "man4 suk1", e: "Bed and breakfast / Airbnb"},
+            {c: "市區", j: "si5 keoi1", e: "Downtown / Urban area"}, {c: "一流", j: "jat1 lau4", e: "First-class / Excellent"}
+        ],
+        story: "雖然八月去 Banff 度蜜月係最好嘅季節，但係酒店真係非常之難訂。<br>我哋睇咗好多間酒店，發現大部份靚景嘅房間都已經俾人book晒。<br>最後我哋好彩搵到一間喺山腳嘅民宿。<br>雖然離市區遠少少，但係風景一流，仲可以每日自己煮早餐。",
+        jyutping: "<span class='highlight'>Seoi1 jin4</span> baat3 jyut6 heoi3 Banff dou6 mat6 jyut6 hai6 zeoi3 hou2 ge3 gwai3 zit3, <span class='highlight'>daan6 hai6</span> zau2 dim3 zan1 hai6 fei1 soeng4 zi1 naan4 deng6.<br>Ngo5 dei6 tai2 zo2 hou2 do1 gaan1 zau2 dim3, faat3 jin6 daai6 bou6 fan6 leng3 ging2 ge3 fong4 gaan1 dou1 ji5 ging1 bei2 jan4 book saai3.<br>Zeoi3 hau6 ngo5 dei6 hou2 coi2 wan2 dou2 jat1 gaan1 hai2 saan1 goek3 ge3 man4 suk1.<br><span class='highlight'>Seoi1 jin4</span> lei4 si5 keoi1 jyun5 siu2 siu2, <span class='highlight'>daan6 hai6</span> fung1 ging2 jat1 lau4, zung6 ho2 ji5 mui5 jat6 zi6 gei2 zyu2 zou2 caan1.",
+        english: "Although August is the best season to go to Banff for a honeymoon, hotels are really extremely hard to book.<br>We looked at many hotels and found that most rooms with a nice view were already fully booked by people.<br>Finally, we luckily found a B&B at the foot of the mountain.<br>Although it is a bit far from downtown, the scenery is first-class, and we can also cook breakfast ourselves every day.",
+        quizzes: [
+            { q: "點解 Banff 嘅酒店咁難訂？", e: "(Why are Banff hotels so hard to book?)", options: [{c: "因為八月係去 Banff 嘅最好季節", e: "(Because August is the best season to go to Banff)", correct: true}, {c: "因為嗰度根本冇酒店", e: "(Because there are no hotels there at all)", correct: false}, {c: "因為酒店全部要裝修", e: "(Because all hotels need renovation)", correct: false}] },
+            { q: "佢哋最後訂咗咩類型嘅住宿？", e: "(What type of accommodation did they book in the end?)", options: [{c: "喺山腳嘅民宿", e: "(A B&B at the foot of the mountain)", correct: true}, {c: "市中心嘅五星級酒店", e: "(A 5-star hotel in downtown)", correct: false}, {c: "喺湖邊嘅帳篷", e: "(A tent by the lake)", correct: false}] },
+            { q: "呢間民宿有咩缺點同優點？", e: "(What are the pros and cons of this B&B?)", options: [{c: "離市區遠，但風景一流", e: "(Far from downtown, but scenery is excellent)", correct: true}, {c: "好平，但係冇早餐食", e: "(Very cheap, but no breakfast available)", correct: false}, {c: "好近市區，但係風景好差", e: "(Very close to downtown, but terrible scenery)", correct: false}] },
+            { q: "「俾人book晒」即係點解？", e: "(What does 'bei jan book saai' mean?)", options: [{c: "已經全部被其他人預訂咗", e: "(Already fully reserved by other people)", correct: true}, {c: "被人偷走晒啲嘢", e: "(Had everything stolen by people)", correct: false}, {c: "自己唔記得預訂", e: "(Forgot to book it oneself)", correct: false}] },
+            { q: "喺句法上，「雖然... 但係...」有咩特點？", e: "(Syntactically, what is special about 'although... but...' in Cantonese?)", options: [{c: "廣東話可以兩個詞一齊用", e: "(Cantonese can use both words together)", correct: true}, {c: "只可以單獨用一個", e: "(Can only use one of them independently)", correct: false}, {c: "完全唔需要用連接詞", e: "(No conjunctions needed at all)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "Detailed Client Report", topic: "Purpose (為咗 - In order to)",
+        img: "https://images.unsplash.com/photo-1555421689-491a97ff2040",
+        grammarDesc: "<strong>Purpose:</strong> Expressing intention.<br>為咗 (wai6 zo2) means 'In order to' or 'For the sake of'. It usually starts the sentence.",
+        vocab: [
+            {c: "為咗", j: "wai6 zo2", e: "In order to"}, {c: "整理", j: "zing2 lei5", e: "Organize / Compile"},
+            {c: "詳細", j: "coeng4 sai3", e: "Detailed"}, {c: "解釋", j: "gaai2 sik1", e: "Explain"},
+            {c: "冷氣系統", j: "laang5 hei3 hai6 tung2", e: "Air conditioning system"}, {c: "延遲", j: "jin4 ci4", e: "Delay"},
+            {c: "強調", j: "koeng4 diu6", e: "Emphasize"}, {c: "阻滯", j: "zo2 zai6", e: "Obstacle / Hiccup"},
+            {c: "加派人手", j: "gaa1 paai3 jan4 sau2", e: "Deploy more staff"}, {c: "如期", j: "jyu4 kei4", e: "On schedule"}
+        ],
+        story: "為咗令 Paul 同埋 Peter 清楚了解工程進度，我每個星期五都會整理一份詳細嘅報告。<br>今個星期嘅報告特別長，因為我要解釋點解冷氣系統會延遲送到。<br>我喺電郵入面強調，雖然有阻滯，但我哋已經加派人手趕工。<br>我哋保證一定可以如期交樓畀佢哋。",
+        jyutping: "<span class='highlight'>Wai6 zo2</span> ling6 Paul tung4 maai4 Peter cing1 co2 liu5 gaai2 gung1 cing4 zeon3 dou6, ngo5 mui5 go3 sing1 kei4 ng5 dou1 wui5 zing2 lei5 jat1 fan6 coeng4 sai3 ge3 bou3 gou3.<br>Gam1 go3 sing1 kei4 ge3 bou3 gou3 dak6 bit6 coeng4, jan1 wai6 ngo5 jiu3 gaai2 sik1 dim2 gaai2 laang5 hei3 hai6 tung2 wui5 jin4 ci4 sung3 dou3.<br>Ngo5 hai2 din6 jau4 jap6 min6 koeng4 diu6, seoi1 jin4 jau5 zo2 zai6, daan6 ngo5 dei6 ji5 ging1 gaa1 paai3 jan4 sau2 gun2 gung1.<br>Ngo5 dei6 bou2 zing3 jat1 ding6 ho2 ji5 jyu4 kei4 gaau1 lau2 bei2 keoi5 dei6.",
+        english: "In order to make Paul and Peter clearly understand the project progress, I compile a detailed report every Friday.<br>This week's report is particularly long because I have to explain why the air conditioning system will be delivered late.<br>I emphasized in the email that although there are obstacles, we have already deployed more staff to rush the work.<br>We guarantee that we can definitely hand over the unit to them on schedule.",
+        quizzes: [
+            { q: "作者點解每個星期五要寫報告？", e: "(Why does the author write a report every Friday?)", options: [{c: "為咗令客人清楚工程進度", e: "(In order to make the clients clear on the project progress)", correct: true}, {c: "為咗同老闆申請加人工", e: "(In order to apply for a raise from the boss)", correct: false}, {c: "因為星期五特別得閒", e: "(Because Friday is particularly free)", correct: false}] },
+            { q: "今個星期發生咗咩問題？", e: "(What problem occurred this week?)", options: [{c: "冷氣系統會延遲送到", e: "(Air conditioning system will be delivered late)", correct: true}, {c: "木工師傅罷工", e: "(Millworkers went on strike)", correct: false}, {c: "圖則畫錯咗", e: "(The floor plans were drawn wrong)", correct: false}] },
+            { q: "面對阻滯，作者團隊採取咗咩行動？", e: "(Facing obstacles, what action did the team take?)", options: [{c: "加派人手趕工", e: "(Deployed more staff to rush the work)", correct: true}, {c: "要求客人推遲交樓日期", e: "(Asked the client to delay handover date)", correct: false}, {c: "換咗另一個冷氣供應商", e: "(Changed to another AC supplier)", correct: false}] },
+            { q: "「如期交樓」代表咩意思？", e: "(What does 'jyu kei gaau lau' represent?)", options: [{c: "按照原本計劃嘅時間完成", e: "(Complete according to originally planned time)", correct: true}, {c: "提早完成所有工程", e: "(Complete all work ahead of schedule)", correct: false}, {c: "無限期押後", e: "(Postpone indefinitely)", correct: false}] },
+            { q: "電郵係寫畀邊個嘅？", e: "(Who is the email written to?)", options: [{c: "Paul 同埋 Peter", e: "(Paul and Peter)", correct: true}, {c: "Alex 同埋 Jordan", e: "(Alex and Jordan)", correct: false}, {c: "市政府", e: "(City government)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Tax Laws for Newcomers", topic: "Exception (除非... 如果唔係 - Unless... otherwise)",
+        img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f",
+        grammarDesc: "<strong>Exception/Condition:</strong> Expressing that an action must happen unless a condition is met.<br>除非 (ceoi4 fei1) ... 如果唔係 (jyu4 gwo2 m4 hai6) means 'Unless... otherwise'.",
+        vocab: [
+            {c: "規矩", j: "gwai1 geoi2", e: "Rules / Regulations"}, {c: "複雜", j: "fuk1 zaap6", e: "Complex"},
+            {c: "到埗", j: "dou3 bou6", e: "Arrive"}, {c: "新移民", j: "san1 ji4 man4", e: "New immigrant"},
+            {c: "除非", j: "ceoi4 fei1", e: "Unless"}, {c: "證明", j: "zing3 ming4", e: "Prove / Evidence"},
+            {c: "原居地", j: "jyun4 geoi1 dei6", e: "Place of origin"}, {c: "全球收入", j: "cyun4 kau4 sau1 jap6", e: "Global income"},
+            {c: "稅局", j: "seoi3 guk2", e: "Tax bureau"}, {c: "先至", j: "sin1 zi3", e: "Only then / Finally"}
+        ],
+        story: "喺加拿大報稅嘅規矩好複雜，特別係對於我呢啲舊年十月先到埗嘅新移民。<br>會計師同我講，除非我能夠證明我喺原居地已經交咗稅，如果唔係我就要將全球收入都報畀稅局知。<br>呢個要求真係好麻煩，因為要搜集好多跨國文件。<br>我花咗成個週末先至整理好所有資料。",
+        jyutping: "Hai2 Gaa1 naa4 daai6 bou3 seoi3 ge3 gwai1 geoi2 hou2 fuk1 zaap6, dak6 bit6 hai6 deoi3 jyu1 ngo5 ni1 di1 gau6 nin2 sap6 jyut6 sin1 dou3 bou6 ge3 san1 ji4 man4.<br>Wui6 gai3 si1 tung4 ngo5 gong2, <span class='highlight'>ceoi4 fei1</span> ngo5 nang4 gau3 zing3 ming4 ngo5 hai2 jyun4 geoi1 dei6 ji5 ging1 gaau1 zo2 seoi3, <span class='highlight'>jyu4 gwo2 m4 hai6</span> ngo5 zau6 jiu3 zoeng1 cyun4 kau4 sau1 jap6 dou1 bou3 bei2 seoi3 guk2 zi1.<br>Ni1 go3 jiu1 kau4 zan1 hai6 hou2 maa4 faan4, jan1 wai6 jiu3 sau2 zaap6 hou2 do1 kwaa1 gwok3 man4 gin2.<br>Ngo5 faa1 zo2 seng4 go3 zau1 mut6 sin1 zi3 zing2 lei5 hou2 so2 jau5 zi1 liu2.",
+        english: "The tax filing rules in Canada are very complex, especially for new immigrants like me who only arrived last October.<br>The accountant told me that unless I can prove I have already paid taxes in my place of origin, otherwise I will have to report my global income to the tax bureau.<br>This requirement is really troublesome because it requires collecting many transnational documents.<br>I spent the whole weekend before I finally organized all the information.",
+        quizzes: [
+            { q: "新移民報稅有咩特別麻煩嘅地方？", e: "(What is particularly troublesome about tax filing for new immigrants?)", options: [{c: "如果無法證明已交稅，要報全球收入", e: "(If unable to prove taxes paid, must report global income)", correct: true}, {c: "稅率比本地人高好多", e: "(Tax rate is much higher than locals)", correct: false}, {c: "唔可以搵會計師幫手", e: "(Cannot find an accountant to help)", correct: false}] },
+            { q: "點樣可以豁免申報全球收入？", e: "(How can one be exempted from reporting global income?)", options: [{c: "證明喺原居地已經交咗稅", e: "(Prove that taxes were already paid in the place of origin)", correct: true}, {c: "證明自己係臨時居民", e: "(Prove oneself is a temporary resident)", correct: false}, {c: "向市政府寫解釋信", e: "(Write an explanation letter to the city government)", correct: false}] },
+            { q: "作者用咗幾耐時間整理文件？", e: "(How long did the author spend organizing documents?)", options: [{c: "成個週末", e: "(The whole weekend)", correct: true}, {c: "兩個星期", e: "(Two weeks)", correct: false}, {c: "半日", e: "(Half a day)", correct: false}] },
+            { q: "「除非... 如果唔係」表達咗咩邏輯？", e: "(What logic does 'unless... otherwise' express?)", options: [{c: "唯一嘅例外情況，否則就會有特定後果", e: "(The only exception, otherwise a specific consequence occurs)", correct: true}, {c: "兩個都可以接受嘅選擇", e: "(Two acceptable choices)", correct: false}, {c: "發生時間嘅先後次序", e: "(Chronological order of occurrence)", correct: false}] },
+            { q: "作者幾時到埗加拿大？", e: "(When did the author arrive in Canada?)", options: [{c: "舊年十月", e: "(Last year October)", correct: true}, {c: "今年一月", e: "(This year January)", correct: false}, {c: "八月", e: "(August)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "The Science of ASMR", topic: "Conditions (只要... 就 - As long as... then)",
+        img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
+        grammarDesc: "<strong>Sufficiency:</strong> Stating that one condition is enough to trigger a result.<br>只要 (zi2 jiu3) ... 就 (zau6) means 'As long as... then'.",
+        vocab: [
+            {c: "收工", j: "sau1 gung1", e: "Finish work"}, {c: "攰", j: "gui6", e: "Tired"},
+            {c: "只要", j: "zi2 jiu3", e: "As long as"}, {c: "戴上", j: "daai3 soeng5", e: "Put on (wear)"},
+            {c: "敲擊", j: "haau1 gik1", e: "Tapping / Percussion"}, {c: "白噪音", j: "baak6 cou3 jam1", e: "White noise"},
+            {c: "減壓", j: "gaam2 aat3", e: "Relieve stress"}, {c: "第二朝", j: "dai6 ji6 ziu1", e: "The next morning"},
+            {c: "起身", j: "hei2 san1", e: "Wake up / Get up"}, {c: "精神百倍", j: "zing1 san4 baak3 pui5", e: "Full of energy"}
+        ],
+        story: "每日收工返到屋企我都覺得好攰，不過只要戴上耳機聽一陣 ASMR，我就會覺得成個人放鬆晒。<br>我特別鍾意聽啲木頭敲擊同埋落雨嘅聲音。<br>呢啲白噪音唔單止可以幫我減壓，仲可以令我夜晚瞓得更加好。<br>咁樣第二朝起身就會精神百倍，有活力應付新嘅挑戰。",
+        jyutping: "Mui5 jat6 sau1 gung1 faan1 dou3 uk1 kei2 ngo5 dou1 gok3 dak1 hou2 gui6, bat1 gwo3 <span class='highlight'>zi2 jiu3</span> daai3 soeng5 ji5 gei1 teng1 jat1 zan6 ASMR, ngo5 <span class='highlight'>zau6</span> wui5 gok3 dak1 seng4 go3 jan4 fong3 sung1 saai3.<br>Ngo5 dak6 bit6 zung1 ji3 teng1 di1 muk6 tau4 haau1 gik1 tung4 maai4 lok6 jyu5 ge3 sing1 jam1.<br>Ni1 di1 baak6 cou3 jam1 m4 daan1 zi2 ho2 ji5 bong1 ngo5 gaam2 aat3, zung6 ho2 ji5 ling6 ngo5 je6 maan5 fan3 dak1 gang3 gaa1 hou2.<br>Gam2 joeng2 dai6 ji6 ziu1 hei2 san1 zau6 wui5 zing1 san4 baak3 pui5, jau5 wut6 lik6 jing3 fu3 san1 ge3 tiu1 zin3.",
+        english: "Every day when I get home from work I feel very tired, but as long as I put on my headphones and listen to ASMR for a while, I will feel my whole body completely relaxed.<br>I particularly like listening to wood tapping and raining sounds.<br>These white noises not only help me relieve stress, but also make me sleep even better at night.<br>This way, when I wake up the next morning, I will be full of energy, with vitality to tackle new challenges.",
+        quizzes: [
+            { q: "作者放工返屋企之後覺得點？", e: "(How does the author feel after getting home from work?)", options: [{c: "覺得好攰", e: "(Feels very tired)", correct: true}, {c: "覺得好精神", e: "(Feels full of energy)", correct: false}, {c: "覺得好嬲", e: "(Feels very angry)", correct: false}] },
+            { q: "咩方法可以令作者即刻放鬆？", e: "(What method can make the author relax immediately?)", options: [{c: "戴上耳機聽 ASMR", e: "(Put on headphones and listen to ASMR)", correct: true}, {c: "同朋友去食飯", e: "(Go out to eat with friends)", correct: false}, {c: "落街跑步", e: "(Go downstairs for a run)", correct: false}] },
+            { q: "作者特別鍾意邊兩種聲音？", e: "(Which two sounds does the author particularly like?)", options: [{c: "木頭敲擊同落雨聲", e: "(Wood tapping and rain sounds)", correct: true}, {c: "車聲同地盤聲", e: "(Car sounds and construction sounds)", correct: false}, {c: "講嘢聲同音樂", e: "(Talking sounds and music)", correct: false}] },
+            { q: "「只要... 就」強調咗咩？", e: "(What does 'as long as... then' emphasize?)", options: [{c: "滿足咗呢個條件，結果一定會發生", e: "(Once the condition is met, the result will definitely happen)", correct: true}, {c: "呢個係好困難先做到嘅事", e: "(This is a very difficult thing to achieve)", correct: false}, {c: "兩件事完全無關", e: "(The two events are completely unrelated)", correct: false}] },
+            { q: "ASMR 對第二朝有咩好處？", e: "(What is the benefit of ASMR for the next morning?)", options: [{c: "令人精神百倍", e: "(Makes one full of energy)", correct: true}, {c: "令人好想賴床", e: "(Makes one want to stay in bed)", correct: false}, {c: "令人頭痛", e: "(Makes one have a headache)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Game Release Frustrations", topic: "Preference (與其... 不如 - Instead of... might as well)",
+        img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f",
+        grammarDesc: "<strong>Preference / Choice:</strong> Expressing that option B is better than option A.<br>與其 (jyu5 kei4) [A] ... 不如 (bat1 jyu4) [B] means 'Instead of [A]... might as well [B]'.",
+        vocab: [
+            {c: "新作", j: "san1 zok3", e: "New work / Release"}, {c: "開發商", j: "hoi1 faat3 soeng1", e: "Developer"},
+            {c: "一次又一次", j: "jat1 ci3 jau6 jat1 ci3", e: "Time and time again"}, {c: "宣佈", j: "syun1 bou3", e: "Announce"},
+            {c: "與其", j: "jyu5 kei4", e: "Instead of / Rather than"}, {c: "嘥時間", j: "saai1 si4 gaan3", e: "Waste time"},
+            {c: "死等", j: "sei2 dang2", e: "Wait hopelessly"}, {c: "獨立製作", j: "duk6 laap6 zai3 zok3", e: "Indie development"},
+            {c: "氣氛", j: "hei3 fan1", e: "Atmosphere"}, {c: "超出預期", j: "ciu1 ceot1 jyu6 kei4", e: "Exceed expectations"}
+        ],
+        story: "我等咗 Mabinogi 手機版同埋 Silent Hill 嘅新作好耐，但係開發商一次又一次咁宣佈延遲推出。<br>與其喺度嘥時間死等，不如我玩住其他舊遊戲先。<br>最近我發現咗一隻獨立製作嘅恐怖遊戲。<br>佢嘅氣氛營造得非常好，完全超出我嘅預期，令我暫時忘記咗延遲嘅煩惱。",
+        jyutping: "Ngo5 dang2 zo2 Mabinogi sau2 gei1 baan2 tung4 maai4 Silent Hill ge3 san1 zok3 hou2 noi6, daan6 hai6 hoi1 faat3 soeng1 jat1 ci3 jau6 jat1 ci3 gam2 syun1 bou3 jin4 ci4 teoi1 ceot1.<br><span class='highlight'>Jyu5 kei4</span> hai2 dou6 saai1 si4 gaan3 sei2 dang2, <span class='highlight'>bat1 jyu4</span> ngo5 waan2 zyu6 kei4 taa1 gau6 jau4 hei3 sin1.<br>Zeoi3 gan6 ngo5 faat3 jin6 zo2 jat1 zek3 duk6 laap6 zai3 zok3 ge3 hung2 bou3 jau4 hei3.<br>Keoi5 ge3 hei3 fan1 jing4 zou6 dak1 fei1 soeng4 hou2, jyun4 cyun4 ciu1 ceot1 ngo5 ge3 jyu6 kei4, ling6 ngo5 zaam6 si4 mong4 gei3 zo2 jin4 ci4 ge3 faan4 nou5.",
+        english: "I have waited a long time for the Mabinogi mobile version and the new Silent Hill release, but the developers announce delays time and time again.<br>Instead of wasting time waiting hopelessly here, I might as well play some other old games first.<br>Recently I discovered an indie horror game.<br>Its atmosphere is built extremely well, completely exceeding my expectations, making me temporarily forget the annoyance of the delays.",
+        quizzes: [
+            { q: "點解作者覺得煩惱？", e: "(Why does the author feel annoyed?)", options: [{c: "因為期待嘅遊戲一直延遲推出", e: "(Because the expected games keep getting delayed)", correct: true}, {c: "因為買唔到新手機", e: "(Because unable to buy a new phone)", correct: false}, {c: "因為遊戲太難玩", e: "(Because the game is too hard to play)", correct: false}] },
+            { q: "作者決定用咩方法應對延遲？", e: "(What method did the author decide to use to cope with the delay?)", options: [{c: "唔再死等，去玩其他遊戲先", e: "(Stop waiting hopelessly, go play other games first)", correct: true}, {c: "寫信去鬧開發商", e: "(Write a letter to scold the developers)", correct: false}, {c: "放棄打機，專心做嘢", e: "(Give up gaming, focus on work)", correct: false}] },
+            { q: "新發現嘅遊戲有咩特點？", e: "(What are the characteristics of the newly discovered game?)", options: [{c: "係獨立製作，氣氛好，超出預期", e: "(Indie made, good atmosphere, exceeds expectations)", correct: true}, {c: "畫面好差，好沉悶", e: "(Terrible graphics, very boring)", correct: false}, {c: "係一款好出名嘅大作", e: "(It is a very famous AAA title)", correct: false}] },
+            { q: "「與其 A 不如 B」表示作者點樣選擇？", e: "(What choice does 'instead of A might as well B' indicate?)", options: [{c: "認為 B 嘅做法比 A 更加好", e: "(Considers action B to be better than action A)", correct: true}, {c: "認為 A 嘅做法比 B 更加好", e: "(Considers action A to be better than action B)", correct: false}, {c: "覺得 A 同 B 都唔好", e: "(Feels both A and B are bad)", correct: false}] },
+            { q: "「死等」喺呢度係咩意思？", e: "(What does 'sei dang' mean here?)", options: [{c: "白白浪費時間去等待", e: "(Wasting time in vain to wait)", correct: true}, {c: "等到死為止", e: "(Wait until death)", correct: false}, {c: "好快就等到", e: "(Wait for a very short time)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Vancouver's Relentless Rain", topic: "Starting Point (自從... 之後 - Ever since... after)",
+        img: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0",
+        grammarDesc: "<strong>Time Origin:</strong> Marking a point in time when a continuous state began.<br>自從 (zi6 cung4) ... 之後 (zi1 hau6) means 'Ever since... after'.",
+        vocab: [
+            {c: "自從", j: "zi6 cung4", e: "Ever since"}, {c: "深深體會", j: "sam1 sam1 tai2 wui6", e: "Deeply experience"},
+            {c: "威力", j: "wai1 lik6", e: "Power / Force"}, {c: "連續", j: "lyun4 zuk6", e: "Continuously"},
+            {c: "灰濛濛", j: "fui1 mung4 mung4", e: "Grey and gloomy"}, {c: "低落", j: "dai1 lok6", e: "Down / Depressed"},
+            {c: "對抗", j: "deoi3 kong3", e: "Fight against"}, {c: "防水靴", j: "fong4 seoi2 hoe1", e: "Waterproof boots"},
+            {c: "厚", j: "hau5", e: "Thick"}, {c: "橫風橫雨", j: "waang4 fung1 waang4 jyu5", e: "Driving wind and rain"}
+        ],
+        story: "自從舊年搬嚟溫哥華之後，我就深深體會到呢度冬天嘅威力。<br>連續幾個星期落雨，搞到成個城市都灰濛濛咁，令人心情好容易低落。<br>為咗對抗呢種天氣，我買咗對防水靴同一件好厚嘅雨褸。<br>而家就算出面橫風橫雨，我都可以照樣出街，唔會影響我嘅計劃。",
+        jyutping: "<span class='highlight'>Zi6 cung4</span> gau6 nin2 bun1 lei4 Wan1 go1 waa4 <span class='highlight'>zi1 hau6</span>, ngo5 zau6 sam1 sam1 tai2 wui6 dou3 ni1 dou6 dung1 tin1 ge3 wai1 lik6.<br>Lyun4 zuk6 gei2 go3 sing1 kei4 lok6 jyu5, gaau2 dou3 seng4 go3 sing4 si5 dou1 fui1 mung4 mung4 gam2, ling6 jan4 sam1 cing4 hou2 jung4 ji6 dai1 lok6.<br>Wai6 zo2 deoi3 kong3 ni1 zung2 tin1 hei3, ngo5 maai5 zo2 deoi3 fong4 seoi2 hoe1 tung4 jat1 gin6 hou2 hau5 ge3 jyu5 lau1.<br>Ji4 gaa1 zau6 syun3 ceot1 min6 waang4 fung1 waang4 jyu5, ngo5 dou1 ho2 ji5 ziu3 joeng6 ceot1 gaai1, m4 wui5 jing2 hoeng2 ngo5 ge3 gai3 waak6.",
+        english: "Ever since moving to Vancouver last year, I have deeply experienced the power of winter here.<br>Raining continuously for several weeks makes the whole city grey and gloomy, easily making people's mood down.<br>In order to fight against this weather, I bought a pair of waterproof boots and a very thick raincoat.<br>Now, even if there is driving wind and rain outside, I can still go out as usual, it won't affect my plans.",
+        quizzes: [
+            { q: "作者喺幾時開始體會到冬天嘅威力？", e: "(When did the author start experiencing the power of winter?)", options: [{c: "自從舊年搬嚟溫哥華之後", e: "(Ever since moving to Vancouver last year)", correct: true}, {c: "自從買咗車之後", e: "(Ever since buying a car)", correct: false}, {c: "自從開始返工之後", e: "(Ever since starting work)", correct: false}] },
+            { q: "連續落雨對人有咩影響？", e: "(What impact does continuous rain have on people?)", options: [{c: "令人心情好容易低落", e: "(Easily makes people's mood down)", correct: true}, {c: "令人好想食嘢", e: "(Makes people want to eat a lot)", correct: false}, {c: "令人好興奮", e: "(Makes people very excited)", correct: false}] },
+            { q: "作者買咗咩嚟對抗天氣？", e: "(What did the author buy to fight the weather?)", options: [{c: "防水靴同厚雨褸", e: "(Waterproof boots and a thick raincoat)", correct: true}, {c: "一把好大嘅遮", e: "(A very big umbrella)", correct: false}, {c: "一部車", e: "(A car)", correct: false}] },
+            { q: "「橫風橫雨」形容緊咩狀況？", e: "(What condition does 'waang fung waang jyu' describe?)", options: [{c: "風雨交加，天氣好惡劣", e: "(Wind and rain mixed together, very severe weather)", correct: true}, {c: "微風細雨", e: "(Breeze and drizzle)", correct: false}, {c: "打雷閃電", e: "(Thunder and lightning)", correct: false}] },
+            { q: "而家天氣仲會唔會影響作者？", e: "(Does the weather still affect the author now?)", options: [{c: "唔會，可以照樣出街", e: "(No, can still go out as usual)", correct: true}, {c: "會，完全唔敢出門口", e: "(Yes, absolutely dares not go out)", correct: false}, {c: "只會喺落雪嗰陣影響", e: "(Will only affect when it snows)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Clinic Accessibility Inspection", topic: "Absolute Conditions (無論... 都 - No matter what)",
+        img: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d",
+        grammarDesc: "<strong>Absolute Conditions:</strong> Stating that a result is inevitable regardless of variables.<br>無論 (mou4 leon6) ... 都 (dou1) means 'No matter what / Regardless of'.",
+        vocab: [
+            {c: "最後階段", j: "zeoi3 hau6 gaai1 dyun6", e: "Final stage"}, {c: "千叮萬囑", j: "cin1 ding1 maan6 zuk1", e: "Exhort repeatedly"},
+            {c: "無論", j: "mou4 leon6", e: "No matter"}, {c: "確保", j: "kok3 bou2", e: "Ensure"},
+            {c: "無障礙通道", j: "mou4 zoeng3 ngoi6 tung1 dou6", e: "Wheelchair/Barrier-free access"}, {c: "符合", j: "fu4 hap6", e: "Comply with"},
+            {c: "標準", j: "biu1 zeon2", e: "Standard"}, {c: "專業", j: "zyun1 jip6", e: "Professional"},
+            {c: "驗收", j: "jim6 sau1", e: "Inspection / Handover check"}, {c: "順利通過", j: "seon6 lei6 tung1 gwo3", e: "Pass smoothly"}
+        ],
+        story: "物理治療診所嘅裝修工程已經去到最後階段。<br>老闆 Alex 千叮萬囑，無論點樣都要確保無障礙通道嘅設計符合政府嘅標準。<br>因為如果唔達標，診所就攞唔到牌照。<br>我哋請咗專業嘅檢查員嚟做最後驗收，只要順利通過，下個星期診所就可以正式開張做生意。",
+        jyutping: "Mat6 lei5 zi6 liu4 can2 so2 ge3 zong1 sau1 gung1 cing4 ji5 ging1 heoi3 dou3 zeoi3 hau6 gaai1 dyun6.<br>Lou5 baan2 Alex cin1 ding1 maan6 zuk1, <span class='highlight'>mou4 leon6</span> dim2 joeng2 <span class='highlight'>dou1</span> jiu3 kok3 bou2 mou4 zoeng3 ngoi6 tung1 dou6 ge3 cit3 gai3 fu4 hap6 zing3 fu2 ge3 biu1 zeon2.<br>Jan1 wai6 jyu4 gwo2 m4 daat6 biu1, can2 so2 zau6 lo2 m4 dou2 paai4 ziu3.<br>Ngo5 dei6 cing2 zo2 zyun1 jip6 ge3 gim2 caa4 jyun4 lei4 zou6 zeoi3 hau6 jim6 sau1, zi2 jiu3 seon6 lei6 tung1 gwo3, haa6 go3 sing1 kei4 can2 so2 zau6 ho2 ji5 zing3 sik1 hoi1 zoeng1 zou6 saang1 ji3.",
+        english: "The renovation project for the physiotherapy clinic has reached its final stage.<br>Boss Alex exhorted repeatedly that no matter what, we must ensure the barrier-free access design complies with government standards.<br>Because if it doesn't meet the standard, the clinic cannot get its license.<br>We hired a professional inspector to do the final handover check; as long as it passes smoothly, the clinic can officially open for business next week.",
+        quizzes: [
+            { q: "老闆 Alex 最緊張工程嘅邊一個部分？", e: "(Which part of the project is boss Alex most nervous about?)", options: [{c: "無障礙通道符合政府標準", e: "(Barrier-free access complying with government standards)", correct: true}, {c: "木工嘅顏色", e: "(The color of the millwork)", correct: false}, {c: "冷氣系統嘅安裝", e: "(The installation of the AC system)", correct: false}] },
+            { q: "如果通道唔達標會有咩嚴重後果？", e: "(What serious consequence occurs if the access doesn't meet standard?)", options: [{c: "診所攞唔到牌照", e: "(The clinic cannot get its license)", correct: true}, {c: "老闆會扣人工", e: "(The boss will deduct salary)", correct: false}, {c: "要賠錢畀客人", e: "(Must compensate the client)", correct: false}] },
+            { q: "「無論... 都」強調咗老闆嘅咩態度？", e: "(What attitude of the boss does 'no matter what' emphasize?)", options: [{c: "絕對唔可以妥協嘅堅定要求", e: "(A firm requirement with absolutely no compromise)", correct: true}, {c: "隨便點樣做都可以", e: "(Anything goes, do it however)", correct: false}, {c: "希望大家盡力而為", e: "(Hopes everyone tries their best)", correct: false}] },
+            { q: "邊個負責做最後嘅檢查？", e: "(Who is responsible for the final inspection?)", options: [{c: "專業嘅檢查員", e: "(A professional inspector)", correct: true}, {c: "會計師", e: "(An accountant)", correct: false}, {c: "市政府嘅市長", e: "(The mayor of the city)", correct: false}] },
+            { q: "診所幾時可以開張？", e: "(When can the clinic open?)", options: [{c: "下個星期 (只要驗收順利)", e: "(Next week, provided inspection passes)", correct: true}, {c: "今日", e: "(Today)", correct: false}, {c: "出年", e: "(Next year)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Reviewing iPhone 15 Pros", topic: "Comparison (同... 相比 - Compared to)",
+        img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
+        grammarDesc: "<strong>Comparison:</strong> Highlighting differences between two objects.<br>同 (tung4) [A] 相比 (soeng1 bei2) means 'Compared to [A]...'.",
+        vocab: [
+            {c: "升級", j: "sing1 gap1", e: "Upgrade"}, {c: "上一代", j: "soeng6 jat1 doi6", e: "Previous generation"},
+            {c: "相比", j: "soeng1 bei2", e: "Compare"}, {c: "雜訊", j: "zaap6 seon3", e: "Noise (in photos)"},
+            {c: "拍片", j: "paak3 pin2", e: "Shoot video"}, {c: "防震", j: "fong4 zan3", e: "Anti-shake / Stabilization"},
+            {c: "出色", j: "ceot1 sik1", e: "Outstanding"}, {c: "打算", j: "daa2 syun3", e: "Plan to"},
+            {c: "記錄", j: "gei3 luk6", e: "Record"}, {c: "靚景", j: "leng3 ging2", e: "Beautiful scenery"}
+        ],
+        story: "我最近換咗部 iPhone 15，主要係因為佢個相機升級咗好多。<br>同上一代相比，佢喺夜晚影相嘅雜訊少咗好多，而且拍片嘅防震功能亦都非常出色。<br>我同 Jamie 打算去 Banff 度蜜月嗰陣，唔帶大相機喇。<br>我哋會直接用呢部手機拍一條 Vlog 記錄低嗰度嘅靚景。",
+        jyutping: "Ngo5 zeoi3 gan6 wun6 zo2 bou6 iPhone 15, zyu2 jiu3 hai6 jan1 wai6 keoi5 go3 soeng2 gei1 sing1 gap1 zo2 hou2 do1.<br><span class='highlight'>Tung4</span> soeng6 jat1 doi6 <span class='highlight'>soeng1 bei2</span>, keoi5 hai2 je6 maan5 jing2 soeng2 ge3 zaap6 seon3 siu2 zo2 hou2 do1, ji4 ce2 paak3 pin2 ge3 fong4 zan3 gung1 nang4 jik6 dou1 fei1 soeng4 ceot1 sik1.<br>Ngo5 tung4 Jamie daa2 syun3 heoi3 Banff dou6 mat6 jyut6 go2 zan6, m4 daai3 daai6 soeng2 gei1 laa3.<br>Ngo5 dei6 wui5 zik6 zip3 jung6 ni1 bou6 sau2 gei1 paak3 jat1 tiu4 Vlog gei3 luk6 dai1 go2 dou6 ge3 leng3 ging2.",
+        english: "I recently switched to an iPhone 15, mainly because its camera has upgraded a lot.<br>Compared to the previous generation, the noise in night photos is much reduced, and the anti-shake function for video shooting is also extremely outstanding.<br>When Jamie and I plan to go to Banff for our honeymoon, we won't bring a big camera.<br>We will directly use this phone to shoot a Vlog to record the beautiful scenery there.",
+        quizzes: [
+            { q: "點解作者要換新手機？", e: "(Why did the author switch to a new phone?)", options: [{c: "因為相機升級咗好多", e: "(Because the camera upgraded a lot)", correct: true}, {c: "因為舊手機壞咗", e: "(Because the old phone broke)", correct: false}, {c: "因為新手機平啲", e: "(Because the new phone is cheaper)", correct: false}] },
+            { q: "同上一代比，新相機喺夜晚有咩進步？", e: "(Compared to the last generation, what is the improvement at night?)", options: [{c: "夜晚影相雜訊少咗", e: "(Less noise in night photos)", correct: true}, {c: "夜晚影相可以透視", e: "(Can see through things at night)", correct: false}, {c: "夜晚會自動著燈", e: "(Automatically turns on lights at night)", correct: false}] },
+            { q: "拍片方面有咩出色嘅地方？", e: "(What is outstanding about video shooting?)", options: [{c: "防震功能非常好", e: "(Anti-shake function is very good)", correct: true}, {c: "可以拍立體 3D", e: "(Can shoot 3D)", correct: false}, {c: "拍片唔使電", e: "(Shooting video doesn't need battery)", correct: false}] },
+            { q: "去 Banff 度蜜月嗰陣，佢哋決定唔帶咩？", e: "(What did they decide not to bring to Banff?)", options: [{c: "大相機", e: "(Big camera)", correct: true}, {c: "冬天衫", e: "(Winter clothes)", correct: false}, {c: "遮", e: "(Umbrella)", correct: false}] },
+            { q: "「同... 相比」通常用嚟做咩？", e: "(What is 'compared to' usually used for?)", options: [{c: "比較兩樣嘢之間嘅分別同高低", e: "(Comparing differences and levels between two things)", correct: true}, {c: "形容兩樣嘢完全一樣", e: "(Describing two things as exactly the same)", correct: false}, {c: "放棄其中一樣嘢", e: "(Giving up one of the things)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Cantonese Slang Realizations", topic: "Discovery (原來 - It turns out)",
+        img: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8",
+        grammarDesc: "<strong>Discovery/Realization:</strong> Expressing a sudden understanding of a fact.<br>原來 (jyun4 loi4) means 'It turns out that...' or 'Actually...'.",
+        vocab: [
+            {c: "一直", j: "jat1 zik6", e: "Always / All along"}, {c: "以為", j: "ji5 wai4", e: "Assumed (wrongly)"},
+            {c: "發音", j: "faat3 jam1", e: "Pronunciation"}, {c: "發覺", j: "faat3 gok3", e: "Realize / Discover"},
+            {c: "原來", j: "jyun4 loi4", e: "It turns out"}, {c: "地道", j: "dei6 dou6", e: "Authentic / Local"},
+            {c: "俗語", j: "zuk6 jyu5", e: "Slang"}, {c: "難搞", j: "naan4 gaau2", e: "Hard to deal with"},
+            {c: "笑點", j: "siu3 dim2", e: "Punchline"}, {c: "耐性", j: "noi6 sing3", e: "Patience"}
+        ],
+        story: "我一直以為學廣東話最難嘅係發音。<br>但係同 Jordan 傾多咗偈之後，先發覺原來啲地道俗語先至係最難搞。<br>有時候佢講完一個笑話，我要諗成分鐘先明白個笑點喺邊度。<br>不過佢好有耐性咁解釋畀我聽，令我學到好多書本上冇嘅知識。",
+        jyutping: "Ngo5 jat1 zik6 ji5 wai4 hok6 gwong2 dung1 waa2 zeoi3 naan4 ge3 hai6 faat3 jam1.<br>Daan6 hai6 tung4 Jordan king1 do1 zo2 gai2 zi1 hau6, sin1 faat3 gok3 <span class='highlight'>jyun4 loi4</span> di1 dei6 dou6 zuk6 jyu5 sin1 zi3 hai6 zeoi3 naan4 gaau2.<br>Jau5 si4 hau6 keoi5 gong2 jyun4 jat1 go3 siu3 waa2, ngo5 jiu3 nam2 seng4 fan1 zung1 sin1 ming4 baak6 go3 siu3 dim2 hai2 bin1 dou6.<br>Bat1 gwo3 keoi5 hou2 jau5 noi6 sing3 gam2 gaai2 sik1 bei2 ngo5 teng1, ling6 ngo5 hok6 dou2 hou2 do1 syu1 bun2 soeng6 mou5 ge3 zi1 sik1.",
+        english: "I always assumed the hardest part of learning Cantonese was pronunciation.<br>But after chatting more with Jordan, I only just realized that it turns out the authentic local slangs are the hardest to deal with.<br>Sometimes after he finishes a joke, I have to think for a whole minute before I understand where the punchline is.<br>However, he explains it to me with great patience, letting me learn a lot of knowledge not found in books.",
+        quizzes: [
+            { q: "作者原本以為學廣東話最難係咩？", e: "(What did the author originally assume was hardest in Cantonese?)", options: [{c: "發音", e: "(Pronunciation)", correct: true}, {c: "寫字", e: "(Writing characters)", correct: false}, {c: "文法", e: "(Grammar)", correct: false}] },
+            { q: "後來作者發覺咩先係最難搞？", e: "(Later, what did the author realize is actually the hardest?)", options: [{c: "地道俗語", e: "(Authentic local slang)", correct: true}, {c: "聲調", e: "(Tones)", correct: false}, {c: "拼音", e: "(Jyutping/Pinyin)", correct: false}] },
+            { q: "聽完笑話，作者有咩反應？", e: "(After hearing a joke, what is the author's reaction?)", options: [{c: "要諗成分鐘先明個笑點", e: "(Has to think for a minute to understand the punchline)", correct: true}, {c: "即刻大聲笑", e: "(Laughs out loud immediately)", correct: false}, {c: "嬲咗走人", e: "(Gets angry and leaves)", correct: false}] },
+            { q: "Jordan 係一個點樣嘅朋友？", e: "(What kind of friend is Jordan?)", options: [{c: "好有耐性咁解釋", e: "(Explains with great patience)", correct: true}, {c: "好冇禮貌", e: "(Very impolite)", correct: false}, {c: "唔肯教人", e: "(Refuses to teach others)", correct: false}] },
+            { q: "「原來」呢個詞語代表咩心情？", e: "(What feeling does the word 'jyun loi' represent?)", options: [{c: "突然發現真相嘅驚訝", e: "(Surprise of suddenly discovering the truth)", correct: true}, {c: "一早就知道嘅平靜", e: "(Calmness of having known it all along)", correct: false}, {c: "非常生氣", e: "(Very angry)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Job Site Close Call", topic: "Near Misses (差啲 - Almost / Barely)",
+        img: "https://images.unsplash.com/photo-1541888087588-926c45731671",
+        grammarDesc: "<strong>Near Misses:</strong> Describing an event that almost happened but didn't.<br>差啲 (caa1 di1) means 'Almost' or 'Barely'.",
+        vocab: [
+            {c: "意外", j: "ji3 ngoi6", e: "Accident"}, {c: "差啲", j: "caa1 di1", e: "Almost"},
+            {c: "水浸", j: "seoi2 zam3", e: "Flood"}, {c: "水喉師傅", j: "seoi2 hau4 si1 fu2", e: "Plumber"},
+            {c: "整爆", j: "zing2 baau3", e: "Break / Burst"}, {c: "現場", j: "jin6 coeng4", e: "On-site / Scene"},
+            {c: "大掣", j: "daai6 zai3", e: "Main switch / Valve"}, {c: "閂", j: "saan1", e: "Close / Turn off"},
+            {c: "確認", j: "kok3 jing6", e: "Confirm"}, {c: "安全指引", j: "on1 cyun4 zi2 jan5", e: "Safety guidelines"}
+        ],
+        story: "今日地盤發生咗件小意外，差啲就搞到水浸。<br>原來係有個水喉師傅唔小心整爆咗條喉。<br>好彩我當時喺現場，即刻叫人閂咗個水喉大掣。<br>經過呢件事之後，我要求所有工人開工之前一定要重新確認一次安全指引。",
+        jyutping: "Gam1 jat6 dei6 pun4 faat3 sang1 zo2 gin6 siu2 ji3 ngoi6, <span class='highlight'>caa1 di1</span> zau6 gaau2 dou3 seoi2 zam3.<br>Jyun4 loi4 hai6 jau5 go3 seoi2 hau4 si1 fu2 m4 siu2 sam1 zing2 baau3 zo2 tiu4 hau4.<br>Hou2 coi2 ngo5 dong1 si4 hai2 jin6 coeng4, zik1 hak1 giu3 jan4 saan1 zo2 go3 seoi2 hau4 daai6 zai3.<br>Ging1 gwo3 ni1 gin6 si6 zi1 hau6, ngo5 jiu1 kau4 so2 jau5 gung1 jan4 hoi1 gung1 zi1 cin4 jat1 ding6 jiu3 cung4 san1 kok3 jing6 jat1 ci3 on1 cyun4 zi2 jan5.",
+        english: "Today a small accident happened at the site, and it almost caused a flood.<br>It turns out a plumber accidentally burst a pipe.<br>Luckily I was on-site at the time and immediately told someone to turn off the main water valve.<br>After this incident, I demanded that all workers must re-confirm the safety guidelines once before starting work.",
+        quizzes: [
+            { q: "地盤今日差啲發生咩事？", e: "(What almost happened at the site today?)", options: [{c: "水浸", e: "(Flood)", correct: true}, {c: "火燭", e: "(Fire)", correct: false}, {c: "地震", e: "(Earthquake)", correct: false}] },
+            { q: "意外係因為邊個引起嘅？", e: "(Who caused the accident?)", options: [{c: "水喉師傅", e: "(Plumber)", correct: true}, {c: "木工師傅", e: "(Millworker)", correct: false}, {c: "老闆 Alex", e: "(Boss Alex)", correct: false}] },
+            { q: "點樣解決咗個危機？", e: "(How was the crisis resolved?)", options: [{c: "即刻閂咗大掣", e: "(Immediately turned off the main valve)", correct: true}, {c: "打電話報警", e: "(Called the police)", correct: false}, {c: "大家一齊走佬", e: "(Everyone ran away together)", correct: false}] },
+            { q: "事後作者有咩新規定？", e: "(What new rule did the author make afterwards?)", options: [{c: "開工前要確認安全指引", e: "(Must confirm safety guidelines before starting work)", correct: true}, {c: "唔准再用水", e: "(Not allowed to use water anymore)", correct: false}, {c: "所有人減人工", e: "(Everyone gets a pay cut)", correct: false}] },
+            { q: "「差啲」即係代表咩？", e: "(What does 'caa di' represent?)", options: [{c: "幾乎發生，但最後冇發生", e: "(Almost happened, but ultimately didn't)", correct: true}, {c: "已經發生咗好嚴重嘅事", e: "(A very serious thing already happened)", correct: false}, {c: "完全冇可能發生", e: "(Completely impossible to happen)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Reflecting on Canada Life", topic: "Strong Preference (寧願... 都唔 - Would rather... than)",
+        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
+        grammarDesc: "<strong>Strong Preference:</strong> Choosing a difficult option over an unacceptable one.<br>寧願 (ning4 jyun6) ... 都唔 (dou1 m4) means 'Would rather... than'.",
+        vocab: [
+            {c: "回顧", j: "wui4 gu3", e: "Reflect / Look back"}, {c: "適應", j: "sik1 jing3", e: "Adapt to"},
+            {c: "環境", j: "hwaan4 ging2", e: "Environment"}, {c: "從來冇", j: "cung4 loi4 mou5", e: "Never"},
+            {c: "後悔", j: "hau6 fui3", e: "Regret"}, {c: "寧願", j: "ning4 jyun6", e: "Would rather"},
+            {c: "建立", j: "gin3 laap6", e: "Build / Establish"}, {c: "舒適圈", j: "syu1 sik1 hyun1", e: "Comfort zone"},
+            {c: "停滯不前", j: "ting4 zai6 bat1 cin4", e: "Stagnate / Stand still"}, {c: "迎接挑戰", j: "jing4 zip3 tiu1 zin3", e: "Welcome challenges"}
+        ],
+        story: "回顧嚟到加拿大呢段日子，雖然工作壓力好大，又要適應新環境，但我從來冇後悔過。<br>我寧願喺度辛苦啲建立自己嘅事業，都唔想留喺舒適圈裡面停滯不前。<br>未來嘅日子，我會繼續努力學好廣東話，去迎接更多嘅挑戰。<br>希望我同 Jamie 嘅婚禮可以順順利利。",
+        jyutping: "Wui4 gu3 lei4 dou3 Gaa1 naa4 daai6 ni1 dyun6 jat6 zi2, seoi1 jin4 gung1 zok3 aat3 lik6 hou2 daai6, jau6 jiu3 sik1 jing3 san1 waan4 ging2, daan6 ngo5 cung4 loi4 mou5 hau6 fui3 gwo3.<br>Ngo5 <span class='highlight'>ning4 jyun6</span> hai2 dou6 san1 fu2 di1 gin3 laap6 zi6 gei2 ge3 si6 jip6, <span class='highlight'>dou1 m4</span> soeng2 lau4 hai2 syu1 sik1 hyun1 leoi5 min6 ting4 zai6 bat1 cin4.<br>Mei6 loi4 ge3 jat6 zi2, ngo5 wui5 gai3 zuk6 nou5 lik6 hok6 hou2 gwong2 dung1 waa2, heoi3 jing4 zip3 gong3 do1 ge3 tiu1 zin3.<br>Hei1 mong6 ngo5 tung4 Jamie ge3 fan1 lai5 ho2 ji5 seon6 seon6 lei6 lei6.",
+        english: "Looking back at the days since arriving in Canada, although work pressure is high and I have to adapt to a new environment, I have never regretted it.<br>I would rather work harder here to build my own career, than stay in my comfort zone stagnating.<br>In the days to come, I will continue to work hard on learning Cantonese well, to welcome more challenges.<br>I hope Jamie's and my wedding will go very smoothly.",
+        quizzes: [
+            { q: "作者對嚟到加拿大有咩感覺？", e: "(How does the author feel about coming to Canada?)", options: [{c: "雖然辛苦但從來冇後悔", e: "(Although hard, never regretted)", correct: true}, {c: "覺得好後悔想返原居地", e: "(Feels very regretful, wants to go back)", correct: false}, {c: "覺得完全冇壓力", e: "(Feels absolutely no pressure)", correct: false}] },
+            { q: "作者寧願選擇咩條路？", e: "(What path would the author rather choose?)", options: [{c: "辛苦啲建立自己嘅事業", e: "(Work harder to build own career)", correct: true}, {c: "留喺舒適圈", e: "(Stay in comfort zone)", correct: false}, {c: "唔做嘢淨係玩", e: "(Do no work, just play)", correct: false}] },
+            { q: "作者唔想發生咩事？", e: "(What does the author not want to happen?)", options: [{c: "停滯不前", e: "(Stagnating/standing still)", correct: true}, {c: "結婚", e: "(Getting married)", correct: false}, {c: "迎接挑戰", e: "(Welcoming challenges)", correct: false}] },
+            { q: "「寧願... 都唔」代表點樣嘅決心？", e: "(What determination does 'would rather... than' represent?)", options: [{c: "就算前者好難，都堅決拒絕後者", e: "(Even if the former is hard, firmly reject the latter)", correct: true}, {c: "兩樣嘢都唔想揀", e: "(Want to choose neither of them)", correct: false}, {c: "兩樣嘢都好想做", e: "(Want to do both of them very much)", correct: false}] },
+            { q: "作者未來有咩計劃？", e: "(What are the author's future plans?)", options: [{c: "學好廣東話同埋結婚", e: "(Learn Cantonese well and get married)", correct: true}, {c: "買多部 Tesla", e: "(Buy another Tesla)", correct: false}, {c: "做會計師", e: "(Become an accountant)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>☕ Hard Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Story Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
