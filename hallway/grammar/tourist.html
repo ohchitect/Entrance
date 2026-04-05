@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: Tourist Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 0.9rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 200px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #00838f; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #006064; }
+        .prep-section {
+            background-color: #e0f7fa; border-left: 4px solid #00acc1;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #00838f; font-size: 1.1rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.4; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .vocab-item {
+            background: white; padding: 10px 8px; border-radius: 8px; font-size: 0.9rem;
+            border: 2px solid #b2ebf2; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #e0f7fa; border-color: #26c6da; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #00838f; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #00838f;
+            padding: 15px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.15rem; line-height: 1.9; margin-bottom: 15px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #666; font-size: 0.9rem; line-height: 1.6; text-align: justify; }
+        .highlight { color: #00838f; text-decoration: underline; background-color: #e0f7fa; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 20px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 5px; line-height: 1.4; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; line-height: 1.4; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 4px; }
+        .translation-box { margin-top: 30px; font-size: 0.9rem; color: #555; background: #eee; padding: 15px; border-radius: 8px; line-height: 1.6; text-align: justify; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+        .nav-btn { background: #00838f; color: white; border: none; border-radius: 8px; padding: 12px 20px; font-weight: bold; cursor: pointer; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+</div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "Arriving at YVR Airport", topic: "Time Duration (用咗 - took [time])",
+        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
+        grammarDesc: "<strong>Time Duration:</strong> Expressing how long an action takes.<br>用咗 (jung6 zo2) means 'spent' or 'took' (for time/money).",
+        vocab: [
+            {c: "機場", j: "gei1 coeng4", e: "Airport"}, {c: "海關", j: "hoi2 gwaan1", e: "Customs"},
+            {c: "行李", j: "hang4 lei5", e: "Luggage"}, {c: "旺季", j: "wong6 gwai3", e: "Peak season"},
+            {c: "用咗", j: "jung6 zo2", e: "Took (time)"}, {c: "鐘頭", j: "zung1 tau4", e: "Hour"},
+            {c: "指示牌", j: "zi2 si6 paai4", e: "Signboard"}, {c: "天車", j: "tin1 ce1", e: "Skytrain"},
+            {c: "市中心", j: "si5 zung1 sam1", e: "Downtown"}, {c: "方便", j: "fong1 bin6", e: "Convenient"}
+        ],
+        story: "終於飛到溫哥華國際機場。因為而家係旅遊旺季，過海關同埋等行李都用咗差唔多兩個鐘頭。<br>攞完行李之後，我哋跟住指示牌行去搭天車 (Skytrain)。<br>我買咗張 Compass Card，打算搭去市中心嘅酒店。<br>溫哥華嘅公共交通比我想像中方便得多。",
+        jyutping: "Zung1 jyu1 fei1 dou3 Wan1 go1 waa4 gwok3 zai3 gei1 coeng4. Jan1 wai6 ji4 gaa1 hai6 leoi5 jau4 wong6 gwai3, gwo3 hoi2 gwaan1 tung4 maai4 dang2 hang4 lei5 dou1 <span class='highlight'>jung6 zo2</span> caa1 m4 do1 loeng5 go3 zung1 tau4.<br>Lo2 jyun4 hang4 lei5 zi1 hau6, ngo5 dei6 gan1 zyu6 zi2 si6 paai4 haang4 heoi3 daap3 tin1 ce1.<br>Ngo5 maai5 zo2 zoeng1 Compass Card, daa2 syun3 daap3 heoi3 si5 zung1 sam1 ge3 zau2 dim3.<br>Wan1 go1 waa4 ge3 gung1 gung6 gaau1 tung1 bei2 ngo5 soeng2 zoeng6 zung1 fong1 bin6 dak1 do1.",
+        english: "Finally arrived at Vancouver International Airport. Because it's peak travel season now, going through customs and waiting for luggage took almost two hours.<br>After getting the luggage, we followed the signs to take the Skytrain.<br>I bought a Compass Card, planning to ride to the downtown hotel.<br>Vancouver's public transportation is much more convenient than I imagined.",
+        quizzes: [
+            { q: "點解作者過海關同等行李要用兩個鐘頭咁耐？", e: "(Why did it take the author two hours to clear customs and get luggage?)", options: [{c: "因為係旅遊旺季，人特別多", e: "(Because it's peak travel season, there are many people)", correct: true}, {c: "因為佢帶咗違禁品被查", e: "(Because they brought contraband and were inspected)", correct: false}, {c: "因為機場職員罷工", e: "(Because airport staff were on strike)", correct: false}] },
+            { q: "攞完行李之後，作者點樣去市中心？", e: "(After getting luggage, how does the author go downtown?)", options: [{c: "跟指示牌行去搭天車", e: "(Follow signs to take the Skytrain)", correct: true}, {c: "搭的士去", e: "(Take a taxi)", correct: false}, {c: "租車自己揸去", e: "(Rent a car and drive there)", correct: false}] },
+            { q: "作者買咗咩嘢用嚟搭車？", e: "(What did the author buy to take transit?)", options: [{c: "Compass Card", e: "(Compass Card)", correct: true}, {c: "單程車飛", e: "(Single journey ticket)", correct: false}, {c: "八達通", e: "(Octopus Card)", correct: false}] },
+            { q: "作者對溫哥華嘅交通有咩評價？", e: "(What is the author's evaluation of Vancouver's transport?)", options: [{c: "比想像中方便得多", e: "(Much more convenient than imagined)", correct: true}, {c: "非常之混亂同埋麻煩", e: "(Extremely chaotic and troublesome)", correct: false}, {c: "車費太貴，唔值得搭", e: "(Fare is too expensive, not worth taking)", correct: false}] },
+            { q: "「用咗」喺文法上表示咩意思？", e: "(What does 'jung zo' mean grammatically?)", options: [{c: "花費咗特定嘅時間或金錢", e: "(Spent a specific amount of time or money)", correct: true}, {c: "借用咗其他人嘅物品", e: "(Borrowed someone else's item)", correct: false}, {c: "無端端浪費咗", e: "(Wasted for no reason)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "Hotel Check-In Requests", topic: "Polite Requests (麻煩你... - Could you please...)",
+        img: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+        grammarDesc: "<strong>Polite Requests:</strong> Asking for favors or services courteously.<br>麻煩你 (maa4 faan4 nei5) literally means 'trouble you', used as 'Could you please...'.",
+        vocab: [
+            {c: "登記入住", j: "dang1 gei3 jap6 zyu6", e: "Check-in"}, {c: "麻煩你", j: "maa4 faan4 nei5", e: "Could you please"},
+            {c: "高層", j: "gou1 cang4", e: "High floor"}, {c: "風景", j: "fung1 ging2", e: "Scenery / View"},
+            {c: "密碼", j: "mat6 maa5", e: "Password"}, {c: "上網", j: "soeng5 mong5", e: "Go online"},
+            {c: "自助早餐", j: "zi6 zo6 zou2 caan1", e: "Breakfast buffet"}, {c: "供應", j: "gung1 jing3", e: "Supply / Serve"},
+            {c: "房卡", j: "fong4 kaat1", e: "Room key card"}, {c: "唔該晒", j: "m4 goi1 saai3", e: "Thank you very much"}
+        ],
+        story: "去到酒店櫃檯登記入住嗰陣，我同職員講：「麻煩你，我想安排一間高層嘅海景房，因為我想睇靚風景。」<br>職員好有禮貌咁幫我搞掂，仲畀咗兩張房卡我。<br>我順便問佢：「麻煩你話我知房入面嘅 WiFi 密碼係幾多？同埋聽朝嘅自助早餐幾點開始供應？」<br>佢答我早餐由朝早七點供應到十點。我同佢講聲唔該晒就上房休息。",
+        jyutping: "Heoi3 dou3 zau2 dim3 gwai6 toi2 dang1 gei3 jap6 zyu6 go2 zan6, ngo5 tung4 zik1 jyun4 gong2: 「<span class='highlight'>Maa4 faan4 nei5</span>, ngo5 soeng2 on1 paai4 jat1 gaan1 gou1 cang4 ge3 hoi2 ging2 fong4, jan1 wai6 ngo5 soeng2 tai2 leng3 fung1 ging2.」<br>Zik1 jyun4 hou2 jau5 lai5 maau6 gam2 bong1 ngo5 gaau2 dim6, zung6 bei2 zo2 loeng5 zoeng1 fong4 kaat1 ngo5.<br>Ngo5 seon6 bin2 man6 keoi5: 「<span class='highlight'>Maa4 faan4 nei5</span> waa6 ngo5 zi1 fong4 jap6 min6 ge3 WiFi mat6 maa5 hai6 gei2 do1? Tung4 maai4 ting1 ziu1 ge3 zi6 zo6 zou2 caan1 gei2 dim2 hoi1 ci2 gung1 jing3?」<br>Keoi5 daap3 ngo5 zou2 caan1 jau4 ziu1 zou2 cat1 dim2 gung1 jing3 dou3 sap6 dim2. Ngo5 tung4 keoi5 gong2 seng1 m4 goi1 saai3 zau6 soeng5 fong4 jau1 sik1.",
+        english: "When checking in at the hotel counter, I told the staff: 'Could you please arrange a high-floor ocean view room for me, because I want to see the beautiful scenery.'<br>The staff sorted it out very politely and also gave me two room key cards.<br>I took the opportunity to ask: 'Could you please tell me what the room's WiFi password is? And what time does tomorrow morning's breakfast buffet start serving?'<br>They answered that breakfast is served from 7 AM to 10 AM. I said thank you very much and went up to the room to rest.",
+        quizzes: [
+            { q: "作者要求酒店職員安排咩類型嘅房？", e: "(What type of room did the author ask the hotel staff to arrange?)", options: [{c: "高層嘅海景房", e: "(A high-floor ocean view room)", correct: true}, {c: "最近𨋢口嘅房", e: "(A room closest to the elevator)", correct: false}, {c: "最平嘅標準房", e: "(The cheapest standard room)", correct: false}] },
+            { q: "點解作者想要呢種房？", e: "(Why did the author want this kind of room?)", options: [{c: "因為想睇靚風景", e: "(Because they want to see beautiful scenery)", correct: true}, {c: "因為怕嘈", e: "(Because they are afraid of noise)", correct: false}, {c: "因為有免費升級", e: "(Because there was a free upgrade)", correct: false}] },
+            { q: "作者攞房卡嗰陣順便問咗咩問題？", e: "(What did the author ask while getting the room cards?)", options: [{c: "WiFi 密碼同早餐時間", e: "(WiFi password and breakfast time)", correct: true}, {c: "健身室同泳池喺邊", e: "(Where the gym and pool are)", correct: false}, {c: "點樣去唐人街", e: "(How to get to Chinatown)", correct: false}] },
+            { q: "酒店嘅自助早餐供應到幾點？", e: "(Until what time is the hotel breakfast buffet served?)", options: [{c: "朝早十點", e: "(10 AM)", correct: true}, {c: "朝早七點", e: "(7 AM)", correct: false}, {c: "中午十二點", e: "(12 PM noon)", correct: false}] },
+            { q: "「麻煩你」通常喺咩情況下使用？", e: "(In what situation is 'maa faan nei' usually used?)", options: [{c: "客氣咁請求別人幫忙嗰陣", e: "(When politely requesting someone's help)", correct: true}, {c: "想鬧人做錯事嗰陣", e: "(When wanting to scold someone for a mistake)", correct: false}, {c: "拒絕別人要求嗰陣", e: "(When refusing someone's request)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Lost in Gastown", topic: "Asking Directions (點樣去... - How to go to...)",
+        img: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b",
+        grammarDesc: "<strong>Directions:</strong> Asking how to navigate from point A to B.<br>去 [Place] 點樣去呀？ (heoi3 [Place] dim2 joeng2 heoi3 aa3?) means 'How do I get to [Place]?'",
+        vocab: [
+            {c: "迷路", j: "mai4 lou6", e: "Lost (one's way)"}, {c: "煤氣鎮", j: "mui4 hei3 zan3", e: "Gastown"},
+            {c: "蒸汽鐘", j: "zing1 hei3 zung1", e: "Steam clock"}, {c: "點樣去", j: "dim2 joeng2 heoi3", e: "How to go"},
+            {c: "街口", j: "gaai1 hau2", e: "Street corner / intersection"}, {c: "轉左", j: "zyun3 zo2", e: "Turn left"},
+            {c: "直行", j: "zik6 haang4", e: "Walk straight"}, {c: "過馬路", j: "gwo3 maa5 lou6", e: "Cross the road"},
+            {c: "對面", j: "deoi3 min6", e: "Opposite / Across"}, {c: "大約", j: "daai6 joek3", e: "Approximately"}
+        ],
+        story: "今日下晝我哋去煤氣鎮 (Gastown) 觀光，但係行下行下就迷路咗。<br>我見到個本地人，於是行埋去問：「唔該，請問去蒸汽鐘點樣去呀？有幾遠？」<br>佢好好人咁指住前面話：「你一直直行，去到第二個街口轉左，過馬路之後喺你對面就係喇。<br>大約行五分鐘就到，好近㗎咋。」我哋跟住佢教嘅路線，好快就聽到蒸汽鐘響。",
+        jyutping: "Gam1 jat6 haa6 zau3 ngo5 dei6 heoi3 mui4 hei3 zan3 (Gastown) gun1 gwong1, daan6 hai6 haang4 haa5 haang4 haa5 zau6 mai4 lou6 zo2.<br>Ngo5 gin3 dou2 go3 bun2 dei6 jan4, jyu1 si6 haang4 maai4 heoi3 man6: 「M4 goi1, cing2 man6 <span class='highlight'>heoi3 zing1 hei3 zung1 dim2 joeng2 heoi3 aa3</span>? Jau5 gei2 jyun5?」<br>Keoi5 hou2 hou2 jan4 gam2 zi2 zyu6 cin4 min6 waa6: 「Nei5 jat1 zik6 zik6 haang4, heoi3 dou3 dai6 ji6 go3 gaai1 hau2 zyun3 zo2, gwo3 maa5 lou6 zi1 hau6 hai2 nei5 deoi3 min6 zau6 hai6 laa3.<br>Daai6 joek3 haang4 ng5 fan1 zung1 zau6 dou3, hou2 gan5 gaa3 zaa3.」 Ngo5 dei6 gan1 zyu6 keoi5 gaau3 ge3 lou6 sin3, hou2 faai3 zau6 teng1 dou2 zing1 hei3 zung1 hoeng2.",
+        english: "This afternoon we went sightseeing in Gastown, but walking around we got lost.<br>I saw a local person, so I walked up and asked: 'Excuse me, how do I get to the steam clock? How far is it?'<br>He very nicely pointed ahead and said: 'You walk straight ahead, when you reach the second intersection turn left, after crossing the road it's right opposite you.<br>It takes about a 5-minute walk, it's very close.' We followed his route and soon heard the steam clock whistle.",
+        quizzes: [
+            { q: "作者喺邊度觀光嗰陣迷路？", e: "(Where was the author sightseeing when they got lost?)", options: [{c: "煤氣鎮 (Gastown)", e: "(Gastown)", correct: true}, {c: "史丹利公園", e: "(Stanley Park)", correct: false}, {c: "列治文夜市", e: "(Richmond Night Market)", correct: false}] },
+            { q: "作者想去搵咩景點？", e: "(What attraction did the author want to find?)", options: [{c: "蒸汽鐘", e: "(Steam clock)", correct: true}, {c: "博物館", e: "(Museum)", correct: false}, {c: "天車站", e: "(Skytrain station)", correct: false}] },
+            { q: "本地人教佢哋點樣行？", e: "(How did the local teach them to walk?)", options: [{c: "直行到第二個街口轉左過馬路", e: "(Walk straight to the 2nd intersection, turn left, cross road)", correct: true}, {c: "轉右行十分鐘，搭巴士", e: "(Turn right walk 10 mins, take a bus)", correct: false}, {c: "過馬路之後即刻轉右", e: "(Turn right immediately after crossing the road)", correct: false}] },
+            { q: "去到目的地大約需要幾耐？", e: "(Approximately how long does it take to reach the destination?)", options: [{c: "五分鐘", e: "(Five minutes)", correct: true}, {c: "十五分鐘", e: "(Fifteen minutes)", correct: false}, {c: "半個鐘頭", e: "(Half an hour)", correct: false}] },
+            { q: "最後佢哋點樣確認自己去啱地方？", e: "(How did they finally confirm they went to the right place?)", options: [{c: "聽到蒸汽鐘響", e: "(Heard the steam clock whistle)", correct: true}, {c: "見到有好多人排隊", e: "(Saw many people queuing up)", correct: false}, {c: "睇Google地圖", e: "(Checked Google Maps)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Ordering Dim Sum in Richmond", topic: "Classifiers (籠 - basket, 碟 - plate)",
+        img: "https://images.unsplash.com/photo-1563245372-f21724e3856d",
+        grammarDesc: "<strong>Measure Words (Classifiers):</strong> Used when counting objects.<br>籠 (lung4) is for bamboo baskets (dim sum). 碟 (dip6) is for plates.",
+        vocab: [
+            {c: "飲茶", j: "jam2 caa4", e: "Drink tea (Dim Sum)"}, {c: "普洱", j: "pou2 nei2", e: "Pu'er tea"},
+            {c: "籠", j: "lung4", e: "Basket (classifier)"}, {c: "燒賣", j: "siu1 maai2", e: "Siu Mai (dumpling)"},
+            {c: "蝦餃", j: "haa1 gaau2", e: "Har Gow (shrimp dumpling)"}, {c: "碟", j: "dip6", e: "Plate (classifier)"},
+            {c: "腸粉", j: "coeng4 fan2", e: "Rice noodle roll"}, {c: "點心", j: "dim2 sam1", e: "Dim Sum"},
+            {c: "加水", j: "gaa1 seoi2", e: "Add water (to teapot)"}, {c: "埋單", j: "maai4 daan1", e: "Pay the bill"}
+        ],
+        story: "嚟到溫哥華列治文 (Richmond)，一定要去試下正宗嘅中式點心。<br>坐低之後，侍應問我哋飲咩茶，我叫咗一壼普洱。<br>我哋點咗兩籠燒賣、一籠蝦餃，同埋一碟牛肉腸粉。<br>食到一半，個茶壼冇水，我打開壼蓋示意侍應加水。<br>啲點心真係好好味，食飽之後我就舉手嗌：「唔該，埋單！」",
+        jyutping: "Lei4 dou3 Wan1 go1 waa4 Lit6 zi6 mun4 (Richmond), jat1 ding6 jiu3 heoi3 si3 haa5 zing3 zung1 ge3 zung1 sik1 dim2 sam1.<br>Co5 dai1 zi1 hau6, si6 jing3 man6 ngo5 dei6 jam2 me1 caa4, ngo5 giu3 zo2 jat1 wu4 pou2 nei2.<br>Ngo5 dei6 dim2 zo2 loeng5 <span class='highlight'>lung4</span> siu1 maai2, jat1 <span class='highlight'>lung4</span> haa1 gaau2, tung4 maai4 jat1 <span class='highlight'>dip6</span> ngau4 juk6 coeng4 fan2.<br>Sik6 dou3 jat1 bun3, go3 caa4 wu4 mou5 seoi2, ngo5 daa2 hoi1 wu4 goi3 si6 ji3 si6 jing3 gaa1 seoi2.<br>Di1 dim2 sam1 zan1 hai6 hou2 hou2 mei6, sik6 baau2 zi1 hau6 ngo5 zau6 geoi2 sau2 aai3: 「M4 goi1, maai4 daan1!」",
+        english: "Coming to Richmond, Vancouver, you definitely have to try the authentic Chinese dim sum.<br>After sitting down, the waiter asked what tea we wanted to drink, I ordered a pot of Pu'er.<br>We ordered two baskets of Siu Mai, one basket of Har Gow, and one plate of beef rice noodle rolls.<br>Halfway through eating, the teapot ran out of water, so I opened the lid to signal the waiter to add water.<br>The dim sum was really delicious, after eating full I raised my hand and called out: 'Excuse me, the bill!'",
+        quizzes: [
+            { q: "作者去飲茶叫咗咩茶？", e: "(What tea did the author order when drinking tea?)", options: [{c: "普洱", e: "(Pu'er)", correct: true}, {c: "鐵觀音", e: "(Tieguanyin)", correct: false}, {c: "菊花茶", e: "(Chrysanthemum tea)", correct: false}] },
+            { q: "作者總共叫咗幾多「籠」點心？", e: "(How many 'baskets' of dim sum did the author order in total?)", options: [{c: "三籠 (兩籠燒賣，一籠蝦餃)", e: "(Three baskets: 2 Siu Mai, 1 Har Gow)", correct: true}, {c: "兩籠", e: "(Two baskets)", correct: false}, {c: "四籠", e: "(Four baskets)", correct: false}] },
+            { q: "當茶壼冇水嗰陣，作者做咗咩動作？", e: "(When the teapot had no water, what action did the author take?)", options: [{c: "打開壼蓋示意侍應", e: "(Opened the lid to signal the waiter)", correct: true}, {c: "大聲叫侍應過嚟", e: "(Shouted loudly for the waiter to come over)", correct: false}, {c: "自己行去斟水", e: "(Walked over to pour water oneself)", correct: false}] },
+            { q: "食完嘢想畀錢，廣東話應該點講？", e: "(When you finish eating and want to pay, how should you say it in Cantonese?)", options: [{c: "唔該，埋單！", e: "(Excuse me, bill please!)", correct: true}, {c: "我要畀錢！", e: "(I want to give money!)", correct: false}, {c: "幾多錢呀？", e: "(How much money?)", correct: false}] },
+            { q: "「碟」呢個量詞通常用嚟數咩嘢？", e: "(What is the measure word 'dip' usually used to count?)", options: [{c: "用碟裝住嘅食物 (例如腸粉)", e: "(Food served on a plate, e.g., rice noodle rolls)", correct: true}, {c: "用竹籠裝住嘅食物", e: "(Food served in a bamboo basket)", correct: false}, {c: "用碗裝住嘅湯", e: "(Soup served in a bowl)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Richmond Night Market", topic: "Bargaining (平啲啦 - Cheaper please)",
+        img: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e",
+        grammarDesc: "<strong>Bargaining:</strong> Asking for a discount.<br>平啲啦 (peng4 di1 laa1) means 'Cheaper please'. 平 (peng4) = cheap.",
+        vocab: [
+            {c: "夜市", j: "je6 si5", e: "Night market"}, {c: "熱鬧", j: "jit6 naau6", e: "Bustling / Lively"},
+            {c: "串燒", j: "cyun3 siu1", e: "Skewers (food)"}, {c: "手機殼", j: "sau2 gei1 hok3", e: "Phone case"},
+            {c: "檔主", j: "dong3 zyu2", e: "Stall owner"}, {c: "講價", j: "gong2 gaa3", e: "Bargain / Negotiate"},
+            {c: "平啲啦", j: "peng4 di1 laa1", e: "Cheaper please"}, {c: "減價", j: "gaam2 gaa3", e: "Discount / Reduce price"},
+            {c: "成交", j: "sing4 gaau1", e: "Deal / Transaction complete"}, {c: "現金", j: "jin6 gam1", e: "Cash"}
+        ],
+        story: "星期五晚，我哋去咗列治文夜市 (Richmond Night Market)。嗰度超級熱鬧，有好多好嘢食，我買咗幾串魷魚串燒。<br>食完嘢之後去行街，我睇中咗一個好靚嘅手機殼，標價三十蚊加幣。<br>我試下同檔主講價：「老闆，可唔可以平啲啦？二十五蚊賣唔賣？」<br>檔主見我咁有誠意，就話：「好啦，減五蚊畀你，不過要畀現金。」最後順利成交！",
+        jyutping: "Sing1 kei4 ng5 maan5, ngo5 dei6 heoi3 zo2 Lit6 zi6 mun4 je6 si5. Go2 dou6 ciu1 kap1 jit6 naau6, jau5 hou2 do1 hou2 je5 sik6, ngo5 maai5 zo2 gei2 cyun3 jau4 jyu2 cyun3 siu1.<br>Sik6 jyun4 je5 zi1 hau6 heoi3 haang4 gaai1, ngo5 tai2 zung3 zo2 jat1 go3 hou2 leng3 ge3 sau2 gei1 hok3, biu1 gaa3 saam1 sap6 man1 Gaa1 bai6.<br>Ngo5 si3 haa5 tung4 dong3 zyu2 gong2 gaa3: 「Lou5 baan2, ho2 m4 ho2 ji5 <span class='highlight'>peng4 di1 laa1</span>? Ji6 sap6 ng5 man1 maai6 m4 maai6?」<br>Dong3 zyu2 gin3 ngo5 gam3 jau5 sing4 ji3, zau6 waa6: 「Hou2 laa1, gaam2 ng5 man1 bei2 nei5, bat1 gwo3 jiu3 bei2 jin6 gam1.」 Zeoi3 hau6 seon6 lei6 sing4 gaau1!",
+        english: "On Friday night, we went to the Richmond Night Market. It was super bustling there, with lots of good food; I bought a few squid skewers.<br>After eating, we went shopping, and I fancied a very pretty phone case priced at 30 CAD.<br>I tried bargaining with the stall owner: 'Boss, can it be a bit cheaper please? 25 dollars, will you sell?'<br>Seeing I was sincere, the owner said: 'Okay, discount 5 dollars for you, but you must pay cash.' Finally, a successful deal!",
+        quizzes: [
+            { q: "夜市嘅氣氛係點樣嘅？", e: "(How is the atmosphere at the night market?)", options: [{c: "超級熱鬧", e: "(Super bustling/lively)", correct: true}, {c: "非常安靜", e: "(Very quiet)", correct: false}, {c: "冇乜人行", e: "(Not many people walking around)", correct: false}] },
+            { q: "作者喺夜市食咗咩嘢？", e: "(What did the author eat at the night market?)", options: [{c: "魷魚串燒", e: "(Squid skewers)", correct: true}, {c: "點心燒賣", e: "(Dim sum Siu Mai)", correct: false}, {c: "牛肉腸粉", e: "(Beef rice noodle rolls)", correct: false}] },
+            { q: "手機殼原本標價幾多錢？", e: "(How much was the original price of the phone case?)", options: [{c: "三十蚊", e: "(Thirty dollars)", correct: true}, {c: "二十五蚊", e: "(Twenty-five dollars)", correct: false}, {c: "三十五蚊", e: "(Thirty-five dollars)", correct: false}] },
+            { q: "作者用咩廣東話說話要求減價？", e: "(What Cantonese phrase did the author use to ask for a discount?)", options: [{c: "老闆，可唔可以平啲啦？", e: "(Boss, can it be cheaper please?)", correct: true}, {c: "唔該，我想退錢。", e: "(Excuse me, I want a refund.)", correct: false}, {c: "呢個太貴，我唔買喇。", e: "(This is too expensive, I'm not buying it.)", correct: false}] },
+            { q: "檔主答應減價嘅條件係咩？", e: "(What was the stall owner's condition for agreeing to the discount?)", options: [{c: "要畀現金", e: "(Must pay cash)", correct: true}, {c: "要買多兩個", e: "(Must buy two more)", correct: false}, {c: "要用信用卡畀錢", e: "(Must pay with credit card)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "SeaBus to North Van", topic: "Future Plans (準備 - Preparing to)",
+        img: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b",
+        grammarDesc: "<strong>Future Plans:</strong> Expressing getting ready for an action.<br>準備 (zeon2 bei6) means 'preparing to' or 'getting ready to'.",
+        vocab: [
+            {c: "準備", j: "zeon2 bei6", e: "Prepare / Get ready to"}, {c: "渡輪", j: "dou6 leon4", e: "Ferry (SeaBus)"},
+            {c: "北溫", j: "bak1 wan1", e: "North Vancouver"}, {c: "拍卡", j: "paak3 kaat1", e: "Tap card"},
+            {c: "閘機", j: "zaap6 gei1", e: "Fare gate"}, {c: "碼頭", j: "maa5 tau4", e: "Pier / Terminal"},
+            {c: "班次", j: "baan1 ci3", e: "Frequency / Schedule"}, {c: "風景", j: "fung1 ging2", e: "Scenery"},
+            {c: "船艙", j: "syun4 cong1", e: "Cabin (of a ship)"}, {c: "市場", j: "si5 coeng4", e: "Market (Lonsdale Quay)"}
+        ],
+        story: "今日天氣好好，我哋準備搭 SeaBus (海上巴士) 去北溫 (North Vancouver) 玩。<br>去到 Waterfront 站，我攞張 Compass Card 喺閘機度拍卡入閘。<br>碼頭嘅指示好清晰，大約等咗十分鐘就有船。<br>我哋坐喺船艙最前排，可以欣賞溫哥華嘅天際線。<br>十五分鐘之後就到埗，我哋準備去 Lonsdale Quay 市場食晏。",
+        jyutping: "Gam1 jat6 tin1 hei3 hou2 hou2, ngo5 dei6 <span class='highlight'>zeon2 bei6</span> daap3 SeaBus (hoi2 soeng6 baa1 si2) heoi3 bak1 wan1 (North Vancouver) waan2.<br>Heoi3 dou3 Waterfront zaam6, ngo5 lo2 zoeng1 Compass Card hai2 zaap6 gei1 dou6 paak3 kaat1 jap6 zaap6.<br>Maa5 tau4 ge3 zi2 si6 hou2 cing1 sik1, daai6 joek3 dang2 zo2 sap6 fan1 zung1 zau6 jau5 syun4.<br>Ngo5 dei6 co5 hai2 syun4 cong1 zeoi3 cin4 paai4, ho2 ji5 jan1 soeng2 Wan1 go1 waa4 ge3 tin1 zai3 sin3.<br>Sap6 ng5 fan1 zung1 zi1 hau6 zau6 dou3 bou6, ngo5 dei6 <span class='highlight'>zeon2 bei6</span> heoi3 Lonsdale Quay si5 coeng4 sik6 aan3.",
+        english: "The weather is very good today, we are preparing to take the SeaBus to North Vancouver to play.<br>Arriving at Waterfront station, I took out my Compass Card to tap at the fare gate to enter.<br>The signs at the terminal are very clear, we waited about 10 minutes and a boat arrived.<br>We sat in the front row of the cabin and could enjoy the Vancouver skyline.<br>15 minutes later we arrived, and we are preparing to go to the Lonsdale Quay market for lunch.",
+        quizzes: [
+            { q: "作者準備搭咩交通工具去北溫？", e: "(What transport is the author preparing to take to North Van?)", options: [{c: "SeaBus (海上巴士)", e: "(SeaBus)", correct: true}, {c: "天車 (Skytrain)", e: "(Skytrain)", correct: false}, {c: "的士", e: "(Taxi)", correct: false}] },
+            { q: "入閘嗰陣要做咩動作？", e: "(What action must be done when entering the gate?)", options: [{c: "攞 Compass Card 拍卡", e: "(Take out Compass Card and tap it)", correct: true}, {c: "入硬幣買飛", e: "(Insert coins to buy a ticket)", correct: false}, {c: "畀護照職員睇", e: "(Show passport to staff)", correct: false}] },
+            { q: "搭 SeaBus 過海需要幾耐時間？", e: "(How long does it take to cross the sea on the SeaBus?)", options: [{c: "十五分鐘", e: "(Fifteen minutes)", correct: true}, {c: "十分鐘", e: "(Ten minutes)", correct: false}, {c: "半個鐘頭", e: "(Half an hour)", correct: false}] },
+            { q: "坐喺船艙最前排有咩好處？", e: "(What is the benefit of sitting in the front row of the cabin?)", options: [{c: "可以欣賞溫哥華嘅天際線", e: "(Can enjoy the Vancouver skyline)", correct: true}, {c: "可以提早落船", e: "(Can get off the boat earlier)", correct: false}, {c: "可以同船長傾偈", e: "(Can chat with the captain)", correct: false}] },
+            { q: "到埗之後，佢哋準備去做咩？", e: "(After arriving, what are they preparing to do?)", options: [{c: "去市場食晏", e: "(Go to the market to eat lunch)", correct: true}, {c: "返酒店瞓覺", e: "(Go back to the hotel to sleep)", correct: false}, {c: "去滑雪", e: "(Go skiing)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Emergency at Pharmacy", topic: "Feeling States (覺得 - To feel)",
+        img: "https://images.unsplash.com/photo-1585435557343-3b092031a831",
+        grammarDesc: "<strong>Feeling States:</strong> Expressing how your body or mind feels.<br>覺得 (gok3 dak1) means 'to feel' or 'to think'.",
+        vocab: [
+            {c: "時差", j: "si4 caa1", e: "Jet lag"}, {c: "覺得", j: "gok3 dak1", e: "Feel / Think"},
+            {c: "頭痛", j: "tau4 tung3", e: "Headache"}, {c: "唔舒服", j: "m4 syu1 fuk6", e: "Uncomfortable / Sick"},
+            {c: "藥房", j: "joek6 fong4", e: "Pharmacy"}, {c: "止痛藥", j: "zi2 tung3 joek6", e: "Painkiller"},
+            {c: "藥劑師", j: "joek6 zai1 si1", e: "Pharmacist"}, {c: "症狀", j: "zing3 zong6", e: "Symptom"},
+            {c: "建議", j: "gin3 ji5", e: "Suggest / Advise"}, {c: "飲水", j: "jam2 seoi2", e: "Drink water"}
+        ],
+        story: "嚟到溫哥華第三日，我可能因為時差關係，覺得個頭好痛，成個人都好唔舒服。<br>Jamie 陪我去咗附近嘅 London Drugs 藥房買止痛藥。<br>我哋問咗當值嘅藥劑師，話畀佢聽我嘅症狀。<br>藥劑師建議我買一隻普通嘅止痛藥，仲提醒我要飲多啲水同埋爭取時間休息。<br>食咗藥之後，我感覺好返好多。",
+        jyutping: "Lei4 dou3 Wan1 go1 waa4 dai6 saam1 jat6, ngo5 ho2 nang4 jan1 wai6 si4 caa1 gwaan1 hai6, <span class='highlight'>gok3 dak1</span> go3 tau4 hou2 tung3, seng4 go3 jan4 dou1 hou2 m4 syu1 fuk6.<br>Jamie pui4 ngo5 heoi3 zo2 fu6 gan6 ge3 London Drugs joek6 fong4 maai5 zi2 tung3 joek6.<br>Ngo5 dei6 man6 zo2 dong1 zik1 ge3 joek6 zai1 si1, waa6 bei2 keoi5 teng1 ngo5 ge3 zing3 zong6.<br>Joek6 zai1 si1 gin3 ji5 ngo5 maai5 jat1 zek3 pou2 tung1 ge3 zi2 tung3 joek6, zung6 tai4 sing2 ngo5 jiu3 jam2 do1 di1 seoi2 tung4 maai4 zang1 ceoi2 si4 gaan3 jau1 sik1.<br>Sik6 zo2 joek6 zi1 hau6, ngo5 gam2 gok3 hou2 faan1 hou2 do1.",
+        english: "On the third day after arriving in Vancouver, possibly due to jet lag, I felt a severe headache and felt very sick overall.<br>Jamie accompanied me to a nearby London Drugs pharmacy to buy painkillers.<br>We asked the pharmacist on duty and told them my symptoms.<br>The pharmacist advised me to buy a standard painkiller, and also reminded me to drink more water and try to get some rest.<br>After taking the medicine, I felt much better.",
+        quizzes: [
+            { q: "作者點解會覺得頭痛同唔舒服？", e: "(Why did the author feel a headache and sickness?)", options: [{c: "可能因為時差關係", e: "(Possibly due to jet lag)", correct: true}, {c: "因為食錯嘢", e: "(Because they ate something bad)", correct: false}, {c: "因為天氣太凍", e: "(Because the weather was too cold)", correct: false}] },
+            { q: "佢哋去咗邊度買藥？", e: "(Where did they go to buy medicine?)", options: [{c: "London Drugs 藥房", e: "(London Drugs pharmacy)", correct: true}, {c: "診所見醫生", e: "(Clinic to see a doctor)", correct: false}, {c: "便利店", e: "(Convenience store)", correct: false}] },
+            { q: "藥劑師除咗賣藥，仲畀咗咩建議？", e: "(Besides selling medicine, what advice did the pharmacist give?)", options: [{c: "飲多啲水同埋休息", e: "(Drink more water and rest)", correct: true}, {c: "即刻去醫院急症室", e: "(Go to the hospital ER immediately)", correct: false}, {c: "做多啲運動出汗", e: "(Do more exercise to sweat)", correct: false}] },
+            { q: "「覺得」喺呢段說話入面表示咩？", e: "(What does 'gok dak' express in this text?)", options: [{c: "表達身體嘅感覺同狀態", e: "(Expressing physical feeling and state)", correct: true}, {c: "表達對某件事情嘅看法", e: "(Expressing an opinion on a matter)", correct: false}, {c: "表示聽唔明白", e: "(Indicating inability to understand)", correct: false}] },
+            { q: "食咗藥之後，作者嘅情況點樣？", e: "(After taking the medicine, what was the author's condition?)", options: [{c: "好返好多", e: "(Much better)", correct: true}, {c: "痛得仲犀利", e: "(Hurts even worse)", correct: false}, {c: "完全冇效", e: "(Completely ineffective)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "Renting a Car to Whistler", topic: "Necessity/Conditions (如果... 就 - Applied to insurance)",
+        img: "https://images.unsplash.com/photo-1549887552-cb127140e69b",
+        grammarDesc: "<strong>Conditions:</strong> Stating rules or consequences.<br>如果 (jyu4 gwo2) ... 就 (zau6). In car rentals: If you crash, then...",
+        vocab: [
+            {c: "租車", j: "zou1 ce1", e: "Rent a car"}, {c: "保險", j: "bou2 him2", e: "Insurance"},
+            {c: "如果", j: "jyu4 gwo2", e: "If"}, {c: "意外", j: "ji3 ngoi6", e: "Accident"},
+            {c: "賠錢", j: "pui4 cin2", e: "Compensate / Pay damages"}, {c: "全保", j: "cyun4 bou2", e: "Full coverage insurance"},
+            {c: "入油", j: "jap6 jau4", e: "Pump gas / Refuel"}, {c: "滿油還車", j: "mun5 jau4 waan4 ce1", e: "Return with full tank"},
+            {c: "檢查", j: "gim2 caa4", e: "Check / Inspect"}, {c: "花痕", j: "faa1 han4", e: "Scratches"}
+        ],
+        story: "聽日我哋打算去 Whistler (惠斯勒) 滑雪，所以去咗租車公司租架 SUV。<br>職員同我解釋保險條款：「如果你淨係買基本保險，發生意外嗰陣就要自己賠錢。如果你買全保，就乜都唔使理。」<br>為咗安心，我決定買全保。<br>佢仲提醒我：「還車嗰陣記得要入滿油，如果唔係就會收好貴嘅手續費。」<br>攞車之前，我哋一齊檢查車身有冇花痕，然後先簽名出車。",
+        jyutping: "Ting1 jat6 ngo5 dei6 daa2 syun3 heoi3 Whistler (Wai6 si1 lak6) waat6 syut3, so2 ji5 heoi3 zo2 zou1 ce1 gung1 si1 zou1 gaa3 SUV.<br>Zik1 jyun4 tung4 ngo5 gaai2 sik1 bou2 him2 tiu4 fun2: 「<span class='highlight'>Jyu4 gwo2</span> nei5 zing6 hai6 maai5 gei1 bun2 bou2 him2, faat3 sang1 ji3 ngoi6 go2 zan6 zau6 jiu3 zi6 gei2 pui4 cin2. <span class='highlight'>Jyu4 gwo2</span> nei5 maai5 cyun4 bou2, zau6 mat1 dou1 m4 sai2 lei5.」<br>Wai6 zo2 on1 sam1, ngo5 kyut3 ding6 maai5 cyun4 bou2.<br>Keoi5 zung6 tai4 sing2 ngo5: 「Waan4 ce1 go2 zan6 gei3 dak1 jiu3 jap6 mun5 jau4, jyu4 gwo2 m4 hai6 zau6 wui5 sau1 hou2 gwai3 ge3 sau2 zuk6 fai3.」<br>Lo2 ce1 zi1 cin4, ngo5 dei6 jat1 cai4 gim2 caa4 ce1 san1 jau5 mou5 faa1 han4, jin4 hau6 sin1 cim1 meng2 ceot1 ce1.",
+        english: "Tomorrow we plan to go to Whistler to ski, so we went to the rental company to rent an SUV.<br>The staff explained the insurance terms to me: 'If you only buy basic insurance, when an accident happens you have to pay damages yourself. If you buy full coverage, you don't have to worry about anything.'<br>For peace of mind, I decided to buy full coverage.<br>They also reminded me: 'When returning the car, remember to fill up the gas, otherwise a very expensive processing fee will be charged.'<br>Before taking the car, we inspected the car body together for any scratches, and only then signed to drive off.",
+        quizzes: [
+            { q: "作者點解要去租車？", e: "(Why did the author go to rent a car?)", options: [{c: "打算去 Whistler 滑雪", e: "(Planning to go to Whistler to ski)", correct: true}, {c: "打算去 Banff 度蜜月", e: "(Planning to go to Banff for honeymoon)", correct: false}, {c: "因為自己部車壞咗", e: "(Because their own car broke down)", correct: false}] },
+            { q: "租車公司職員對全保 (Full coverage) 嘅解釋係咩？", e: "(What is the staff's explanation of full coverage?)", options: [{c: "發生意外乜都唔使理", e: "(Don't have to worry about anything if an accident happens)", correct: true}, {c: "發生意外要自己賠一半", e: "(Have to pay half the damages oneself in an accident)", correct: false}, {c: "只包車頭玻璃損壞", e: "(Only covers windshield damage)", correct: false}] },
+            { q: "還車嗰陣有咩重要嘅規定？", e: "(What is the important rule when returning the car?)", options: [{c: "要入滿油還車", e: "(Must return the car with a full tank of gas)", correct: true}, {c: "要洗乾淨部車", e: "(Must wash the car clean)", correct: false}, {c: "要提早一日還車", e: "(Must return the car a day early)", correct: false}] },
+            { q: "「如果... 就」喺呢度表達咗咩？", e: "(What does 'if... then' express here?)", options: [{c: "違反規定會引致嘅後果", e: "(The consequence that results from violating the rule)", correct: true}, {c: "未來嘅美好願望", e: "(A beautiful wish for the future)", correct: false}, {c: "對某人嘅建議", e: "(Advice to someone)", correct: false}] },
+            { q: "攞車走之前，作者同職員做咗咩步驟？", e: "(Before driving off, what step did the author and staff do?)", options: [{c: "檢查車身有冇花痕先簽名", e: "(Inspected car for scratches before signing)", correct: true}, {c: "測試冷氣夠唔夠凍", e: "(Tested if the AC is cold enough)", correct: false}, {c: "換咗四條新車胎", e: "(Changed four new tires)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Buying Canadian Souvenirs", topic: "Degree (太... 喇 - Too [adj])",
+        img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f",
+        grammarDesc: "<strong>Extreme Degree:</strong> Expressing that something is excessive.<br>太 (taai3) + Adjective + 喇 (laa3) means 'Too [adjective]!'.",
+        vocab: [
+            {c: "手信", j: "sau2 seon3", e: "Souvenir"}, {c: "楓糖漿", j: "fung1 tong4 zoeng1", e: "Maple syrup"},
+            {c: "煙三文魚", j: "jin1 saam1 man4 jyu2", e: "Smoked salmon"}, {c: "太", j: "taai3", e: "Too (excessive)"},
+            {c: "重", j: "cung5", e: "Heavy"}, {c: "行李箱", j: "hang4 lei5 soeng1", e: "Suitcase"},
+            {c: "裝唔落", j: "zong1 m4 lok6", e: "Cannot fit in"}, {c: "免稅", j: "min5 seoi3", e: "Tax-free"},
+            {c: "消費稅", j: "siu1 fai3 seoi3", e: "Sales tax (GST/PST)"}, {c: "打折", j: "daa2 zit3", e: "Discount"}
+        ],
+        story: "臨返香港之前，我哋去咗市區買手信畀屋企人同朋友。<br>我哋買咗好多支楓糖漿同埋幾盒煙三文魚。<br>當我攞起個購物袋嗰陣，發現啲玻璃樽太重喇！我擔心個行李箱會裝唔落或者超重。<br>畀錢嗰陣，收銀員話買夠一百蚊有打折，不過要另外加百分之十二嘅消費稅。<br>加拿大買嘢要加稅呢樣嘢，我真係覺得太麻煩喇。",
+        jyutping: "Lam4 faan1 hoeng1 gong2 zi1 cin4, ngo5 dei6 heoi3 zo2 si5 keoi1 maai5 sau2 seon3 bei2 uk1 kei2 jan4 tung4 pang4 jau5.<br>Ngo5 dei6 maai5 zo2 hou2 do1 zi1 fung1 tong4 zoeng1 tung4 maai4 gei2 hap6 jin1 saam1 man4 jyu2.<br>Dong1 ngo5 lo2 hei2 go3 gau3 mat6 doi2 go2 zan6, faat3 jin6 di1 bo1 lei1 zeon1 <span class='highlight'>taai3</span> cung5 <span class='highlight'>laa3</span>! Ngo5 daam1 sam1 go3 hang4 lei5 soeng1 wui5 zong1 m4 lok6 waak6 ze2 ciu1 cung5.<br>Bei2 cin2 go2 zan6, sau1 ngan4 jyun4 waa6 maai5 gau3 jat1 baak3 man1 jau5 daa2 zit3, bat1 gwo3 jiu3 ling6 ngoi6 gaa1 baak3 fan6 zi1 sap6 ji6 ge3 siu1 fai3 seoi3.<br>Gaa1 naa4 daai6 maai5 je5 jiu3 gaa1 seoi3 ni1 joeng6 je5, ngo5 zan1 hai6 gok3 dak1 <span class='highlight'>taai3</span> maa4 faan4 <span class='highlight'>laa3</span>.",
+        english: "Before returning to Hong Kong, we went downtown to buy souvenirs for family and friends.<br>We bought many bottles of maple syrup and several boxes of smoked salmon.<br>When I picked up the shopping bag, I realized the glass bottles were too heavy! I'm worried the suitcase won't fit them or will be overweight.<br>When paying, the cashier said purchases over 100 dollars get a discount, but a 12 percent sales tax must be added on top.<br>Having to add tax when buying things in Canada, I really feel is too troublesome.",
+        quizzes: [
+            { q: "作者買咗咩特產做手信？", e: "(What local specialties did the author buy as souvenirs?)", options: [{c: "楓糖漿同煙三文魚", e: "(Maple syrup and smoked salmon)", correct: true}, {c: "咖啡同曲奇餅", e: "(Coffee and cookies)", correct: false}, {c: "加拿大鵝羽絨", e: "(Canada Goose down jackets)", correct: false}] },
+            { q: "作者提起購物袋嗰陣有咩擔憂？", e: "(What was the author's worry when picking up the shopping bag?)", options: [{c: "啲玻璃樽太重，驚行李超重", e: "(The glass bottles were too heavy, worried about overweight luggage)", correct: true}, {c: "買得太少唔夠派", e: "(Bought too little, not enough to distribute)", correct: false}, {c: "啲三文魚會變壞", e: "(The salmon would spoil)", correct: false}] },
+            { q: "收銀員話買夠一百蚊有咩優惠？", e: "(What perk did the cashier say you get if you buy over 100 dollars?)", options: [{c: "有打折 (Discount)", e: "(Get a discount)", correct: true}, {c: "免稅 (Tax-free)", e: "(Tax-free)", correct: false}, {c: "送多一支楓糖漿", e: "(Get a free bottle of maple syrup)", correct: false}] },
+            { q: "作者覺得加拿大買嘢邊一方面「太麻煩喇」？", e: "(What aspect of shopping in Canada did the author feel is 'too troublesome'?)", options: [{c: "買嘢要另外加消費稅", e: "(Having to add sales tax separately when buying)", correct: true}, {c: "啲店員唔識講中文", e: "(The staff cannot speak Chinese)", correct: false}, {c: "商場太早閂門", e: "(Malls close too early)", correct: false}] },
+            { q: "「太重喇」喺語氣上表達咗咩？", e: "(What tone does 'taai cung laa' express?)", options: [{c: "超出咗可以接受或者理想嘅程度", e: "(Exceeded the acceptable or ideal level)", correct: true}, {c: "覺得重量啱啱好", e: "(Feels the weight is just right)", correct: false}, {c: "希望可以再重啲", e: "(Hopes it could be heavier)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Cycling in Stanley Park", topic: "Simultaneous Actions (一邊... 一邊 - While)",
+        img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed",
+        grammarDesc: "<strong>Multitasking:</strong> Doing two things at once.<br>一邊 (jat1 bin1) [Action A] 一邊 [Action B] means doing A and B concurrently.",
+        vocab: [
+            {c: "史丹利公園", j: "si2 daan1 lei6 gung1 jyun2", e: "Stanley Park"}, {c: "租單車", j: "zou1 daan1 ce1", e: "Rent a bicycle"},
+            {c: "海傍", j: "hoi2 pong4", e: "Seawall / Seaside"}, {c: "一邊...一邊", j: "jat1 bin1... jat1 bin1", e: "While... and..."},
+            {c: "踩單車", j: "caai2 daan1 ce1", e: "Ride a bicycle"}, {c: "吹海風", j: "ceoi1 hoi2 fung1", e: "Feel the sea breeze"},
+            {c: "獅門橋", j: "si1 mun4 kiu4", e: "Lions Gate Bridge"}, {c: "停低", j: "ting4 dai1", e: "Stop"},
+            {c: "影相", j: "jing2 soeng2", e: "Take photos"}, {c: "打卡", j: "daa2 kaat1", e: "Check-in (social media)"}
+        ],
+        story: "嚟到溫哥華，點可以唔去史丹利公園 (Stanley Park)？我哋喺公園入口附近租咗兩架單車。<br>我哋一邊沿住海傍踩單車，一邊享受迎面吹嚟嘅海風，感覺非常寫意。<br>去到獅門橋 (Lions Gate Bridge) 嘅觀景台，我哋停低架車。<br>我搵咗個外國遊客幫手：「唔該，可唔可以幫我哋影張相？」<br>影完相打完卡，我哋又繼續向前踩，用咗兩個鐘頭先踩完一圈。",
+        jyutping: "Lei4 dou3 Wan1 go1 waa4, dim2 ho2 ji5 m4 heoi3 si2 daan1 lei6 gung1 jyun2 (Stanley Park)? Ngo5 dei6 hai2 gung1 jyun2 jap6 hau2 fu6 gan6 zou1 zo2 loeng5 gaa3 daan1 ce1.<br>Ngo5 dei6 <span class='highlight'>jat1 bin1</span> jyun4 zyu6 hoi2 pong4 caai2 daan1 ce1, <span class='highlight'>jat1 bin1</span> hoeng2 sau6 jing4 min6 ceoi1 lei4 ge3 hoi2 fung1, gam2 gok3 fei1 soeng4 se2 ji3.<br>Heoi3 dou3 si1 mun4 kiu4 (Lions Gate Bridge) ge3 gun1 ging2 toi4, ngo5 dei6 ting4 dai1 gaa3 ce1.<br>Ngo5 wan2 zo2 go3 ngoi6 gwok3 jau4 haak3 bong1 sau2: 「M4 goi1, ho2 m4 ho2 ji5 bong1 ngo5 dei6 jing2 zoeng1 soeng2?」<br>Jing2 jyun4 soeng2 daa2 jyun4 kaat1, ngo5 dei6 jau6 gai3 zuk6 hoeng3 cin4 caai2, jung6 zo2 loeng5 go3 zung1 tau4 sin1 caai2 jyun4 jat1 hyun1.",
+        english: "Coming to Vancouver, how can you not go to Stanley Park? We rented two bicycles near the park entrance.<br>We cycled along the seawall while enjoying the sea breeze blowing against our faces, feeling very relaxed.<br>Reaching the observation deck for the Lions Gate Bridge, we stopped our bikes.<br>I asked a foreign tourist for help: 'Excuse me, could you take a picture for us?'<br>After taking photos and checking in on social media, we continued cycling forward, taking two hours to finish one loop.",
+        quizzes: [
+            { q: "作者喺史丹利公園主要做咩活動？", e: "(What main activity did the author do at Stanley Park?)", options: [{c: "沿住海傍踩單車", e: "(Cycling along the seawall)", correct: true}, {c: "喺沙灘游水", e: "(Swimming at the beach)", correct: false}, {c: "去水族館睇魚", e: "(Going to the aquarium to see fish)", correct: false}] },
+            { q: "踩單車嗰陣，作者「一邊... 一邊」做緊咩？", e: "(While cycling, what was the author doing concurrently?)", options: [{c: "一邊踩單車，一邊吹海風", e: "(Cycling while feeling the sea breeze)", correct: true}, {c: "一邊踩單車，一邊聽歌", e: "(Cycling while listening to music)", correct: false}, {c: "一邊踩單車，一邊食嘢", e: "(Cycling while eating)", correct: false}] },
+            { q: "去到獅門橋觀景台，作者搵人幫手做咩？", e: "(At the Lions Gate Bridge viewpoint, what did the author ask someone to help with?)", options: [{c: "幫手影張相", e: "(Help take a photo)", correct: true}, {c: "幫手整單車", e: "(Help fix the bicycle)", correct: false}, {c: "問路點樣返市區", e: "(Ask for directions back downtown)", correct: false}] },
+            { q: "「打卡」喺現代廣東話入面通常指咩意思？", e: "(What does 'daa kaat' usually mean in modern Cantonese?)", options: [{c: "去景點影相並放上社交媒體", e: "(Taking photos at attractions and posting on social media)", correct: true}, {c: "返工放工用張卡拍落部機度", e: "(Clocking in/out of work using a card)", correct: false}, {c: "打電話叫的士", e: "(Calling to order a taxi)", correct: false}] },
+            { q: "佢哋踩完一圈公園用咗幾耐時間？", e: "(How long did it take them to cycle one loop of the park?)", options: [{c: "兩個鐘頭", e: "(Two hours)", correct: true}, {c: "一個鐘頭", e: "(One hour)", correct: false}, {c: "半日", e: "(Half a day)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Currency Exchange", topic: "Comparison in Actions (抵啲 - More worth it)",
+        img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f",
+        grammarDesc: "<strong>Value Comparison:</strong> Expressing a better deal.<br>抵 (dai2) means 'worth it'. 抵啲 (dai2 di1) means 'more worth it / a better deal'.",
+        vocab: [
+            {c: "找換店", j: "zaau2 wun6 dim3", e: "Money exchange shop"}, {c: "兌換率", j: "deoi3 wun6 leot2", e: "Exchange rate"},
+            {c: "港紙", j: "gong2 zi2", e: "Hong Kong Dollar (HKD)"}, {c: "加幣", j: "gaa1 bai6", e: "Canadian Dollar (CAD)"},
+            {c: "手續費", j: "sau2 zuk6 fai3", e: "Handling fee"}, {c: "抵啲", j: "dai2 di1", e: "More worth it / Better deal"},
+            {c: "提款機", j: "tai4 fun2 gei1", e: "ATM"}, {c: "撳錢", j: "gam6 cin2", e: "Withdraw money"},
+            {c: "比較", j: "bei2 gaau3", e: "Compare"}, {c: "足夠", j: "zuk1 gau3", e: "Enough"}
+        ],
+        story: "我帶嚟加拿大嘅現金唔係好夠，所以要去市中心搵找換店。<br>我見到有兩間店，第一間嘅兌換率係 1 加幣兌 5.7 港紙，但要收手續費。<br>第二間就 1 兌 5.8，不過免手續費。我計過條數，發覺第二間其實抵啲。<br>後來 Jamie 話，其實直接用香港張提款卡喺當地嘅 ATM 撳錢可能仲抵，因為銀行嘅匯率有時仲靚。<br>不過算啦，換夠今次旅行用就算。",
+        jyutping: "Ngo5 daai3 lei4 Gaa1 naa4 daai6 ge3 jin6 gam1 m4 hai6 hou2 gau3, so2 ji5 jiu3 heoi3 si5 zung1 sam1 wan2 zaau2 wun6 dim3.<br>Ngo5 gin3 dou2 jau5 loeng5 gaan1 dim3, dai6 jat1 gaan1 ge3 deoi3 wun6 leot2 hai6 1 Gaa1 bai6 deoi3 5.7 Gong2 zi2, daan6 jiu3 sau1 sau2 zuk6 fai3.<br>Dai6 ji6 gaan1 zau6 1 deoi3 5.8, bat1 gwo3 min5 sau2 zuk6 fai3. Ngo5 gai3 gwo3 tiu4 sou3, faat3 jin6 dai6 ji6 gaan1 kei4 sat6 <span class='highlight'>dai2 di1</span>.<br>Hau6 loi4 Jamie waa6, kei4 sat6 zik6 zip3 jung6 Hoeng1 Gong2 zoeng1 tai4 fun2 kaat1 hai2 dong1 dei6 ge3 ATM gam6 cin2 ho2 nang4 zung6 dai2, jan1 wai6 ngan4 hong4 ge3 wui6 leot2 jau5 si4 zung6 leng3.<br>Bat1 gwo3 syun3 laa1, wun6 gau3 gam1 ci3 leoi5 hang4 jung6 zau6 syun3.",
+        english: "The cash I brought to Canada is not quite enough, so I have to go downtown to find a money exchange shop.<br>I saw two shops; the first one's exchange rate is 1 CAD to 5.7 HKD, but charges a handling fee.<br>The second one is 1 to 5.8, but waives the handling fee. I calculated the math and realized the second one is actually a better deal.<br>Later Jamie said that actually directly using a Hong Kong ATM card to withdraw money at a local ATM might be an even better deal, because the bank's exchange rate is sometimes even better.<br>But whatever, exchanging enough for this trip's use is fine.",
+        quizzes: [
+            { q: "作者點解要去搵找換店？", e: "(Why did the author go look for a money exchange shop?)", options: [{c: "因為帶嚟嘅現金唔夠用", e: "(Because the cash brought was not enough)", correct: true}, {c: "想將加幣換返做港紙", e: "(Wanted to exchange CAD back to HKD)", correct: false}, {c: "想買彩票", e: "(Wanted to buy lottery tickets)", correct: false}] },
+            { q: "第一間找換店同第二間有咩分別？", e: "(What is the difference between the 1st and 2nd exchange shop?)", options: [{c: "第一間匯率低啲但要手續費", e: "(1st has lower rate but charges handling fee)", correct: true}, {c: "第一間免手續費但匯率高啲", e: "(1st has no fee but higher rate)", correct: false}, {c: "兩間嘅兌換率完全一樣", e: "(Both exchange rates are exactly the same)", correct: false}] },
+            { q: "作者計完數之後覺得邊個選擇「抵啲」？", e: "(After calculating, which choice did the author feel is 'more worth it'?)", options: [{c: "第二間免手續費嘅店", e: "(The second shop with no handling fee)", correct: true}, {c: "第一間要手續費嘅店", e: "(The first shop that charges a fee)", correct: false}, {c: "返機場先換錢", e: "(Wait to exchange at the airport)", correct: false}] },
+            { q: "Jamie 提議咗咩另一個換錢方法？", e: "(What alternative method for getting money did Jamie suggest?)", options: [{c: "直接用香港卡喺當地 ATM 撳錢", e: "(Directly use HK card to withdraw at local ATM)", correct: true}, {c: "去賭場換籌碼", e: "(Go to casino to exchange chips)", correct: false}, {c: "碌信用卡", e: "(Swipe credit card)", correct: false}] },
+            { q: "「匯率仲靚」即係代表匯率點樣？", e: "(What does 'exchange rate is even prettier' mean?)", options: [{c: "匯率對兌換者更加有利", e: "(The exchange rate is more favorable to the exchanger)", correct: true}, {c: "張銀紙設計得好靚", e: "(The banknote is designed beautifully)", correct: false}, {c: "匯率非常之差", e: "(The exchange rate is terrible)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Seafood Allergy Warning", topic: "Prohibition (唔得 - Cannot / Not allowed)",
+        img: "https://images.unsplash.com/photo-1563245372-f21724e3856d",
+        grammarDesc: "<strong>Prohibition / Inability:</strong> Expressing that something cannot be done.<br>Verb + 唔得 (m4 dak1) means cannot do the action. e.g. 食唔得 (cannot eat).",
+        vocab: [
+            {c: "海鮮餐廳", j: "hoi2 sin1 caan1 teng1", e: "Seafood restaurant"}, {c: "皇帝蟹", j: "wong4 dai3 haai5", e: "King Crab"},
+            {c: "訂位", j: "deng6 wai2", e: "Book a table"}, {c: "敏感", j: "man5 gam2", e: "Allergic"},
+            {c: "花生", j: "faa1 sang1", e: "Peanut"}, {c: "唔食得", j: "m4 sik6 dak1", e: "Cannot eat"},
+            {c: "千祈唔好", j: "cin1 kei4 m4 hou2", e: "Please make absolutely sure not to..."}, {c: "落", j: "lok6", e: "Put in / Add"},
+            {c: "提醒", j: "tai4 sing2", e: "Remind"}, {c: "廚房", j: "cyu4 fong4", e: "Kitchen"}
+        ],
+        story: "溫哥華嘅海鮮好出名，所以我哋提早訂位去食阿拉斯加皇帝蟹。<br>點菜嗰陣，我同侍應講：「唔該，我對花生嚴重敏感，絕對唔食得花生。<br>麻煩你同廚房講，煮蟹嗰陣千祈唔好落花生油或者任何果仁。」<br>侍應好專業咁mark低咗，話會親自提醒大廚。<br>出外旅遊，如果有食物敏感，真係要講得好清楚，唔係就大件事喇。",
+        jyutping: "Wan1 go1 waa4 ge3 hoi2 sin1 hou2 ceot1 meng2, so2 ji5 ngo5 dei6 tai4 zou2 deng6 wai2 heoi3 sik6 Aa1 laai1 si1 gaa1 wong4 dai3 haai5.<br>Dim2 coi3 go2 zan6, ngo5 tung4 si6 jing3 gong2: 「M4 goi1, ngo5 deoi3 faa1 sang1 jim4 zung6 man5 gam2, zyut6 deoi3 <span class='highlight'>m4 sik6 dak1</span> faa1 sang1.<br>Maa4 faan4 nei5 tung4 cyu4 fong4 gong2, zyu2 haai5 go2 zan6 cin1 kei4 m4 hou2 lok6 faa1 sang1 jau4 waak6 ze2 jam6 ho4 gwo2 jan4.」<br>Si6 jing3 hou2 zyun1 jip6 gam2 mark dai1 zo2, waa6 wui5 can1 zi6 tai4 sing2 daai6 cyu4.<br>Ceot1 ngoi6 leoi5 jau4, jyu4 gwo2 jau5 sik6 mat6 man5 gam2, zan1 hai6 jiu3 gong2 dak1 hou2 cing1 co2, m4 hai6 zau6 daai6 gin6 si6 laa3.",
+        english: "Vancouver's seafood is very famous, so we booked a table in advance to eat Alaskan King Crab.<br>When ordering, I told the waiter: 'Excuse me, I am severely allergic to peanuts, absolutely cannot eat peanuts.<br>Please tell the kitchen, when cooking the crab, absolutely do not use peanut oil or any nuts.'<br>The waiter professionally wrote it down and said he would personally remind the head chef.<br>Traveling abroad, if you have food allergies, you really must explain it very clearly, otherwise it's a huge disaster.",
+        quizzes: [
+            { q: "作者去餐廳主要想食咩嘢？", e: "(What did the author mainly want to eat at the restaurant?)", options: [{c: "阿拉斯加皇帝蟹", e: "(Alaskan King Crab)", correct: true}, {c: "牛扒", e: "(Steak)", correct: false}, {c: "點心", e: "(Dim sum)", correct: false}] },
+            { q: "點菜嗰陣，作者特別提醒侍應咩事？", e: "(When ordering, what did the author specially remind the waiter about?)", options: [{c: "對花生嚴重敏感，唔食得花生", e: "(Severely allergic to peanuts, cannot eat peanuts)", correct: true}, {c: "要少鹽少油", e: "(Wants less salt and less oil)", correct: false}, {c: "想菜式快啲上", e: "(Wants the dishes served quickly)", correct: false}] },
+            { q: "作者要求廚房煮蟹嗰陣千祈唔好落咩？", e: "(What did the author ask the kitchen absolutely not to put in when cooking the crab?)", options: [{c: "花生油或者任何果仁", e: "(Peanut oil or any nuts)", correct: true}, {c: "辣椒同埋蒜頭", e: "(Chili and garlic)", correct: false}, {c: "味精", e: "(MSG)", correct: false}] },
+            { q: "侍應嘅反應係點樣？", e: "(What was the waiter's reaction?)", options: [{c: "好專業咁mark低，話會提醒大廚", e: "(Professionally noted it down, said will remind head chef)", correct: true}, {c: "話廚房做唔到", e: "(Said the kitchen cannot do it)", correct: false}, {c: "冇理會作者嘅要求", e: "(Ignored the author's request)", correct: false}] },
+            { q: "「唔係就大件事喇」喺呢度表達咩意思？", e: "(What does 'otherwise it's a huge disaster' express here?)", options: [{c: "如果不小心，後果會非常嚴重", e: "(If careless, the consequences will be very severe)", correct: true}, {c: "餐廳會發生火警", e: "(The restaurant will have a fire)", correct: false}, {c: "會被餐廳趕走", e: "(Will be kicked out of the restaurant)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Rainy Day Plan B", topic: "Alternatives (或者 - Or)",
+        img: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0",
+        grammarDesc: "<strong>Alternatives:</strong> Offering a choice between options in a statement.<br>或者 (waak6 ze2) means 'or' (used in statements, not questions).",
+        vocab: [
+            {c: "原本", j: "jyun4 bun2", e: "Originally"}, {c: "行山", j: "haang4 saan1", e: "Hiking"},
+            {c: "天氣預報", j: "tin1 hei3 jyu6 bou3", e: "Weather forecast"}, {c: "暴雨", j: "bou6 jyu5", e: "Rainstorm / Heavy rain"},
+            {c: "取消", j: "ceoi2 siu1", e: "Cancel"}, {c: "或者", j: "waak6 ze2", e: "Or (in statements)"},
+            {c: "水族館", j: "seoi2 zuk6 gun2", e: "Aquarium"}, {c: "美術館", j: "mei5 seot6 gun2", e: "Art gallery"},
+            {c: "室內", j: "sat1 noi6", e: "Indoor"}, {c: "行程", j: "hing4 cing4", e: "Itinerary"}
+        ],
+        story: "我哋原本計劃今日去松雞山 (Grouse Mountain) 行山，但係朝早睇天氣預報話會有暴雨。<br>為咗安全起見，我哋唯有取消戶外嘅行程。<br>Jamie 提議：「不如我哋改去溫哥華水族館，或者去市中心嘅美術館睇展覽啦。」<br>我覺得呢兩個提議都唔錯，落雨天安排室內活動就最適合。<br>最後我哋揀咗去水族館睇海獺。",
+        jyutping: "Ngo5 dei6 jyun4 bun2 gai3 waak6 gam1 jat6 heoi3 cung4 gai1 saan1 (Grouse Mountain) haang4 saan1, daan6 hai6 ziu1 zou2 tai2 tin1 hei3 jyu6 bou3 waa6 wui5 jau5 bou6 jyu5.<br>Wai6 zo2 on1 cyun4 hei2 gin3, ngo5 dei6 wai4 jau5 ceoi2 siu1 wu6 ngoi6 ge3 hing4 cing4.<br>Jamie tai4 ji5: 「Bat1 jyu4 ngo5 dei6 goi2 heoi3 Wan1 go1 waa4 seoi2 zuk6 gun2, <span class='highlight'>waak6 ze2</span> heoi3 si5 zung1 sam1 ge3 mei5 seot6 gun2 tai2 zin2 laam5 laa1.」<br>Ngo5 gok3 dak1 ni1 loeng5 go3 tai4 ji5 dou1 m4 co3, lok6 jyu5 tin1 on1 paai4 sat1 noi6 wut6 dung6 zau6 zeoi3 sik1 hap6.<br>Zeoi3 hau6 ngo5 dei6 gaan2 zo2 heoi3 seoi2 zuk6 gun2 tai2 hoi2 caat3.",
+        english: "We originally planned to go hiking at Grouse Mountain today, but looking at the weather forecast in the morning, it said there would be heavy rain.<br>For safety's sake, we had to cancel our outdoor itinerary.<br>Jamie suggested: 'How about we change to going to the Vancouver Aquarium, or go to the downtown Art Gallery to see an exhibition.'<br>I feel these two suggestions are not bad; arranging indoor activities on a rainy day is most suitable.<br>Finally, we chose to go to the aquarium to see the sea otters.",
+        quizzes: [
+            { q: "作者原本今日計劃做咩？", e: "(What did the author originally plan to do today?)", options: [{c: "去松雞山行山", e: "(Go hiking at Grouse Mountain)", correct: true}, {c: "去海灘游水", e: "(Go swimming at the beach)", correct: false}, {c: "留喺酒店瞓覺", e: "(Stay in the hotel and sleep)", correct: false}] },
+            { q: "點解佢哋要取消原本嘅行程？", e: "(Why did they have to cancel the original itinerary?)", options: [{c: "因為天氣預報話會有暴雨", e: "(Because the weather forecast said there would be heavy rain)", correct: true}, {c: "因為松雞山冇開門", e: "(Because Grouse Mountain was not open)", correct: false}, {c: "因為佢哋唔識路", e: "(Because they didn't know the way)", correct: false}] },
+            { q: "Jamie 提出咗咩「室內活動」嘅選擇？", e: "(What 'indoor activity' choices did Jamie suggest?)", options: [{c: "去水族館或者美術館", e: "(Go to the aquarium or the art gallery)", correct: true}, {c: "去圖書館或者戲院", e: "(Go to the library or the cinema)", correct: false}, {c: "去飲茶或者行商場", e: "(Go eat dim sum or walk the mall)", correct: false}] },
+            { q: "最後佢哋決定去邊度？", e: "(Where did they finally decide to go?)", options: [{c: "水族館", e: "(Aquarium)", correct: true}, {c: "美術館", e: "(Art gallery)", correct: false}, {c: "仍然去行山", e: "(Still went hiking)", correct: false}] },
+            { q: "「或者」喺句子入面發揮咩作用？", e: "(What function does 'waak ze' serve in the sentence?)", options: [{c: "提供多一個選擇", e: "(Provides an alternative choice)", correct: true}, {c: "表示強烈反對", e: "(Expresses strong opposition)", correct: false}, {c: "表示因果關係", e: "(Expresses cause and effect)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Lost Wallet on Skytrain", topic: "Past Experience Negation (未... 過 - Have not experienced)",
+        img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
+        grammarDesc: "<strong>Negative Experience:</strong> Expressing you have never done something.<br>未 (mei6) + Verb + 過 (gwo3) means 'Have never [verb]-ed'.",
+        vocab: [
+            {c: "銀包", j: "ngan4 baau1", e: "Wallet"}, {c: "唔見咗", j: "m4 gin3 zo2", e: "Lost / Disappeared"},
+            {c: "報失", j: "bou3 sat1", e: "Report a loss"}, {c: "失物認領處", j: "sat1 mat6 jing6 ling5 cyu3", e: "Lost and found"},
+            {c: "未試過", j: "mei6 si3 gwo3", e: "Have never tried / experienced"}, {c: "慌張", j: "fong1 zoeng1", e: "Panicked"},
+            {c: "信用卡", j: "seon3 jung6 kaat1", e: "Credit card"}, {c: "好心人", j: "hou2 sam1 jan4", e: "Good Samaritan"},
+            {c: "執到", j: "zap1 dou2", e: "Picked up / Found"}, {c: "失而復得", j: "sat1 ji4 fuk6 dak1", e: "Lost and found again"}
+        ],
+        story: "今日搭天車嗰陣，我落車先發覺銀包唔見咗。<br>我之前從來未試過喺外國唔見嘢，所以當時非常慌張。<br>入面有我嘅身份證同埋幾張信用卡。我即刻打電話去銀行報失信用卡，然後去天車站嘅失物認領處問。<br>職員查完電腦之後同我講，有個好心人喺車廂執到交咗畀佢哋。<br>銀包可以失而復得，溫哥華嘅人真係好好。",
+        jyutping: "Gam1 jat6 daap3 tin1 ce1 go2 zan6, ngo5 lok6 ce1 sin1 faat3 gok3 ngan4 baau1 m4 gin3 zo2.<br>Ngo5 zi1 cin4 cung4 loi4 <span class='highlight'>mei6 si3 gwo3</span> hai2 ngoi6 gwok3 m4 gin3 je5, so2 ji5 dong1 si4 fei1 soeng4 fong1 zoeng1.<br>Jap6 min6 jau5 ngo5 ge3 san1 fan2 zing3 tung4 maai4 gei2 zoeng1 seon3 jung6 kaat1. Ngo5 zik1 hak1 daa2 din6 waa2 heoi3 ngan4 hong4 bou3 sat1 seon3 jung6 kaat1, jin4 hau6 heoi3 tin1 ce1 zaam6 ge3 sat1 mat6 jing6 ling5 cyu3 man6.<br>Zik1 jyun4 caa4 jyun4 din6 nou5 zi1 hau6 tung4 ngo5 gong2, jau5 go3 hou2 sam1 jan4 hai2 ce1 soeng1 zap1 dou2 gaau1 zo2 bei2 keoi5 dei6.<br>Ngan4 baau1 ho2 ji5 sat1 ji4 fuk6 dak1, Wan1 go1 waa4 ge3 jan4 zan1 hai6 hou2 hou2.",
+        english: "While riding the Skytrain today, I only realized my wallet was lost after getting off.<br>I had never experienced losing things in a foreign country before, so I was extremely panicked at the time.<br>Inside were my ID card and several credit cards. I immediately called the bank to report the credit cards lost, and then went to the Skytrain station's lost and found to ask.<br>After checking the computer, the staff told me a good Samaritan picked it up in the train car and handed it over to them.<br>To be able to find a lost wallet again, Vancouver's people are really good.",
+        quizzes: [
+            { q: "作者喺邊度發覺自己唔見咗銀包？", e: "(Where did the author realize they lost their wallet?)", options: [{c: "搭完天車落車嗰陣", e: "(When getting off the Skytrain)", correct: true}, {c: "喺餐廳食完飯畀錢嗰陣", e: "(When paying after eating at a restaurant)", correct: false}, {c: "返到酒店房嗰陣", e: "(When returning to the hotel room)", correct: false}] },
+            { q: "點解作者當時會覺得非常慌張？", e: "(Why did the author feel extremely panicked at the time?)", options: [{c: "因為從來未試過喺外國唔見嘢", e: "(Because they had never lost things abroad before)", correct: true}, {c: "因為銀包入面有好多現金", e: "(Because there was a lot of cash in the wallet)", correct: false}, {c: "因為唔識講英文", e: "(Because they didn't know how to speak English)", correct: false}] },
+            { q: "發覺唔見銀包之後，作者第一時間做咗咩？", e: "(After realizing the wallet was lost, what did the author do immediately?)", options: [{c: "打電話去銀行報失信用卡", e: "(Called the bank to report credit cards lost)", correct: true}, {c: "去警局報警", e: "(Went to the police station to report)", correct: false}, {c: "坐返天車去搵", e: "(Rode the Skytrain back to search)", correct: false}] },
+            { q: "銀包最後點樣搵返？", e: "(How was the wallet finally found?)", options: [{c: "有個好心人執到交咗畀車站", e: "(A good Samaritan found it and handed it to the station)", correct: true}, {c: "跌咗喺自己個背囊入面", e: "(Dropped inside their own backpack)", correct: false}, {c: "警察幫手搵返", e: "(The police helped find it)", correct: false}] },
+            { q: "「失而復得」係咩意思？", e: "(What does 'sat ji fuk dak' mean?)", options: [{c: "失去咗嘅嘢又重新搵返", e: "(Lost things found again)", correct: true}, {c: "失去咗就永遠搵唔返", e: "(Lost and never found again)", correct: false}, {c: "得到好多財富", e: "(Gained a lot of wealth)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Taxi to Airport (Departure)", topic: "Urgency (快啲 - Hurry up / Faster)",
+        img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
+        grammarDesc: "<strong>Urgency:</strong> Telling someone to do something quicker.<br>快啲 (faai3 di1) means 'faster' or 'hurry up'.",
+        vocab: [
+            {c: "出發", j: "ceot1 faat3", e: "Depart / Set off"}, {c: "塞車", j: "sak1 ce1", e: "Traffic jam"},
+            {c: "的士", j: "dik1 si2", e: "Taxi"}, {c: "司機", j: "si1 gei1", e: "Driver"},
+            {c: "快啲", j: "faai3 di1", e: "Hurry up / Faster"}, {c: "趕飛機", j: "gon2 fei1 gei1", e: "Rush for a flight"},
+            {c: "航運大樓", j: "hong4 wan6 daai6 lau4", e: "Terminal"}, {c: "國際線", j: "gwok3 zai3 sin3", e: "International departures"},
+            {c: "唔捨得", j: "m4 se2 dak1", e: "Reluctant to leave"}, {c: "滿載而歸", j: "mun5 zoi3 ji4 gwai1", e: "Return fully loaded (with good things)"}
+        ],
+        story: "今日係我哋旅程嘅最後一日，準備搭車去機場返香港。<br>點知出市區條路大塞車。我同的士司機講：「唔該司機，可唔可以開快啲？我哋要趕飛機呀。」<br>司機話會盡量行捷徑，仲問我哋係去邊個航運大樓。我答佢：「國際線出發大堂。」<br>望住車窗外嘅溫哥華風景，真係有啲唔捨得。<br>今次旅行買咗好多手信，又經歷咗好多趣事，絕對係滿載而歸！",
+        jyutping: "Gam1 jat6 hai6 ngo5 dei6 leoi5 cing4 ge3 zeoi3 hau6 jat1 jat6, zeon2 bei6 daap3 ce1 heoi3 gei1 coeng4 faan1 hoeng1 gong2.<br>Dim2 zi1 ceot1 si5 keoi1 tiu4 lou6 daai6 sak1 ce1. Ngo5 tung4 dik1 si2 si1 gei1 gong2: 「M4 goi1 si1 gei1, ho2 m4 ho2 ji5 hoi1 <span class='highlight'>faai3 di1</span>? Ngo5 dei6 jiu3 gon2 fei1 gei1 aa3.」<br>Si1 gei1 waa6 wui5 zeon6 loeng6 haang4 zit6 ging3, zung6 man6 ngo5 dei6 hai6 heoi3 bin1 go3 hong4 wan6 daai6 lau4. Ngo5 daap3 keoi5: 「Gwok3 zai3 sin3 ceot1 faat3 daai6 tong4.」<br>Mong6 zyu6 ce1 coeng1 ngoi6 ge3 Wan1 go1 waa4 fung1 ging2, zan1 hai6 jau5 di1 m4 se2 dak1.<br>Gam1 ci3 leoi5 hang4 maai5 zo2 hou2 do1 sau2 seon3, jau6 ging1 lik6 zo2 hou2 do1 ceoi3 si6, zyut6 deoi3 hai6 mun5 zoi3 ji4 gwai1!",
+        english: "Today is the last day of our trip, preparing to take a car to the airport to return to Hong Kong.<br>Who knew the road out of downtown had a massive traffic jam. I told the taxi driver: 'Excuse me driver, can you drive faster? We need to rush for a flight.'<br>The driver said he would try to take a shortcut, and asked which terminal we were going to. I answered: 'International departures hall.'<br>Looking at the Vancouver scenery outside the car window, I really feel a bit reluctant to leave.<br>This trip we bought many souvenirs and experienced many interesting things, absolutely returning fully loaded!",
+        quizzes: [
+            { q: "去機場條路遇到咩情況？", e: "(What situation did they encounter on the way to the airport?)", options: [{c: "大塞車", e: "(Massive traffic jam)", correct: true}, {c: "落大雪封路", e: "(Heavy snow closed the road)", correct: false}, {c: "的士拋錨", e: "(Taxi broke down)", correct: false}] },
+            { q: "作者要求司機做咩？", e: "(What did the author ask the driver to do?)", options: [{c: "開快啲，因為要趕飛機", e: "(Drive faster, because need to rush for flight)", correct: true}, {c: "開慢啲，想睇風景", e: "(Drive slower, want to see scenery)", correct: false}, {c: "停車去廁所", e: "(Stop the car to go to the toilet)", correct: false}] },
+            { q: "司機問佢哋要去邊度落車？", e: "(Where did the driver ask them where they wanted to be dropped off?)", options: [{c: "國際線出發大堂", e: "(International departures hall)", correct: true}, {c: "國內線到達大堂", e: "(Domestic arrivals hall)", correct: false}, {c: "機場酒店", e: "(Airport hotel)", correct: false}] },
+            { q: "作者離開溫哥華嘅心情係點樣？", e: "(What is the author's mood leaving Vancouver?)", options: [{c: "有啲唔捨得", e: "(A bit reluctant to leave)", correct: true}, {c: "非常開心終於可以走", e: "(Very happy to finally be able to leave)", correct: false}, {c: "好嬲因為塞車", e: "(Very angry because of the traffic jam)", correct: false}] },
+            { q: "「滿載而歸」形容緊今次旅行點樣？", e: "(What does 'mun zoi ji gwai' describe about this trip?)", options: [{c: "收穫豐富，帶住好多好嘢返去", e: "(Rich harvest, returning with many good things)", correct: true}, {c: "唔見咗好多錢", e: "(Lost a lot of money)", correct: false}, {c: "乜都冇買到", e: "(Bought nothing at all)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>✈️ Tourist Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Story Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>

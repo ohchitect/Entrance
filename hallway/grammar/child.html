@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: Child Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 0.9rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 200px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #ff9800; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #f57c00; }
+        .prep-section {
+            background-color: #fff8e1; border-left: 4px solid #ffb300;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #f57c00; font-size: 1.1rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.4; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .vocab-item {
+            background: white; padding: 10px 8px; border-radius: 8px; font-size: 0.9rem;
+            border: 2px solid #ffe082; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #fff8e1; border-color: #ffca28; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #ff9800; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #ff9800;
+            padding: 15px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.2rem; line-height: 1.9; margin-bottom: 15px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #666; font-size: 0.9rem; line-height: 1.6; text-align: justify; }
+        .highlight { color: #ff9800; text-decoration: underline; background-color: #fff8e1; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 20px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 5px; line-height: 1.4; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; line-height: 1.4; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 4px; }
+        .translation-box { margin-top: 30px; font-size: 0.9rem; color: #555; background: #eee; padding: 15px; border-radius: 8px; line-height: 1.6; text-align: justify; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+        .nav-btn { background: #f57c00; color: white; border: none; border-radius: 8px; padding: 12px 20px; font-weight: bold; cursor: pointer; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+</div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "My Favorite Animal", topic: "Identity (呢隻係 - This is)",
+        img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba",
+        grammarDesc: "<strong>Identity:</strong> Naming things and colors.<br>呢隻係 (ni1 zek3 hai6) means 'This is' for animals.",
+        vocab: [
+            {c: "貓", j: "maau1", e: "Cat"}, {c: "狗", j: "gau2", e: "Dog"},
+            {c: "白色", j: "baak6 sik1", e: "White color"}, {c: "黑色", j: "hak1 sik1", e: "Black color"},
+            {c: "紅色", j: "hung4 sik1", e: "Red color"}, {c: "可愛", j: "ho2 oi3", e: "Cute"},
+            {c: "鍾意", j: "zung1 ji3", e: "Like"}, {c: "動物", j: "dung6 mat6", e: "Animal"},
+            {c: "兔仔", j: "tou3 zai2", e: "Rabbit"}, {c: "雀仔", j: "zoek3 zai2", e: "Bird"}
+        ],
+        story: "呢隻係一隻小貓。佢係白色嘅，好可愛。<br>我屋企冇狗，只有一隻貓。<br>我好鍾意動物，貓係我最鍾意嘅動物。",
+        jyutping: "<span class='highlight'>Ni1 zek3 hai6</span> jat1 zek3 siu2 maau1. Keoi5 hai6 baak6 sik1 ge3, hou2 ho2 oi3.<br>Ngo5 uk1 kei2 mou5 gau2, zi2 jau5 jat1 zek3 maau1.<br>Ngo5 hou2 zung1 ji3 dung6 mat6, maau1 hai6 ngo5 zeoi3 zung1 ji3 ge3 dung6 mat6.",
+        english: "This is a small cat. It is white and very cute.<br>My home doesn't have a dog, only one cat.<br>I really like animals, the cat is my favorite animal.",
+        quizzes: [
+            { q: "呢隻係咩動物？", e: "(What animal is this?)", options: [{c: "貓", e: "(Cat)", correct: true}, {c: "狗", e: "(Dog)", correct: false}, {c: "兔仔", e: "(Rabbit)", correct: false}] },
+            { q: "隻貓係咩顏色？", e: "(What color is the cat?)", options: [{c: "白色", e: "(White)", correct: true}, {c: "黑色", e: "(Black)", correct: false}, {c: "紅色", e: "(Red)", correct: false}] },
+            { q: "屋企有冇狗？", e: "(Is there a dog at home?)", options: [{c: "冇狗", e: "(No dog)", correct: true}, {c: "有一隻狗", e: "(Has one dog)", correct: false}, {c: "有兩隻狗", e: "(Has two dogs)", correct: false}] },
+            { q: "作者覺得隻貓點樣？", e: "(How does the author feel about the cat?)", options: [{c: "好可愛", e: "(Very cute)", correct: true}, {c: "好惡", e: "(Very fierce)", correct: false}, {c: "好大", e: "(Very big)", correct: false}] },
+            { q: "作者最鍾意咩動物？", e: "(What is the author's favorite animal?)", options: [{c: "貓", e: "(Cat)", correct: true}, {c: "雀仔", e: "(Bird)", correct: false}, {c: "魚", e: "(Fish)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "My Family Members", topic: "Possession (有 - Have)",
+        img: "https://images.unsplash.com/photo-1511895426328-dc8714191300",
+        grammarDesc: "<strong>Possession:</strong> Talking about who is in your family.<br>有 (jau5) means 'Have'.",
+        vocab: [
+            {c: "屋企人", j: "uk1 kei2 jan4", e: "Family members"}, {c: "爸爸", j: "baa4 baa1", e: "Daddy"},
+            {c: "媽媽", j: "maa4 maa1", e: "Mommy"}, {c: "哥哥", j: "go4 go1", e: "Older brother"},
+            {c: "妹妹", j: "mui4 mui2", e: "Younger sister"}, {c: "有", j: "jau5", e: "Have"},
+            {c: "愛", j: "oi3", e: "Love"}, {c: "一齊", j: "jat1 cai4", e: "Together"},
+            {c: "玩", j: "waan2", e: "Play"}, {c: "笑", j: "siu3", e: "Laugh / Smile"}
+        ],
+        story: "我屋企有四個人。有爸爸、媽媽、哥哥同埋我。<br>我冇妹妹。我哋一家人好鍾意一齊玩。<br>我好愛我嘅屋企人，我哋成日一齊笑。",
+        jyutping: "Ngo5 uk1 kei2 <span class='highlight'>jau5</span> sei3 go3 jan4. <span class='highlight'>Jau5</span> baa4 baa1, maa4 maa1, go4 go1 tung4 maai4 ngo5.<br>Ngo5 mou5 mui4 mui2. Ngo5 dei6 jat1 gaa1 jan4 hou2 zung1 ji3 jat1 cai4 waan2.<br>Ngo5 hou2 oi3 ngo5 ge3 uk1 kei2 jan4, ngo5 dei6 seng4 jat6 jat1 cai4 siu3.",
+        english: "My home has four people. There is Daddy, Mommy, older brother and me.<br>I don't have a younger sister. Our family loves to play together.<br>I love my family very much, we always laugh together.",
+        quizzes: [
+            { q: "屋企總共有幾多人？", e: "(How many people are in the family in total?)", options: [{c: "四個人", e: "(Four people)", correct: true}, {c: "三個人", e: "(Three people)", correct: false}, {c: "五個人", e: "(Five people)", correct: false}] },
+            { q: "屋企有邊個？", e: "(Who is in the home?)", options: [{c: "爸爸、媽媽、哥哥同我", e: "(Daddy, mommy, older brother and me)", correct: true}, {c: "爸爸、媽媽、妹妹同我", e: "(Daddy, mommy, younger sister and me)", correct: false}, {c: "只有爸爸同媽媽", e: "(Only daddy and mommy)", correct: false}] },
+            { q: "作者有冇妹妹？", e: "(Does the author have a younger sister?)", options: [{c: "冇", e: "(No)", correct: true}, {c: "有", e: "(Yes)", correct: false}, {c: "有兩個", e: "(Has two)", correct: false}] },
+            { q: "一家人最鍾意做咩？", e: "(What does the family like to do most?)", options: [{c: "一齊玩", e: "(Play together)", correct: true}, {c: "一齊瞓覺", e: "(Sleep together)", correct: false}, {c: "一齊喊", e: "(Cry together)", correct: false}] },
+            { q: "作者對屋企人有咩感覺？", e: "(How does the author feel about the family?)", options: [{c: "好愛佢哋", e: "(Loves them very much)", correct: true}, {c: "好驚佢哋", e: "(Very scared of them)", correct: false}, {c: "唔鍾意佢哋", e: "(Doesn't like them)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Counting Toys", topic: "Classifiers (個, 架 - Measure Words)",
+        img: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1",
+        grammarDesc: "<strong>Counting:</strong> Using correct measure words.<br>一架車 (one car), 兩個波 (two balls).",
+        vocab: [
+            {c: "一", j: "jat1", e: "One"}, {c: "二/兩", j: "ji6 / loeng5", e: "Two"},
+            {c: "三", j: "saam1", e: "Three"}, {c: "車", j: "ce1", e: "Car"},
+            {c: "波", j: "bo1", e: "Ball"}, {c: "公仔", j: "gung1 zai2", e: "Doll / Action figure"},
+            {c: "玩具", j: "waan4 geoi6", e: "Toy"}, {c: "數", j: "sou2", e: "Count"},
+            {c: "買", j: "maai5", e: "Buy"}, {c: "畀", j: "bei2", e: "Give"}
+        ],
+        story: "我有好多玩具。我有一架紅色嘅玩具車。<br>爸爸買咗兩個波畀我。仲有三個好可愛嘅公仔。<br>我鍾意數我嘅玩具：一、二、三！",
+        jyutping: "Ngo5 jau5 hou2 do1 waan4 geoi6. Ngo5 jau5 jat1 <span class='highlight'>gaa3</span> hung4 sik1 ge3 waan4 geoi6 ce1.<br>Baa4 baa1 maai5 zo2 loeng5 <span class='highlight'>go3</span> bo1 bei2 ngo5. Zung6 jau5 saam1 <span class='highlight'>go3</span> hou2 ho2 oi3 ge3 gung1 zai2.<br>Ngo5 zung1 ji3 sou2 ngo5 ge3 waan4 geoi6: jat1, ji6, saam1!",
+        english: "I have many toys. I have one red toy car.<br>Daddy bought two balls for me. Also three very cute dolls.<br>I like to count my toys: one, two, three!",
+        quizzes: [
+            { q: "作者有幾多架玩具車？", e: "(How many toy cars does the author have?)", options: [{c: "一架", e: "(One)", correct: true}, {c: "兩架", e: "(Two)", correct: false}, {c: "三架", e: "(Three)", correct: false}] },
+            { q: "爸爸買咗咩畀作者？", e: "(What did Daddy buy for the author?)", options: [{c: "兩個波", e: "(Two balls)", correct: true}, {c: "一隻貓", e: "(A cat)", correct: false}, {c: "三個波", e: "(Three balls)", correct: false}] },
+            { q: "公仔有幾多個？", e: "(How many dolls are there?)", options: [{c: "三個", e: "(Three)", correct: true}, {c: "一個", e: "(One)", correct: false}, {c: "兩個", e: "(Two)", correct: false}] },
+            { q: "玩具車係咩顏色？", e: "(What color is the toy car?)", options: [{c: "紅色", e: "(Red)", correct: true}, {c: "白色", e: "(White)", correct: false}, {c: "藍色", e: "(Blue)", correct: false}] },
+            { q: "數玩具嗰陣講咗咩數字？", e: "(What numbers were said when counting toys?)", options: [{c: "一、二、三", e: "(One, two, three)", correct: true}, {c: "四、五、六", e: "(Four, five, six)", correct: false}, {c: "七、八、九", e: "(Seven, eight, nine)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Body Parts", topic: "Adjectives (大 / 細 - Big / Small)",
+        img: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017",
+        grammarDesc: "<strong>Adjectives:</strong> Describing sizes.<br>大 (daai6) means Big, 細 (sai3) means Small.",
+        vocab: [
+            {c: "眼", j: "ngaan5", e: "Eyes"}, {c: "耳仔", j: "ji5 zai2", e: "Ears"},
+            {c: "鼻", j: "bei6", e: "Nose"}, {c: "口", j: "hau2", e: "Mouth"},
+            {c: "手", j: "sau2", e: "Hands"}, {c: "腳", j: "goek3", e: "Feet"},
+            {c: "大", j: "daai6", e: "Big"}, {c: "細", j: "sai3", e: "Small"},
+            {c: "望", j: "mong6", e: "Look"}, {c: "聽", j: "teng1", e: "Listen"}
+        ],
+        story: "我隻熊人公仔好得意。佢有一對大眼，同埋一對大耳仔。<br>不過佢個鼻就好細。佢用對眼望住我。<br>我有兩隻手同兩隻腳，我可以用腳行路。",
+        jyutping: "Ngo5 zek3 hung4 jan4 gung1 zai2 hou2 dak1 ji3. Keoi5 jau5 jat1 deoi3 <span class='highlight'>daai6</span> ngaan5, tung4 maai4 jat1 deoi3 <span class='highlight'>daai6</span> ji5 zai2.<br>Bat1 gwo3 keoi5 go3 bei6 zau6 hou2 <span class='highlight'>sai3</span>. Keoi5 jung6 deoi3 ngaan5 mong6 zyu6 ngo5.<br>Ngo5 jau5 loeng5 zek3 sau2 tung4 loeng5 zek3 goek3, ngo5 ho2 ji5 jung6 goek3 haang4 lou6.",
+        english: "My teddy bear doll is very cute. It has a pair of big eyes, and a pair of big ears.<br>But its nose is very small. It uses its eyes to look at me.<br>I have two hands and two feet, I can use my feet to walk.",
+        quizzes: [
+            { q: "熊人公仔嘅眼係點樣嘅？", e: "(How are the teddy bear's eyes?)", options: [{c: "好大", e: "(Very big)", correct: true}, {c: "好細", e: "(Very small)", correct: false}, {c: "紅色", e: "(Red)", correct: false}] },
+            { q: "熊人公仔嘅鼻係大定細？", e: "(Is the teddy bear's nose big or small?)", options: [{c: "好細", e: "(Very small)", correct: true}, {c: "好大", e: "(Very big)", correct: false}, {c: "冇鼻", e: "(No nose)", correct: false}] },
+            { q: "作者有幾多隻手？", e: "(How many hands does the author have?)", options: [{c: "兩隻", e: "(Two)", correct: true}, {c: "一隻", e: "(One)", correct: false}, {c: "四隻", e: "(Four)", correct: false}] },
+            { q: "熊人公仔用咩望住作者？", e: "(What does the teddy bear use to look at the author?)", options: [{c: "對眼", e: "(Eyes)", correct: true}, {c: "個鼻", e: "(Nose)", correct: false}, {c: "隻手", e: "(Hands)", correct: false}] },
+            { q: "作者用咩行路？", e: "(What does the author use to walk?)", options: [{c: "對腳", e: "(Feet)", correct: true}, {c: "對手", e: "(Hands)", correct: false}, {c: "個口", e: "(Mouth)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Yummy Food", topic: "Preferences (最鍾意 - Favorite/Like most)",
+        img: "https://images.unsplash.com/photo-1542691457-cbe4df041eb2",
+        grammarDesc: "<strong>Preferences:</strong> Saying what you like.<br>最鍾意 (zeoi3 zung1 ji3) means 'Like the most' or 'Favorite'.",
+        vocab: [
+            {c: "蘋果", j: "ping4 gwo2", e: "Apple"}, {c: "香蕉", j: "hoeng1 ziu1", e: "Banana"},
+            {c: "麵包", j: "min6 baau1", e: "Bread"}, {c: "蛋糕", j: "daan6 gou1", e: "Cake"},
+            {c: "糖", j: "tong2", e: "Candy"}, {c: "食", j: "sik6", e: "Eat"},
+            {c: "甜", j: "tim4", e: "Sweet"}, {c: "好味", j: "hou2 mei6", e: "Delicious"},
+            {c: "鍾意", j: "zung1 ji3", e: "Like"}, {c: "水", j: "seoi2", e: "Water"}
+        ],
+        story: "每日食晏我都好開心。我最鍾意食蘋果同香蕉。<br>蘋果好甜好好味。今日媽媽買咗個細蛋糕畀我。<br>我唔可以食太多糖，口渴嗰陣我會飲水。",
+        jyutping: "Mui5 jat6 sik6 aan3 ngo5 dou1 hou2 hoi1 sam1. Ngo5 <span class='highlight'>zeoi3 zung1 ji3</span> sik6 ping4 gwo2 tung4 hoeng1 ziu1.<br>Ping4 gwo2 hou2 tim4 hou2 hou2 mei6. Gam1 jat6 maa4 maa1 maai5 zo2 go3 sai3 daan6 gou1 bei2 ngo5.<br>Ngo5 m4 ho2 ji5 sik6 taai3 do1 tong2, hau2 hot3 go2 zan6 ngo5 wui5 jam2 seoi2.",
+        english: "Every day at lunch I am very happy. I like eating apples and bananas the most.<br>Apples are very sweet and delicious. Today mommy bought a small cake for me.<br>I cannot eat too much candy, when I am thirsty I drink water.",
+        quizzes: [
+            { q: "作者最鍾意食咩生果？", e: "(What fruits does the author like to eat most?)", options: [{c: "蘋果同香蕉", e: "(Apples and bananas)", correct: true}, {c: "西瓜同提子", e: "(Watermelon and grapes)", correct: false}, {c: "橙同梨", e: "(Oranges and pears)", correct: false}] },
+            { q: "蘋果食落去係咩味道？", e: "(What does the apple taste like?)", options: [{c: "好甜好好味", e: "(Very sweet and delicious)", correct: true}, {c: "好酸", e: "(Very sour)", correct: false}, {c: "好苦", e: "(Very bitter)", correct: false}] },
+            { q: "今日媽媽買咗咩？", e: "(What did mommy buy today?)", options: [{c: "蛋糕", e: "(Cake)", correct: true}, {c: "麵包", e: "(Bread)", correct: false}, {c: "糖", e: "(Candy)", correct: false}] },
+            { q: "作者唔可以食太多咩嘢？", e: "(What can the author not eat too much of?)", options: [{c: "糖", e: "(Candy)", correct: true}, {c: "麵包", e: "(Bread)", correct: false}, {c: "蘋果", e: "(Apple)", correct: false}] },
+            { q: "口渴嗰陣作者會飲咩？", e: "(What will the author drink when thirsty?)", options: [{c: "水", e: "(Water)", correct: true}, {c: "牛奶", e: "(Milk)", correct: false}, {c: "果汁", e: "(Juice)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "Going to School", topic: "Transport (搭 - To ride/take)",
+        img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b",
+        grammarDesc: "<strong>Transportation:</strong> Expressing how you travel.<br>搭 (daap3) means 'to take/ride' a vehicle.",
+        vocab: [
+            {c: "學校", j: "hok6 haau6", e: "School"}, {c: "校巴", j: "haau6 baa1", e: "School bus"},
+            {c: "老師", j: "lou5 si1", e: "Teacher"}, {c: "同學", j: "tung4 hok6", e: "Classmate"},
+            {c: "早晨", j: "zou2 san4", e: "Good morning"}, {c: "畫畫", j: "waak6 waak2", e: "Draw"},
+            {c: "搭", j: "daap3", e: "Ride / Take"}, {c: "書", j: "syu1", e: "Book"},
+            {c: "讀", j: "duk6", e: "Read"}, {c: "寫字", j: "se2 zi6", e: "Write characters"}
+        ],
+        story: "朝早我搭校巴去學校。校巴係黃色嘅。<br>去到學校，我同老師講「早晨！」。<br>我同同學一齊畫畫同寫字，我好鍾意睇書。",
+        jyutping: "Ziu1 zou2 ngo5 <span class='highlight'>daap3</span> haau6 baa1 heoi3 hok6 haau6. Haau6 baa1 hai6 wong4 sik1 ge3.<br>Heoi3 dou3 hok6 haau6, ngo5 tung4 lou5 si1 gong2 「Zou2 san4!」.<br>Ngo5 tung4 tung4 hok6 jat1 cai4 waak6 waak2 tung4 se2 zi6, ngo5 hou2 zung1 ji3 tai2 syu1.",
+        english: "In the morning I take the school bus to school. The school bus is yellow.<br>Arriving at school, I say 'Good morning!' to the teacher.<br>I draw and write characters together with classmates, I really like reading books.",
+        quizzes: [
+            { q: "作者朝早點樣去學校？", e: "(How does the author go to school in the morning?)", options: [{c: "搭校巴", e: "(Take the school bus)", correct: true}, {c: "搭的士", e: "(Take a taxi)", correct: false}, {c: "行路去", e: "(Walk there)", correct: false}] },
+            { q: "校巴係咩顏色？", e: "(What color is the school bus?)", options: [{c: "黃色", e: "(Yellow)", correct: true}, {c: "紅色", e: "(Red)", correct: false}, {c: "藍色", e: "(Blue)", correct: false}] },
+            { q: "見到老師要講咩？", e: "(What to say when seeing the teacher?)", options: [{c: "早晨", e: "(Good morning)", correct: true}, {c: "拜拜", e: "(Bye bye)", correct: false}, {c: "多謝", e: "(Thank you)", correct: false}] },
+            { q: "作者同同學一齊做咩？", e: "(What does the author do together with classmates?)", options: [{c: "畫畫同寫字", e: "(Draw and write)", correct: true}, {c: "食糖", e: "(Eat candy)", correct: false}, {c: "瞓覺", e: "(Sleep)", correct: false}] },
+            { q: "作者鍾意做咩？", e: "(What does the author like to do?)", options: [{c: "睇書", e: "(Read books)", correct: true}, {c: "喊", e: "(Cry)", correct: false}, {c: "打交", e: "(Fight)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Fun at the Playground", topic: "Actions (玩 - To play)",
+        img: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1",
+        grammarDesc: "<strong>Actions:</strong> Describing physical play.<br>玩 (waan2) means 'to play'.",
+        vocab: [
+            {c: "公園", j: "gung1 jyun2", e: "Park / Playground"}, {c: "玩", j: "waan2", e: "Play"},
+            {c: "滑梯", j: "waat6 tai1", e: "Slide"}, {c: "千秋", j: "cin1 cau1", e: "Swing"},
+            {c: "跑", j: "paau2", e: "Run"}, {c: "跳", j: "tiu3", e: "Jump"},
+            {c: "朋友", j: "pang4 jau5", e: "Friend"}, {c: "追", j: "zeoi1", e: "Chase"},
+            {c: "跌", j: "dit3", e: "Fall"}, {c: "喊", j: "haam3", e: "Cry"}
+        ],
+        story: "下晝媽媽帶我去公園玩。公園有好多小朋友。<br>我最鍾意瀡滑梯同打千秋。<br>我同朋友一齊跑來跑去，我不小心跌倒，但係我冇喊。",
+        jyutping: "Haa6 zau3 maa4 maa1 daai3 ngo5 heoi3 gung1 jyun2 <span class='highlight'>waan2</span>. Gung1 jyun2 jau5 hou2 do1 siu2 pang4 jau5.<br>Ngo5 zeoi3 zung1 ji3 seoi4 waat6 tai1 tung4 daa2 cin1 cau1.<br>Ngo5 tung4 pang4 jau5 jat1 cai4 paau2 lei4 paau2 heoi3, ngo5 bat1 siu2 sam1 dit3 dou2, daan6 hai6 ngo5 mou5 haam3.",
+        english: "In the afternoon mommy takes me to the park to play. The park has many children.<br>I like sliding down the slide and playing on the swings the most.<br>I run around together with friends, I accidentally fell down, but I didn't cry.",
+        quizzes: [
+            { q: "下晝邊個帶作者去公園？", e: "(Who took the author to the park in the afternoon?)", options: [{c: "媽媽", e: "(Mommy)", correct: true}, {c: "爸爸", e: "(Daddy)", correct: false}, {c: "老師", e: "(Teacher)", correct: false}] },
+            { q: "公園入面有咩玩？", e: "(What is there to play in the park?)", options: [{c: "滑梯同千秋", e: "(Slide and swings)", correct: true}, {c: "校巴", e: "(School bus)", correct: false}, {c: "電視", e: "(TV)", correct: false}] },
+            { q: "作者同朋友一齊做咩？", e: "(What did the author do with friends?)", options: [{c: "跑來跑去", e: "(Run around)", correct: true}, {c: "寫字", e: "(Write characters)", correct: false}, {c: "食蛋糕", e: "(Eat cake)", correct: false}] },
+            { q: "作者跌倒之後有咩反應？", e: "(What was the author's reaction after falling?)", options: [{c: "冇喊", e: "(Didn't cry)", correct: true}, {c: "大聲喊", e: "(Cried loudly)", correct: false}, {c: "笑", e: "(Laughed)", correct: false}] },
+            { q: "公園入面有好多咩人？", e: "(There are many what kind of people in the park?)", options: [{c: "小朋友", e: "(Children)", correct: true}, {c: "警察", e: "(Police)", correct: false}, {c: "醫生", e: "(Doctors)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "My Morning Routine", topic: "Sequence (先... 然後 - First... then)",
+        img: "https://images.unsplash.com/photo-1541781774459-bb2af2892515",
+        grammarDesc: "<strong>Sequence:</strong> Order of events.<br>先 (sin1) means 'first', 然後 (jin4 hau6) means 'then'.",
+        vocab: [
+            {c: "朝早", j: "ziu1 zou2", e: "Morning"}, {c: "起身", j: "hei2 san1", e: "Wake up / Get up"},
+            {c: "先", j: "sin1", e: "First"}, {c: "然後", j: "jin4 hau6", e: "Then"},
+            {c: "刷牙", j: "caat3 ngaa4", e: "Brush teeth"}, {c: "洗面", j: "sai2 min6", e: "Wash face"},
+            {c: "換衫", j: "wun6 saam1", e: "Change clothes"}, {c: "食早餐", j: "sik6 zou2 caan1", e: "Eat breakfast"},
+            {c: "牛奶", j: "ngau4 naai5", e: "Milk"}, {c: "乾淨", j: "gon1 zing6", e: "Clean"}
+        ],
+        story: "朝早起身，我先刷牙洗面。我覺得好乾淨。<br>然後我換衫準備返學。<br>出門口之前，我會食早餐同飲一杯牛奶。",
+        jyutping: "Ziu1 zou2 hei2 san1, ngo5 <span class='highlight'>sin1</span> caat3 ngaa4 sai2 min6. Ngo5 gok3 dak1 hou2 gon1 zing6.<br><span class='highlight'>Jin4 hau6</span> ngo5 wun6 saam1 zeon2 bei6 faan1 hok6.<br>Ceot1 mun4 hau2 zi1 cin4, ngo5 wui5 sik6 zou2 caan1 tung4 jam2 jat1 bui1 ngau4 naai5.",
+        english: "Waking up in the morning, I first brush my teeth and wash my face. I feel very clean.<br>Then I change clothes getting ready to go to school.<br>Before going out the door, I will eat breakfast and drink a cup of milk.",
+        quizzes: [
+            { q: "起身之後作者先做咩？", e: "(What does the author do first after waking up?)", options: [{c: "刷牙洗面", e: "(Brush teeth and wash face)", correct: true}, {c: "打機", e: "(Play games)", correct: false}, {c: "食糖", e: "(Eat candy)", correct: false}] },
+            { q: "刷牙之後，作者然後做咩？", e: "(After brushing teeth, what does the author do then?)", options: [{c: "換衫準備返學", e: "(Change clothes ready for school)", correct: true}, {c: "去公園玩", e: "(Go to park to play)", correct: false}, {c: "瞓覺", e: "(Sleep)", correct: false}] },
+            { q: "出門口之前會食咩？", e: "(What will they eat before going out the door?)", options: [{c: "早餐", e: "(Breakfast)", correct: true}, {c: "雪糕", e: "(Ice cream)", correct: false}, {c: "蘋果", e: "(Apple)", correct: false}] },
+            { q: "作者早餐飲咩嘢？", e: "(What does the author drink for breakfast?)", options: [{c: "牛奶", e: "(Milk)", correct: true}, {c: "果汁", e: "(Juice)", correct: false}, {c: "水", e: "(Water)", correct: false}] },
+            { q: "洗完面覺得點樣？", e: "(How do they feel after washing their face?)", options: [{c: "好乾淨", e: "(Very clean)", correct: true}, {c: "好污糟", e: "(Very dirty)", correct: false}, {c: "好攰", e: "(Very tired)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "My Feelings", topic: "Emotions (覺得 - To feel)",
+        img: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b",
+        grammarDesc: "<strong>Emotions:</strong> Expressing how you feel inside.<br>覺得 (gok3 dak1) means 'feel'.",
+        vocab: [
+            {c: "覺得", j: "gok3 dak1", e: "Feel"}, {c: "開心", j: "hoi1 sam1", e: "Happy"},
+            {c: "嬲", j: "nau1", e: "Angry"}, {c: "驚", j: "geng1", e: "Scared"},
+            {c: "喊", j: "haam3", e: "Cry"}, {c: "笑", j: "siu3", e: "Laugh / Smile"},
+            {c: "抱", j: "pou5", e: "Hug"}, {c: "錫", j: "sek3", e: "Kiss"},
+            {c: "禮物", j: "lai5 mat6", e: "Present / Gift"}, {c: "驚喜", j: "geng1 hei2", e: "Surprise"}
+        ],
+        story: "今日爸爸送咗一份禮物畀我。我覺得好開心，笑得好大聲。<br>我攬住爸爸，仲錫咗佢一啖。<br>有時候我會覺得驚，媽媽就會抱住我，叫我唔好喊。",
+        jyutping: "Gam1 jat6 baa4 baa1 sung3 zo2 jat1 fan6 lai5 mat6 bei2 ngo5. Ngo5 <span class='highlight'>gok3 dak1</span> hou2 hoi1 sam1, siu3 dak1 hou2 daai6 seng1.<br>Ngo5 laam5 zyu6 baa4 baa1, zung6 sek3 zo2 keoi5 jat1 daam6.<br>Jau5 si4 hau6 ngo5 wui5 <span class='highlight'>gok3 dak1</span> geng1, maa4 maa1 zau6 wui5 pou5 zyu6 ngo5, giu3 ngo5 m4 hou2 haam3.",
+        english: "Today daddy gave me a present. I felt very happy, laughed very loudly.<br>I hugged daddy, and also kissed him once.<br>Sometimes I will feel scared, mommy will then hug me, tell me not to cry.",
+        quizzes: [
+            { q: "收到禮物之後，作者覺得點？", e: "(How does the author feel after receiving the present?)", options: [{c: "好開心", e: "(Very happy)", correct: true}, {c: "好嬲", e: "(Very angry)", correct: false}, {c: "好眼瞓", e: "(Very sleepy)", correct: false}] },
+            { q: "開心嗰陣作者做咗咩？", e: "(What did the author do when happy?)", options: [{c: "笑得好大聲", e: "(Laughed very loudly)", correct: true}, {c: "大聲喊", e: "(Cried loudly)", correct: false}, {c: "跑走", e: "(Ran away)", correct: false}] },
+            { q: "作者點樣多謝爸爸？", e: "(How did the author thank daddy?)", options: [{c: "攬住同埋錫爸爸", e: "(Hugged and kissed daddy)", correct: true}, {c: "畀錢爸爸", e: "(Gave money to daddy)", correct: false}, {c: "畫畫畀爸爸", e: "(Drew a picture for daddy)", correct: false}] },
+            { q: "覺得驚嗰陣，媽媽會點做？", e: "(When feeling scared, what will mommy do?)", options: [{c: "抱住作者", e: "(Hug the author)", correct: true}, {c: "鬧作者", e: "(Scold the author)", correct: false}, {c: "行開", e: "(Walk away)", correct: false}] },
+            { q: "媽媽叫作者唔好做咩？", e: "(What does mommy tell the author not to do?)", options: [{c: "唔好喊", e: "(Don't cry)", correct: true}, {c: "唔好笑", e: "(Don't laugh)", correct: false}, {c: "唔好食", e: "(Don't eat)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Sunny Weather", topic: "Weather Basics (今日 - Today)",
+        img: "https://images.unsplash.com/photo-1601297183314-1f74a00af182",
+        grammarDesc: "<strong>Time Context:</strong> Talking about the present day.<br>今日 (gam1 jat6) means 'Today'.",
+        vocab: [
+            {c: "今日", j: "gam1 jat6", e: "Today"}, {c: "天氣", j: "tin1 hei3", e: "Weather"},
+            {c: "晴天", j: "cing4 tin1", e: "Sunny day"}, {c: "太陽", j: "taai3 joeng4", e: "Sun"},
+            {c: "雲", j: "wan4", e: "Cloud"}, {c: "雨", j: "jyu5", e: "Rain"},
+            {c: "風", j: "fung1", e: "Wind"}, {c: "熱", j: "jit6", e: "Hot"},
+            {c: "凍", j: "dung3", e: "Cold"}, {c: "天空", j: "tin1 hung1", e: "Sky"}
+        ],
+        story: "今日係晴天。天空有好多白色嘅雲，同一個好大嘅太陽。<br>今日天氣唔凍，有少少熱。<br>因為冇落雨，所以我哋可以出街玩，唔使帶遮。",
+        jyutping: "<span class='highlight'>Gam1 jat6</span> hai6 cing4 tin1. Tin1 hung1 jau5 hou2 do1 baak6 sik1 ge3 wan4, tung4 jat1 go3 hou2 daai6 ge3 taai3 joeng4.<br><span class='highlight'>Gam1 jat6</span> tin1 hei3 m4 dung3, jau5 siu2 siu2 jit6.<br>Jan1 wai6 mou5 lok6 jyu5, so2 ji5 ngo5 dei6 ho2 ji5 ceot1 gaai1 waan2, m4 sai2 daai3 ze1.",
+        english: "Today is a sunny day. The sky has many white clouds, and one very big sun.<br>Today the weather is not cold, it is a little bit hot.<br>Because it is not raining, so we can go out to play, no need to bring an umbrella.",
+        quizzes: [
+            { q: "今日天氣係點樣？", e: "(How is the weather today?)", options: [{c: "晴天", e: "(Sunny day)", correct: true}, {c: "落雨", e: "(Raining)", correct: false}, {c: "落雪", e: "(Snowing)", correct: false}] },
+            { q: "天空上面有咩嘢？", e: "(What is up in the sky?)", options: [{c: "白雲同大太陽", e: "(White clouds and big sun)", correct: true}, {c: "星星同月亮", e: "(Stars and moon)", correct: false}, {c: "飛機", e: "(Airplanes)", correct: false}] },
+            { q: "今日氣溫感覺點樣？", e: "(How does the temperature feel today?)", options: [{c: "唔凍，有少少熱", e: "(Not cold, a little bit hot)", correct: true}, {c: "好凍", e: "(Very cold)", correct: false}, {c: "非常之熱", e: "(Extremely hot)", correct: false}] },
+            { q: "今日有冇落雨？", e: "(Is it raining today?)", options: [{c: "冇落雨", e: "(Not raining)", correct: true}, {c: "落大雨", e: "(Heavy rain)", correct: false}, {c: "落微雨", e: "(Drizzle)", correct: false}] },
+            { q: "點解出街唔使帶遮？", e: "(Why no need to bring an umbrella going out?)", options: [{c: "因為冇落雨", e: "(Because it's not raining)", correct: true}, {c: "因為把遮爛咗", e: "(Because the umbrella is broken)", correct: false}, {c: "因為鍾意淋雨", e: "(Because likes getting wet)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "I Can Do It", topic: "Abilities (識得 - Know how to)",
+        img: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b",
+        grammarDesc: "<strong>Skills:</strong> Expressing what you can do.<br>識得 (sik1 dak1) or just 識 (sik1) means 'know how to' or 'can'.",
+        vocab: [
+            {c: "識得", j: "sik1 dak1", e: "Know how to"}, {c: "叻", j: "lek1", e: "Smart / Good at"},
+            {c: "唱歌", j: "coeng3 go1", e: "Sing"}, {c: "跳舞", j: "tiu3 mou5", e: "Dance"},
+            {c: "游水", j: "jau4 seoi2", e: "Swim"}, {c: "踩單車", j: "caai2 daan1 ce1", e: "Ride a bike"},
+            {c: "每日", j: "mui5 jat6", e: "Every day"}, {c: "練習", j: "lin6 zaap6", e: "Practice"},
+            {c: "音樂", j: "jam1 ngok6", e: "Music"}, {c: "郁", j: "juk1", e: "Move"}
+        ],
+        story: "我大個仔喇，識得做好多嘢。我識得自己着鞋。<br>我仲識得唱歌同跳舞。一聽到音樂我就會郁。<br>我每日都會練習踩單車。爸爸話我好叻！",
+        jyutping: "Ngo5 daai6 go3 zai2 laa3, <span class='highlight'>sik1 dak1</span> zou6 hou2 do1 je5. Ngo5 <span class='highlight'>sik1 dak1</span> zi6 gei2 zoek3 haai4.<br>Ngo5 zung6 <span class='highlight'>sik1 dak1</span> coeng3 go1 tung4 tiu3 mou5. Jat1 teng1 dou2 jam1 ngok6 ngo5 zau6 wui5 juk1.<br>Ngo5 mui5 jat6 dou1 wui5 lin6 zaap6 caai2 daan1 ce1. Baa4 baa1 waa6 ngo5 hou2 lek1!",
+        english: "I am a big boy now, I know how to do many things. I know how to put on shoes by myself.<br>I also know how to sing and dance. As soon as I hear music I will move.<br>I practice riding a bike every day. Daddy says I am very smart!",
+        quizzes: [
+            { q: "作者話自己識得自己做咩？", e: "(What does the author say they know how to do by themselves?)", options: [{c: "自己着鞋", e: "(Put on shoes by themselves)", correct: true}, {c: "自己煮飯", e: "(Cook by themselves)", correct: false}, {c: "自己揸車", e: "(Drive by themselves)", correct: false}] },
+            { q: "聽到音樂嗰陣，作者會點？", e: "(What will the author do when hearing music?)", options: [{c: "會郁同埋跳舞", e: "(Will move and dance)", correct: true}, {c: "會喊", e: "(Will cry)", correct: false}, {c: "會瞓覺", e: "(Will sleep)", correct: false}] },
+            { q: "作者每日會練習做咩？", e: "(What does the author practice every day?)", options: [{c: "踩單車", e: "(Ride a bike)", correct: true}, {c: "游水", e: "(Swim)", correct: false}, {c: "畫畫", e: "(Draw)", correct: false}] },
+            { q: "爸爸讚作者點樣？", e: "(How does Daddy praise the author?)", options: [{c: "好叻", e: "(Very smart/good)", correct: true}, {c: "好曳", e: "(Very naughty)", correct: false}, {c: "好懶", e: "(Very lazy)", correct: false}] },
+            { q: "「識得」代表咩意思？", e: "(What does 'sik dak' mean?)", options: [{c: "有能力或者學識做某件事", e: "(Have the ability or learned to do something)", correct: true}, {c: "唔知道點樣做", e: "(Don't know how to do)", correct: false}, {c: "唔想做", e: "(Don't want to do)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Drawing Shapes", topic: "Objects (畫咗 - Have drawn)",
+        img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f",
+        grammarDesc: "<strong>Completed Actions:</strong> Saying what you made.<br>Verb + 咗 (zo2) means action completed. 畫咗 = have drawn.",
+        vocab: [
+            {c: "畫畫", j: "waak6 waak2", e: "Draw a picture"}, {c: "圓形", j: "jyun4 jing4", e: "Circle"},
+            {c: "方形", j: "fong1 jing4", e: "Square"}, {c: "星星", j: "sing1 sing1", e: "Star"},
+            {c: "太陽", j: "taai3 joeng4", e: "Sun"}, {c: "月亮", j: "jyut6 loeng6", e: "Moon"},
+            {c: "紙", j: "zi2", e: "Paper"}, {c: "筆", j: "bat1", e: "Pen / Pencil"},
+            {c: "靚", j: "leng3", e: "Pretty"}, {c: "似", j: "ci5", e: "Similar / Look like"}
+        ],
+        story: "我攞起支筆，喺張紙上面畫畫。<br>我畫咗一個圓形，佢好似個大太陽。<br>我又畫咗一粒星星，同一個方形嘅屋企。<br>媽媽話我畫得好靚。",
+        jyutping: "Ngo5 lo2 hei2 zi1 bat1, hai2 zoeng1 zi2 soeng6 min6 waak6 waak2.<br>Ngo5 waak6 <span class='highlight'>zo2</span> jat1 go3 jyun4 jing4, keoi5 hou2 ci5 go3 daai6 taai3 joeng4.<br>Ngo5 jau6 waak6 <span class='highlight'>zo2</span> jat1 nap1 sing1 sing1, tung4 jat1 go3 fong1 jing4 ge3 uk1 kei2.<br>Maa4 maa1 waa6 ngo5 waak6 dak1 hou2 leng3.",
+        english: "I pick up the pen, and draw a picture on the paper.<br>I drew a circle, it looks like a big sun.<br>I also drew a star, and a square house.<br>Mommy says I draw very beautifully.",
+        quizzes: [
+            { q: "作者用咩嘢嚟畫畫？", e: "(What did the author use to draw?)", options: [{c: "筆同紙", e: "(Pen and paper)", correct: true}, {c: "電腦", e: "(Computer)", correct: false}, {c: "手指", e: "(Finger)", correct: false}] },
+            { q: "作者畫咗咩形狀似太陽？", e: "(What shape did the author draw that looks like a sun?)", options: [{c: "圓形", e: "(Circle)", correct: true}, {c: "方形", e: "(Square)", correct: false}, {c: "三角形", e: "(Triangle)", correct: false}] },
+            { q: "屋企係咩形狀嘅？", e: "(What shape is the house?)", options: [{c: "方形", e: "(Square)", correct: true}, {c: "圓形", e: "(Circle)", correct: false}, {c: "星星形", e: "(Star shape)", correct: false}] },
+            { q: "作者仲畫咗咩喺天空？", e: "(What else did the author draw in the sky?)", options: [{c: "一粒星星", e: "(A star)", correct: true}, {c: "一隻雀仔", e: "(A bird)", correct: false}, {c: "一架飛機", e: "(An airplane)", correct: false}] },
+            { q: "媽媽覺得作者畫成點？", e: "(How does mommy feel about the author's drawing?)", options: [{c: "畫得好靚", e: "(Drawn very beautifully)", correct: true}, {c: "畫得好核突", e: "(Drawn very ugly)", correct: false}, {c: "睇唔明", e: "(Cannot understand it)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "My Tidy Room", topic: "Locations (上面 / 入面 - On / In)",
+        img: "https://images.unsplash.com/photo-1513694203232-719a280e022f",
+        grammarDesc: "<strong>Positions:</strong> Describing where things are.<br>上面 (soeng6 min6) means 'on top', 入面 (jap6 min6) means 'inside'.",
+        vocab: [
+            {c: "房", j: "fong2", e: "Room"}, {c: "床", j: "cong4", e: "Bed"},
+            {c: "枱", j: "toi2", e: "Table / Desk"}, {c: "櫈", j: "dang3", e: "Chair"},
+            {c: "書包", j: "syu1 baau1", e: "Schoolbag"}, {c: "櫃", j: "gwai6", e: "Cabinet / Closet"},
+            {c: "上面", j: "soeng6 min6", e: "On top / Above"}, {c: "下面", j: "haa6 min6", e: "Below / Under"},
+            {c: "入面", j: "jap6 min6", e: "Inside"}, {c: "整齊", j: "zing2 cai4", e: "Tidy"}
+        ],
+        story: "呢個係我間房，好整齊。我張床喺房嘅中間。<br>我個書包放咗喺張枱上面。玩具就全部收埋喺個櫃入面。<br>我隻狗鍾意瞓喺張櫈下面。",
+        jyutping: "Ni1 go3 hai6 ngo5 gaan1 fong2, hou2 zing2 cai4. Ngo5 zoeng1 cong4 hai2 fong2 ge3 zung1 gaan1.<br>Ngo5 go3 syu1 baau1 fong3 zo2 hai2 zoeng1 toi2 <span class='highlight'>soeng6 min6</span>. Waan4 geoi6 zau6 cyun4 bou6 sau1 maai4 hai2 go3 gwai6 <span class='highlight'>jap6 min6</span>.<br>Ngo5 zek3 gau2 zung1 ji3 fan3 hai2 zoeng1 dang3 haa6 min6.",
+        english: "This is my room, it's very tidy. My bed is in the middle of the room.<br>My schoolbag is placed on top of the desk. Toys are all stored away inside the cabinet.<br>My dog likes to sleep under the chair.",
+        quizzes: [
+            { q: "作者間房點樣？", e: "(How is the author's room?)", options: [{c: "好整齊", e: "(Very tidy)", correct: true}, {c: "好亂", e: "(Very messy)", correct: false}, {c: "好污糟", e: "(Very dirty)", correct: false}] },
+            { q: "床放喺邊度？", e: "(Where is the bed placed?)", options: [{c: "房嘅中間", e: "(Middle of the room)", correct: true}, {c: "門口", e: "(Doorway)", correct: false}, {c: "廁所入面", e: "(Inside the washroom)", correct: false}] },
+            { q: "書包放咗喺邊？", e: "(Where is the schoolbag placed?)", options: [{c: "枱上面", e: "(On top of the desk)", correct: true}, {c: "櫃入面", e: "(Inside the cabinet)", correct: false}, {c: "櫈下面", e: "(Under the chair)", correct: false}] },
+            { q: "玩具去咗邊度？", e: "(Where did the toys go?)", options: [{c: "收埋喺櫃入面", e: "(Stored away inside the cabinet)", correct: true}, {c: "丟咗", e: "(Thrown away)", correct: false}, {c: "放喺床上面", e: "(Placed on top of the bed)", correct: false}] },
+            { q: "狗狗喺邊度瞓覺？", e: "(Where does the doggy sleep?)", options: [{c: "櫈下面", e: "(Under the chair)", correct: true}, {c: "床上面", e: "(On the bed)", correct: false}, {c: "櫃入面", e: "(Inside the cabinet)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Bedtime Routine", topic: "Preparation (準備 - Getting ready)",
+        img: "https://images.unsplash.com/photo-1541781774459-bb2af2892515",
+        grammarDesc: "<strong>Preparing:</strong> Doing something before an event.<br>準備 (zeon2 bei6) means 'preparing to' or 'getting ready to'.",
+        vocab: [
+            {c: "準備", j: "zeon2 bei6", e: "Prepare / Get ready"}, {c: "瞓覺", j: "fan3 gaau3", e: "Sleep"},
+            {c: "故事", j: "gu3 si6", e: "Story"}, {c: "聽", j: "teng1", e: "Listen"},
+            {c: "眼瞓", j: "ngaan5 fan3", e: "Sleepy"}, {c: "被", j: "pei5", e: "Blanket"},
+            {c: "熄燈", j: "sik1 dang1", e: "Turn off lights"}, {c: "發夢", j: "faat3 mung6", e: "Dream"},
+            {c: "晚安", j: "maan5 on1", e: "Good night"}, {c: "星", j: "sing1", e: "Star"}
+        ],
+        story: "出面天黑晒喇，我準備瞓覺。我開始覺得好眼瞓。<br>瞓覺之前，媽媽會講一個故事畀我聽。<br>我爬上床，冚好張被。媽媽幫我熄燈。<br>我同媽媽講：「晚安！」希望今晚發個好夢。",
+        jyutping: "Ceot1 min6 tin1 hak1 saai3 laa3, ngo5 <span class='highlight'>zeon2 bei6</span> fan3 gaau3. Ngo5 hoi1 ci2 gok3 dak1 hou2 ngaan5 fan3.<br>Fan3 gaau3 zi1 cin4, maa4 maa1 wui5 gong2 jat1 go3 gu3 si6 bei2 ngo5 teng1.<br>Ngo5 paa4 soeng5 cong4, kam2 hou2 zoeng1 pei5. Maa4 maa1 bong1 ngo5 sik1 dang1.<br>Ngo5 tung4 maa4 maa1 gong2: 「Maan5 on1!」 Hei1 mong6 gam1 maan5 faat3 go3 hou2 mung6.",
+        english: "Outside it's completely dark, I am getting ready to sleep. I start to feel very sleepy.<br>Before sleeping, mommy will tell a story for me to listen to.<br>I climb into bed, cover myself well with the blanket. Mommy helps me turn off the lights.<br>I say to mommy: 'Good night!' Hope to have a good dream tonight.",
+        quizzes: [
+            { q: "天黑之後作者準備做咩？", e: "(After it gets dark what is the author preparing to do?)", options: [{c: "準備瞓覺", e: "(Getting ready to sleep)", correct: true}, {c: "準備返學", e: "(Getting ready for school)", correct: false}, {c: "準備食飯", e: "(Getting ready to eat)", correct: false}] },
+            { q: "瞓覺之前媽媽會做咩？", e: "(Before sleeping what will mommy do?)", options: [{c: "講故事", e: "(Tell a story)", correct: true}, {c: "鬧作者", e: "(Scold the author)", correct: false}, {c: "睇電視", e: "(Watch TV)", correct: false}] },
+            { q: "上床之後要冚好咩嘢？", e: "(After getting in bed what must be covered well?)", options: [{c: "張被", e: "(The blanket)", correct: true}, {c: "件衫", e: "(The shirt)", correct: false}, {c: "本書", e: "(The book)", correct: false}] },
+            { q: "臨瞓前要同媽媽講咩？", e: "(Before falling asleep what to say to mommy?)", options: [{c: "晚安", e: "(Good night)", correct: true}, {c: "早晨", e: "(Good morning)", correct: false}, {c: "多謝", e: "(Thank you)", correct: false}] },
+            { q: "作者希望今晚可以點樣？", e: "(What does the author hope for tonight?)", options: [{c: "發個好夢", e: "(Have a good dream)", correct: true}, {c: "唔使瞓覺", e: "(No need to sleep)", correct: false}, {c: "落大雪", e: "(Snow heavily)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Birthday Party", topic: "Celebration (慶祝 - To celebrate)",
+        img: "https://images.unsplash.com/photo-1530103862676-de88bdf40d9e",
+        grammarDesc: "<strong>Celebrations:</strong> Actions related to parties.<br>慶祝 (hing3 zuk1) means 'to celebrate'.",
+        vocab: [
+            {c: "生日", j: "saang1 jat6", e: "Birthday"}, {c: "蛋糕", j: "daan6 gou1", e: "Cake"},
+            {c: "蠟燭", j: "laap6 zuk1", e: "Candle"}, {c: "許願", j: "heoi2 jyun6", e: "Make a wish"},
+            {c: "吹", j: "ceoi1", e: "Blow"}, {c: "歲", j: "seoi3", e: "Years old"},
+            {c: "派對", j: "paai3 deoi3", e: "Party"}, {c: "唱", j: "coeng3", e: "Sing"},
+            {c: "歌", j: "go1", e: "Song"}, {c: "快樂", j: "faai3 lok6", e: "Happy"}
+        ],
+        story: "今日係我五歲生日！屋企人為我搞咗個生日派對。<br>枱上面有一個好大嘅朱古力蛋糕，插住五支蠟燭。<br>大家一齊為我唱生日歌。我合埋眼許願，然後一啖氣吹熄晒啲蠟燭。<br>收到好多朋友送嘅禮物，我真係覺得好快樂！",
+        jyutping: "Gam1 jat6 hai6 ngo5 ng5 seoi3 saang1 jat6! Uk1 kei2 jan4 wai6 ngo5 gaau2 zo2 go3 saang1 jat6 paai3 deoi3.<br>Toi2 soeng6 min6 jau5 jat1 go3 hou2 daai6 ge3 zyu1 gu1 lik1 daan6 gou1, caap3 zyu6 ng5 zi1 laap6 zuk1.<br>Daai6 gaa1 jat1 cai4 wai6 ngo5 coeng3 saang1 jat6 go1. Ngo5 hap6 maai4 ngaan5 heoi2 jyun6, jin4 hau6 jat1 daam6 hei3 ceoi1 sik1 saai3 di1 laap6 zuk1.<br>Sau1 dou2 hou2 do1 pang4 jau5 sung3 ge3 lai5 mat6, ngo5 zan1 hai6 gok3 dak1 hou2 faai3 lok6!",
+        english: "Today is my 5th birthday! My family organized a birthday party for me.<br>On the table there is a very big chocolate cake, with 5 candles inserted.<br>Everyone sings the birthday song for me together. I close my eyes to make a wish, then blow out all the candles in one breath.<br>Receiving many presents given by friends, I really feel very happy!",
+        quizzes: [
+            { q: "今日係作者幾多歲生日？", e: "(How old is the author turning today?)", options: [{c: "五歲", e: "(Five years old)", correct: true}, {c: "三歲", e: "(Three years old)", correct: false}, {c: "十歲", e: "(Ten years old)", correct: false}] },
+            { q: "蛋糕係咩口味嘅？", e: "(What flavor is the cake?)", options: [{c: "朱古力", e: "(Chocolate)", correct: true}, {c: "雲呢拿", e: "(Vanilla)", correct: false}, {c: "士多啤梨", e: "(Strawberry)", correct: false}] },
+            { q: "蛋糕上面插住幾多支蠟燭？", e: "(How many candles are inserted on the cake?)", options: [{c: "五支", e: "(Five)", correct: true}, {c: "六支", e: "(Six)", correct: false}, {c: "四支", e: "(Four)", correct: false}] },
+            { q: "吹蠟燭之前要做咩？", e: "(What must be done before blowing the candles?)", options: [{c: "合埋眼許願", e: "(Close eyes and make a wish)", correct: true}, {c: "食蛋糕", e: "(Eat the cake)", correct: false}, {c: "拆禮物", e: "(Open presents)", correct: false}] },
+            { q: "收到禮物之後作者有咩感覺？", e: "(How does the author feel after receiving presents?)", options: [{c: "好快樂", e: "(Very happy)", correct: true}, {c: "好驚", e: "(Very scared)", correct: false}, {c: "好眼瞓", e: "(Very sleepy)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>🧸 Child Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Story Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
