@@ -399,7 +399,7 @@ function loadMission(index) {
                 <span class="eng-trans">${q.e}</span>
             </div>
             <div class="options">
-                ${q.options.map((opt, oIndex) => `
+                ${[...q.options].sort(() => Math.random() - 0.5).map((opt, oIndex) => `
                     <div class="option-row">
                         <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
                         <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
