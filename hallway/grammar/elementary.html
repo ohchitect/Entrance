@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: Elementary Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 0.9rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 200px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #43a047; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #2e7d32; }
+        .prep-section {
+            background-color: #e8f5e9; border-left: 4px solid #43a047;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #2e7d32; font-size: 1.1rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.4; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .vocab-item {
+            background: white; padding: 10px 8px; border-radius: 8px; font-size: 0.9rem;
+            border: 2px solid #c8e6c9; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #e8f5e9; border-color: #81c784; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #43a047; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #43a047;
+            padding: 15px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.15rem; line-height: 1.9; margin-bottom: 15px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #666; font-size: 0.9rem; line-height: 1.6; text-align: justify; }
+        .highlight { color: #2e7d32; text-decoration: underline; background-color: #e8f5e9; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 20px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 5px; line-height: 1.4; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; line-height: 1.4; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 4px; }
+        .translation-box { margin-top: 30px; font-size: 0.9rem; color: #555; background: #eee; padding: 15px; border-radius: 8px; line-height: 1.6; text-align: justify; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+        .nav-btn { background: #43a047; color: white; border: none; border-radius: 8px; padding: 12px 20px; font-weight: bold; cursor: pointer; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+</div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "The Water Cycle", topic: "Sequence (首先... 跟住... 最後)",
+        img: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0",
+        grammarDesc: "<strong>Sequence:</strong> Ordering scientific processes.<br>首先 (sau2 sin1) = First, 跟住 (gan1 zyu6) = Then, 最後 (zeoi3 hau6) = Finally.",
+        vocab: [
+            {c: "水循環", j: "seoi2 ceon4 waan4", e: "Water cycle"}, {c: "首先", j: "sau2 sin1", e: "First"},
+            {c: "太陽", j: "taai3 joeng4", e: "Sun"}, {c: "蒸發", j: "zing1 faat3", e: "Evaporate"},
+            {c: "跟住", j: "gan1 zyu6", e: "Then"}, {c: "雲", j: "wan4", e: "Cloud"},
+            {c: "變重", j: "bin3 cung5", e: "Become heavy"}, {c: "最後", j: "zeoi3 hau6", e: "Finally"},
+            {c: "落雨", j: "lok6 jyu5", e: "Rain"}, {c: "河流", j: "ho4 lau4", e: "River"}
+        ],
+        story: "地球上嘅水係會不斷循環嘅，呢個過程叫做水循環。<br>首先，太陽嘅熱力會令到河流同海洋嘅水蒸發，變成水蒸氣升上天。<br>跟住，水蒸氣喺天上遇冷就會變成小水滴，聚集埋一齊形成雲。<br>當雲入面嘅水滴越積越多，變到好重嗰陣，空氣托唔住佢哋。<br>最後，水滴就會變成雨或者雪落返落地面，流返入大海，重新開始。",
+        jyutping: "Dei6 kau4 soeng6 ge3 seoi2 hai6 wui5 bat1 dyun6 ceon4 waan4 ge3, ni1 go3 gwo3 cing4 giu3 zou6 seoi2 ceon4 waan4.<br><span class='highlight'>Sau2 sin1</span>, taai3 joeng4 ge3 jit6 lik6 wui5 ling6 dou3 ho4 lau4 tung4 hoi2 joeng4 ge3 seoi2 zing1 faat3, bin3 sing4 seoi2 zing1 hei3 sing1 soeng5 tin1.<br><span class='highlight'>Gan1 zyu6</span>, seoi2 zing1 hei3 hai2 tin1 soeng6 jyu6 laang5 zau6 wui5 bin3 sing4 siu2 seoi2 dik6, zeoi6 zaap6 maai4 jat1 cai4 jing4 sing4 wan4.<br>Dong1 wan4 jap6 min6 ge3 seoi2 dik6 jyut6 zik1 jyut6 do1, bin3 dou3 hou2 cung5 go2 zan6, hung1 hei3 tok3 m4 zyu6 keoi5 dei6.<br><span class='highlight'>Zeoi3 hau6</span>, seoi2 dik6 zau6 wui5 bin3 sing4 jyu5 waak6 ze2 syut3 lok6 faan1 lok6 dei6 min6, lau4 faan1 jap6 daai6 hoi2, cung4 san1 hoi1 ci2.",
+        english: "Water on Earth continuously circulates; this process is called the water cycle.<br>First, the sun's heat makes the water in rivers and oceans evaporate, turning into water vapor that rises into the sky.<br>Then, the water vapor meets cold air in the sky and turns into tiny water droplets, gathering together to form clouds.<br>When the water droplets inside the cloud accumulate and become very heavy, the air cannot hold them up.<br>Finally, the water droplets turn into rain or snow and fall back to the ground, flowing back into the ocean to start again.",
+        quizzes: [
+            { q: "水循環嘅第一步係咩？", e: "(What is the first step of the water cycle?)", options: [{c: "太陽令水蒸發", e: "(The sun makes water evaporate)", correct: true}, {c: "落雨", e: "(It rains)", correct: false}, {c: "變成冰", e: "(Turns into ice)", correct: false}] },
+            { q: "水蒸氣升上天遇冷會變成咩？", e: "(What does water vapor become when it meets cold air in the sky?)", options: [{c: "小水滴同埋雲", e: "(Tiny water droplets and clouds)", correct: true}, {c: "火", e: "(Fire)", correct: false}, {c: "彩虹", e: "(Rainbow)", correct: false}] },
+            { q: "點解啲水會跌返落嚟？", e: "(Why does the water fall back down?)", options: [{c: "因為水滴積聚到變重", e: "(Because water droplets accumulate and become heavy)", correct: true}, {c: "因為有風吹", e: "(Because there is wind blowing)", correct: false}, {c: "因為太陽太熱", e: "(Because the sun is too hot)", correct: false}] },
+            { q: "最後雨水會流去邊度？", e: "(Where does the rainwater finally flow to?)", options: [{c: "流返入大海", e: "(Flows back into the ocean)", correct: true}, {c: "飛上太空", e: "(Flies into space)", correct: false}, {c: "變成泥土", e: "(Turns into dirt)", correct: false}] },
+            { q: "「首先...跟住...最後」係用嚟表達咩？", e: "(What is 'First... Then... Finally' used to express?)", options: [{c: "事情發生嘅先後次序", e: "(The chronological order of events)", correct: true}, {c: "兩件相反嘅事情", e: "(Two opposite things)", correct: false}, {c: "問問題", e: "(Asking a question)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "Recycling in Vancouver", topic: "Categorization (分類 - Sort/Categorize)",
+        img: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b",
+        grammarDesc: "<strong>Categorization:</strong> Explaining how things are grouped.<br>分類 (fan1 leoi6) means 'to sort' or 'to categorize'.",
+        vocab: [
+            {c: "環保", j: "waan4 bou2", e: "Environmental protection"}, {c: "垃圾", j: "laap6 saap3", e: "Garbage / Trash"},
+            {c: "分類", j: "fan1 leoi6", e: "Sort / Categorize"}, {c: "藍色", j: "laam4 sik1", e: "Blue"},
+            {c: "回收箱", j: "wui4 sau1 soeng1", e: "Recycling bin"}, {c: "綠色", j: "luk6 sik1", e: "Green"},
+            {c: "廚餘", j: "cyu4 jyu4", e: "Food waste"}, {c: "黑色", j: "hak1 sik1", e: "Black"},
+            {c: "紙張", j: "zi2 zoeng1", e: "Paper"}, {c: "膠樽", j: "gaau1 zeon1", e: "Plastic bottles"}
+        ],
+        story: "喺溫哥華生活，每個人都要學識點樣將垃圾分類，保護環境。<br>我哋屋企有三個唔同顏色嘅垃圾桶。<br>藍色嘅回收箱係用嚟裝廢紙、報紙同埋膠樽嘅。<br>綠色嘅桶就用嚟掉廚餘，例如食剩嘅飯餸、果皮同樹葉。<br>最後，黑色桶就係用嚟掉唔可以回收嘅普通垃圾。<br>正確分類可以減少堆填區嘅負擔。",
+        jyutping: "Hai2 Wan1 go1 waa4 saang1 wut6, mui5 go3 jan4 dou1 jiu3 hok6 sik1 dim2 joeng2 zoeng1 laap6 saap3 <span class='highlight'>fan1 leoi6</span>, bou2 wu6 waan4 ging2.<br>Ngo5 dei6 uk1 kei2 jau5 saam1 go3 m4 tung4 ngaan4 sik1 ge3 laap6 saap3 tung2.<br>Laam4 sik1 ge3 wui4 sau1 soeng1 hai6 jung6 lei4 zong1 fai3 zi2, bou3 zi2 tung4 maai4 gaau1 zeon1 ge3.<br>Luk6 sik1 ge3 tung2 zau6 jung6 lei4 diu6 cyu4 jyu4, liju4 sik6 zing6 ge3 faan6 sung3, gwo2 pei4 tung4 syu6 jip6.<br>Zeoi3 hau6, hak1 sik1 tung2 zau6 hai6 jung6 lei4 diu6 m4 ho2 ji5 wui4 sau1 ge3 pou2 tung1 laap6 saap3.<br>Zing3 kok3 fan1 leoi6 ho2 ji5 gaam2 siu2 deoi1 tin4 keoi1 ge3 fu6 daam1.",
+        english: "Living in Vancouver, everyone must learn how to sort garbage to protect the environment.<br>Our home has three different colored garbage bins.<br>The blue recycling bin is used to hold waste paper, newspapers, and plastic bottles.<br>The green bin is used to throw away food waste, such as leftover food, fruit peels, and leaves.<br>Finally, the black bin is used to throw away regular garbage that cannot be recycled.<br>Correct sorting can reduce the burden on landfills.",
+        quizzes: [
+            { q: "溫哥華嘅居民需要做咩嚟保護環境？", e: "(What do Vancouver residents need to do to protect the environment?)", options: [{c: "將垃圾分類", e: "(Sort their garbage)", correct: true}, {c: "將垃圾掉落海", e: "(Throw garbage into the sea)", correct: false}, {c: "唔掉垃圾", e: "(Never throw away garbage)", correct: false}] },
+            { q: "藍色回收箱用嚟裝咩？", e: "(What is the blue recycling bin used to hold?)", options: [{c: "廢紙同膠樽", e: "(Waste paper and plastic bottles)", correct: true}, {c: "食剩嘅飯餸", e: "(Leftover food)", correct: false}, {c: "普通垃圾", e: "(Regular garbage)", correct: false}] },
+            { q: "果皮應該掉入咩顏色嘅桶？", e: "(Which color bin should fruit peels be thrown into?)", options: [{c: "綠色", e: "(Green)", correct: true}, {c: "黑色", e: "(Black)", correct: false}, {c: "藍色", e: "(Blue)", correct: false}] },
+            { q: "黑色垃圾桶嘅用途係咩？", e: "(What is the purpose of the black garbage bin?)", options: [{c: "掉唔可以回收嘅垃圾", e: "(To throw away unrecyclable garbage)", correct: true}, {c: "掉玻璃樽", e: "(To throw away glass bottles)", correct: false}, {c: "裝水", e: "(To hold water)", correct: false}] },
+            { q: "正確垃圾分類有咩好處？", e: "(What is the benefit of correct garbage sorting?)", options: [{c: "減少堆填區嘅負擔", e: "(Reduces the burden on landfills)", correct: true}, {c: "可以賺好多錢", e: "(Can earn a lot of money)", correct: false}, {c: "令到天氣變好", e: "(Makes the weather better)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "The Solar System", topic: "Superlatives (最 - The most)",
+        img: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4",
+        grammarDesc: "<strong>Superlatives:</strong> Describing the extremes of facts.<br>最 (zeoi3) means 'the most'. 例如：最大 (the biggest).",
+        vocab: [
+            {c: "太陽系", j: "taai3 joeng4 hai6", e: "Solar system"}, {c: "行星", j: "haang4 sing1", e: "Planet"},
+            {c: "地球", j: "dei6 kau4", e: "Earth"}, {c: "太陽", j: "taai3 joeng4", e: "Sun"},
+            {c: "最", j: "zeoi3", e: "The most"}, {c: "大", j: "daai6", e: "Big"},
+            {c: "木星", j: "muk6 sing1", e: "Jupiter"}, {c: "水星", j: "seoi2 sing1", e: "Mercury"},
+            {c: "近", j: "gan6", e: "Close / Near"}, {c: "圍繞", j: "wai4 jiu5", e: "Revolve around"}
+        ],
+        story: "我哋住喺地球上面，地球係太陽系嘅八大行星之一。<br>太陽系入面，所有行星都會圍繞住太陽轉。<br>喺八個行星之中，木星係最大嘅一顆行星。<br>而水星就係距離太陽最近嘅行星。<br>太陽係太陽系入面最光同最熱嘅恆星，畀我哋光同溫暖。",
+        jyutping: "Ngo5 dei6 zyu6 hai2 dei6 kau4 soeng6 min6, dei6 kau4 hai6 taai3 joeng4 hai6 ge3 baat3 daai6 haang4 sing1 zi1 jat1.<br>Taai3 joeng4 hai6 jap6 min6, so2 jau5 haang4 sing1 dou1 wui5 wai4 jiu5 zyu6 taai3 joeng4 zyun3.<br>Hai2 baat3 go3 haang4 sing1 zi1 zung1, muk6 sing1 hai6 <span class='highlight'>zeoi3</span> daai6 ge3 jat1 fo2 haang4 sing1.<br>Ji4 seoi2 sing1 zau6 hai6 geoi5 lei4 taai3 joeng4 <span class='highlight'>zeoi3</span> gan6 ge3 haang4 sing1.<br>Taai3 joeng4 hai6 taai3 joeng4 hai6 jap6 min6 <span class='highlight'>zeoi3</span> gwong1 tung4 <span class='highlight'>zeoi3</span> jit6 ge3 hang4 sing1, bei2 ngo5 dei6 gwong1 tung4 wan1 nyun5.",
+        english: "We live on Earth; Earth is one of the eight major planets in the solar system.<br>In the solar system, all planets revolve around the Sun.<br>Among the eight planets, Jupiter is the biggest planet.<br>And Mercury is the planet closest to the Sun.<br>The Sun is the brightest and hottest star in the solar system, giving us light and warmth.",
+        quizzes: [
+            { q: "太陽系總共有幾多個大行星？", e: "(How many major planets are in the solar system in total?)", options: [{c: "八個", e: "(Eight)", correct: true}, {c: "九個", e: "(Nine)", correct: false}, {c: "十個", e: "(Ten)", correct: false}] },
+            { q: "所有行星都圍繞住咩嘢轉？", e: "(What do all planets revolve around?)", options: [{c: "太陽", e: "(The Sun)", correct: true}, {c: "地球", e: "(The Earth)", correct: false}, {c: "月亮", e: "(The Moon)", correct: false}] },
+            { q: "邊一個係太陽系入面最大嘅行星？", e: "(Which is the biggest planet in the solar system?)", options: [{c: "木星", e: "(Jupiter)", correct: true}, {c: "地球", e: "(Earth)", correct: false}, {c: "水星", e: "(Mercury)", correct: false}] },
+            { q: "距離太陽最近嘅行星係邊個？", e: "(Which is the planet closest to the sun?)", options: [{c: "水星", e: "(Mercury)", correct: true}, {c: "火星", e: "(Mars)", correct: false}, {c: "木星", e: "(Jupiter)", correct: false}] },
+            { q: "太陽為地球帶嚟咩嘢？", e: "(What does the Sun bring to Earth?)", options: [{c: "光同溫暖", e: "(Light and warmth)", correct: true}, {c: "落雨同落雪", e: "(Rain and snow)", correct: false}, {c: "黑暗", e: "(Darkness)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "How Plants Grow", topic: "Conditions (需要... 先可以 - Need... to be able to)",
+        img: "https://images.unsplash.com/photo-1416879598555-21ff0f2bb381",
+        grammarDesc: "<strong>Conditions:</strong> Explaining what is necessary for something to happen.<br>需要 (seoi1 jiu3) ... 先可以 (sin1 ho2 ji5) means 'Needs [X] in order to [Y]'.",
+        vocab: [
+            {c: "植物", j: "zik6 mat6", e: "Plant"}, {c: "生長", j: "saang1 zoeng2", e: "Grow"},
+            {c: "種子", j: "zung2 zi2", e: "Seed"}, {c: "泥土", j: "nai4 tou2", e: "Soil / Dirt"},
+            {c: "需要", j: "seoi1 jiu3", e: "Need"}, {c: "先可以", j: "sin1 ho2 ji5", e: "Only then can / In order to"},
+            {c: "陽光", j: "joeng4 gwong1", e: "Sunlight"}, {c: "水分", j: "seoi2 fan6", e: "Water / Moisture"},
+            {c: "根", j: "gan1", e: "Roots"}, {c: "葉", j: "jip6", e: "Leaves"}
+        ],
+        story: "一棵植物係點樣生長出嚟㗎呢？首先，我哋要將種子埋落泥土入面。<br>植物需要充足嘅陽光同埋水分，先可以慢慢發芽。<br>種子發芽之後，會向下生出根去吸收營養。<br>然後，佢會向上長出綠色嘅葉同埋莖。<br>好好照顧佢哋，最後仲會開出靚靚嘅花朵添。",
+        jyutping: "Jat1 po1 zik6 mat6 hai6 dim2 joeng2 saang1 zoeng2 ceot1 lei4 gaa3 ne1? Sau2 sin1, ngo5 dei6 jiu3 zoeng1 zung2 zi2 maai4 lok6 nai4 tou2 jap6 min6.<br>Zik6 mat6 <span class='highlight'>seoi1 jiu3</span> cung1 zuk1 ge3 joeng4 gwong1 tung4 maai4 seoi2 fan6, <span class='highlight'>sin1 ho2 ji5</span> maan6 maan6 faat3 ngaa4.<br>Zung2 zi2 faat3 ngaa4 zi1 hau6, wui5 hoeng3 haa6 saang1 ceot1 gan1 heoi3 kap1 sau1 jing4 joeng5.<br>Jin4 hau6, keoi5 wui5 hoeng3 soeng6 zoeng2 ceot1 luk6 sik1 ge3 jip6 tung4 maai4 ging3.<br>Hou2 hou2 ziu3 gu3 keoi5 dei6, zeoi3 hau6 zung6 wui5 hoi1 ceot1 leng3 leng3 ge3 faa1 do2 tim1.",
+        english: "How does a plant grow? First, we have to bury the seed into the soil.<br>Plants need sufficient sunlight and water, only then can they slowly sprout.<br>After the seed sprouts, it will grow roots downwards to absorb nutrients.<br>Then, it will grow green leaves and stems upwards.<br>Take good care of them, and finally they will even bloom beautiful flowers.",
+        quizzes: [
+            { q: "種植物嘅第一步係做咩？", e: "(What is the first step of planting?)", options: [{c: "將種子埋落泥土", e: "(Bury the seed into the soil)", correct: true}, {c: "摘樹葉", e: "(Pick leaves)", correct: false}, {c: "剪花朵", e: "(Cut flowers)", correct: false}] },
+            { q: "植物需要咩條件先可以發芽？", e: "(What conditions do plants need in order to sprout?)", options: [{c: "充足嘅陽光同水分", e: "(Sufficient sunlight and water)", correct: true}, {c: "朱古力同糖", e: "(Chocolate and candy)", correct: false}, {c: "強風同黑夜", e: "(Strong wind and dark nights)", correct: false}] },
+            { q: "植物嘅根有咩作用？", e: "(What is the purpose of the plant's roots?)", options: [{c: "向下生長去吸收營養", e: "(Grow downwards to absorb nutrients)", correct: true}, {c: "向上開花", e: "(Bloom flowers upwards)", correct: false}, {c: "捉住昆蟲", e: "(Catch insects)", correct: false}] },
+            { q: "植物向上會長出咩嘢？", e: "(What will the plant grow upwards?)", options: [{c: "綠色嘅葉同埋莖", e: "(Green leaves and stems)", correct: true}, {c: "石頭同泥", e: "(Rocks and mud)", correct: false}, {c: "蘋果同橙", e: "(Apples and oranges)", correct: false}] },
+            { q: "「先可以」表示咩意思？", e: "(What does 'sin ho ji' mean?)", options: [{c: "滿足咗前面嘅條件，先會發生", e: "(Only when the previous condition is met, will it happen)", correct: true}, {c: "一定唔可以做", e: "(Definitely cannot do)", correct: false}, {c: "表示已經完成", e: "(Indicates already completed)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Library Rules", topic: "Rules (可以 / 唔可以 - Can / Cannot)",
+        img: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da",
+        grammarDesc: "<strong>Rules:</strong> Telling what is permitted or forbidden.<br>可以 (ho2 ji5) means 'Can / Allowed', 唔可以 (m4 ho2 ji5) means 'Cannot / Not allowed'.",
+        vocab: [
+            {c: "圖書館", j: "tou4 syu1 gun2", e: "Library"}, {c: "圖書證", j: "tou4 syu1 zing3", e: "Library card"},
+            {c: "借書", j: "ze3 syu1", e: "Borrow books"}, {c: "可以", j: "ho2 ji5", e: "Can / Allowed"},
+            {c: "唔可以", j: "m4 ho2 ji5", e: "Cannot / Not allowed"}, {c: "安靜", j: "on1 zing6", e: "Quiet"},
+            {c: "大聲", j: "daai6 seng1", e: "Loud voice"}, {c: "飲食", j: "jam2 sik6", e: "Eat and drink"},
+            {c: "歸還", j: "gwai1 waan4", e: "Return (items)"}, {c: "期限", j: "kei4 haan6", e: "Deadline / Time limit"}
+        ],
+        story: "公共圖書館係一個畀大家閱讀同學習嘅地方，所以我哋要守規矩。<br>只要你有圖書證，就可以免費借書返屋企睇。<br>喺圖書館入面，我哋一定要保持安靜，唔可以大聲講嘢或者跑來跑去。<br>為咗保持地方清潔，圖書館入面亦都唔可以飲食。<br>借咗嘅書要喺三個星期嘅期限內歸還，如果唔係就會被罰款。",
+        jyutping: "Gung1 gung6 tou4 syu1 gun2 hai6 jat1 go3 bei2 daai6 gaa1 jyut6 duk6 tung4 hok6 zaap6 ge3 dei6 fong1, so2 ji5 ngo5 dei6 jiu3 sau2 gwai1 geoi2.<br>Zi2 jiu3 nei5 jau5 tou4 syu1 zing3, zau6 <span class='highlight'>ho2 ji5</span> min5 fai3 ze3 syu1 faan1 uk1 kei2 tai2.<br>Hai2 tou4 syu1 gun2 jap6 min6, ngo5 dei6 jat1 ding6 jiu3 bou2 ci4 on1 zing6, <span class='highlight'>m4 ho2 ji5</span> daai6 seng1 gong2 je5 waak6 ze2 paau2 lei4 paau2 heoi3.<br>Wai6 zo2 bou2 ci4 dei6 fong1 cing1 git3, tou4 syu1 gun2 jap6 min6 jik6 dou1 <span class='highlight'>m4 ho2 ji5</span> jam2 sik6.<br>Ze3 zo2 ge3 syu1 jiu3 hai2 saam1 go3 sing1 kei4 ge3 kei4 haan6 noi6 gwai1 waan4, jyu4 gwo2 m4 hai6 zau6 wui5 bei6/bei2 fat6 fun2.",
+        english: "The public library is a place for everyone to read and learn, so we must follow the rules.<br>As long as you have a library card, you can borrow books to read at home for free.<br>Inside the library, we must keep quiet, and cannot speak loudly or run around.<br>In order to keep the place clean, eating and drinking are also not allowed inside the library.<br>Borrowed books must be returned within the three-week deadline, otherwise you will be fined.",
+        quizzes: [
+            { q: "想喺圖書館借書，需要咩嘢？", e: "(What do you need to borrow books at the library?)", options: [{c: "圖書證", e: "(Library card)", correct: true}, {c: "學生證", e: "(Student ID)", correct: false}, {c: "信用卡", e: "(Credit card)", correct: false}] },
+            { q: "喺圖書館入面唔可以做咩？", e: "(What cannot be done inside the library?)", options: [{c: "大聲講嘢同跑來跑去", e: "(Speak loudly and run around)", correct: true}, {c: "安靜睇書", e: "(Read books quietly)", correct: false}, {c: "借書返屋企", e: "(Borrow books home)", correct: false}] },
+            { q: "點解圖書館唔可以飲食？", e: "(Why is eating and drinking not allowed in the library?)", options: [{c: "為咗保持地方清潔", e: "(In order to keep the place clean)", correct: true}, {c: "因為書本會肚餓", e: "(Because books get hungry)", correct: false}, {c: "因為圖書館有餐廳", e: "(Because the library has a restaurant)", correct: false}] },
+            { q: "借咗嘅書通常要幾耐之內歸還？", e: "(How soon must borrowed books usually be returned?)", options: [{c: "三個星期", e: "(Three weeks)", correct: true}, {c: "三個月", e: "(Three months)", correct: false}, {c: "三日", e: "(Three days)", correct: false}] },
+            { q: "如果過咗期限先還書會有咩後果？", e: "(What happens if you return books after the deadline?)", options: [{c: "會被罰款", e: "(Will be fined)", correct: true}, {c: "會被警察拉", e: "(Will be arrested by police)", correct: false}, {c: "可以送畀你", e: "(Can be given to you as a gift)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "Vancouver's Stanley Park", topic: "Existential (有 - There is / There are)",
+        img: "https://images.unsplash.com/photo-1519225421980-715cb0215aed",
+        grammarDesc: "<strong>Existential:</strong> Listing what exists in a place.<br>[Place] + 有 (jau5) means 'In [Place] there is/are...'.",
+        vocab: [
+            {c: "史丹利公園", j: "si2 daan1 lei6 gung1 jyun2", e: "Stanley Park"}, {c: "溫哥華", j: "Wan1 go1 waa4", e: "Vancouver"},
+            {c: "市中心", j: "si5 zung1 sam1", e: "Downtown"}, {c: "有", j: "jau5", e: "There is / are"},
+            {c: "海傍步道", j: "hoi2 pong4 bou6 dou6", e: "Seawall / Seaside path"}, {c: "圖騰柱", j: "tou4 tang4 cyu5", e: "Totem pole"},
+            {c: "森林", j: "sam1 lam4", e: "Forest"}, {c: "古樹", j: "gu2 syu6", e: "Ancient tree"},
+            {c: "水族館", j: "seoi2 zuk6 gun2", e: "Aquarium"}, {c: "踩單車", j: "caai2 daan1 ce1", e: "Ride a bicycle"}
+        ],
+        story: "溫哥華市中心旁邊有一個好大嘅公園，叫做史丹利公園。<br>公園入面有茂密嘅森林，仲有好多幾百年歷史嘅大古樹。<br>海邊有一條好長嘅海傍步道，好多人鍾意喺度散步同踩單車。<br>公園東面有幾條原住民雕刻嘅彩色圖騰柱，非常之特別。<br>除此之外，公園入面仲有一個溫哥華水族館，可以睇到好多海洋生物。",
+        jyutping: "Wan1 go1 waa4 si5 zung1 sam1 pong4 bin1 <span class='highlight'>jau5</span> jat1 go3 hou2 daai6 ge3 gung1 jyun2, giu3 zou6 si2 daan1 lei6 gung1 jyun2.<br>Gung1 jyun2 jap6 min6 <span class='highlight'>jau5</span> mau6 mat6 ge3 sam1 lam4, zung6 <span class='highlight'>jau5</span> hou2 do1 gei2 baak3 nin4 lik6 si2 ge3 daai6 gu2 syu6.<br>Hoi2 bin1 <span class='highlight'>jau5</span> jat1 tiu4 hou2 coeng4 ge3 hoi2 pong4 bou6 dou6, hou2 do1 jan4 zung1 ji3 hai2 dou6 saan3 bou6 tung4 caai2 daan1 ce1.<br>Gung1 jyun2 dung1 min6 <span class='highlight'>jau5</span> gei2 tiu4 jyun4 zyu6 man4 diu1 hak1 ge3 coi2 sik1 tou4 tang4 cyu5, fei1 soeng4 zi1 dak6 bit6.<br>Ceoi4 ci2 zi1 ngoi6, gung1 jyun2 jap6 min6 zung6 <span class='highlight'>jau5</span> jat1 go3 Wan1 go1 waa4 seoi2 zuk6 gun2, ho2 ji5 tai2 dou2 hou2 do1 hoi2 joeng4 sang1 mat6.",
+        english: "Beside downtown Vancouver, there is a very big park called Stanley Park.<br>Inside the park there is a dense forest, and also many large ancient trees with hundreds of years of history.<br>By the sea there is a very long seawall path; many people like to walk and ride bicycles there.<br>On the east side of the park there are several colorful totem poles carved by Indigenous peoples, which are very special.<br>Besides this, inside the park there is also the Vancouver Aquarium, where you can see many marine animals.",
+        quizzes: [
+            { q: "史丹利公園喺溫哥華嘅邊度？", e: "(Where is Stanley Park in Vancouver?)", options: [{c: "市中心旁邊", e: "(Beside downtown)", correct: true}, {c: "機場入面", e: "(Inside the airport)", correct: false}, {c: "商場天台", e: "(On the mall rooftop)", correct: false}] },
+            { q: "公園嘅森林入面有咩特別嘅樹？", e: "(What special trees are in the park's forest?)", options: [{c: "幾百年歷史嘅大古樹", e: "(Large ancient trees with hundreds of years of history)", correct: true}, {c: "蘋果樹", e: "(Apple trees)", correct: false}, {c: "膠樹", e: "(Plastic trees)", correct: false}] },
+            { q: "人們鍾意喺海傍步道做咩？", e: "(What do people like to do on the seawall path?)", options: [{c: "散步同踩單車", e: "(Walk and ride bicycles)", correct: true}, {c: "游水同釣魚", e: "(Swim and fish)", correct: false}, {c: "燒嘢食", e: "(Barbecue)", correct: false}] },
+            { q: "公園東面有咩原住民嘅藝術品？", e: "(What Indigenous artwork is on the east side of the park?)", options: [{c: "彩色圖騰柱", e: "(Colorful totem poles)", correct: true}, {c: "玻璃雕塑", e: "(Glass sculptures)", correct: false}, {c: "油畫", e: "(Oil paintings)", correct: false}] },
+            { q: "如果想睇海洋生物，公園入面有咩地方去？", e: "(If you want to see marine animals, where is there to go in the park?)", options: [{c: "溫哥華水族館", e: "(Vancouver Aquarium)", correct: true}, {c: "游泳池", e: "(Swimming pool)", correct: false}, {c: "海鮮餐廳", e: "(Seafood restaurant)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Healthy Eating", topic: "Advice (應該 / 唔應該 - Should / Shouldn't)",
+        img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061",
+        grammarDesc: "<strong>Advice/Guidance:</strong> Telling what is good or bad for you.<br>應該 (jing1 goi1) means 'Should', 唔應該 (m4 jing1 goi1) means 'Should not'.",
+        vocab: [
+            {c: "健康", j: "gin6 hong1", e: "Healthy"}, {c: "飲食", j: "jam2 sik6", e: "Eating and drinking / Diet"},
+            {c: "應該", j: "jing1 goi1", e: "Should"}, {c: "唔應該", j: "m4 jing1 goi1", e: "Should not"},
+            {c: "蔬菜", j: "so1 coi3", e: "Vegetables"}, {c: "生果", j: "saang1 gwo2", e: "Fruit"},
+            {c: "營養", j: "jing4 joeng5", e: "Nutrition"}, {c: "零食", j: "ling4 sik6", e: "Snacks / Junk food"},
+            {c: "汽水", j: "hei3 seoi2", e: "Soda"}, {c: "飲水", j: "jam2 seoi2", e: "Drink water"}
+        ],
+        story: "為咗保持身體健康，我哋應該要注意飲食習慣。<br>每日我哋應該食多啲蔬菜同生果，因為佢哋有豐富嘅維他命同營養。<br>小朋友唔應該食太多零食同埋朱古力，因為食太多糖會蛀牙。<br>口渴嗰陣，我哋應該多飲清水。<br>盡量唔應該飲太多甜嘅汽水，咁樣身體先會強壯。",
+        jyutping: "Wai6 zo2 bou2 ci4 san1 tai2 gin6 hong1, ngo5 dei6 <span class='highlight'>jing1 goi1</span> jiu3 zyu3 ji3 jam2 sik6 zaap6 gwaan3.<br>Mui5 jat6 ngo5 dei6 <span class='highlight'>jing1 goi1</span> sik6 do1 di1 so1 coi3 tung4 saang1 gwo2, jan1 wai6 keoi5 dei6 jau5 fung1 fu3 ge3 wai4 taa1 ming6 tung4 jing4 joeng5.<br>Siu2 pang4 jau5 <span class='highlight'>m4 jing1 goi1</span> sik6 taai3 do1 ling4 sik6 tung4 maai4 zyu1 gu1 lik1, jan1 wai6 sik6 taai3 do1 tong2 wui5 zyu3 ngaa4.<br>Hau2 hot3 go2 zan6, ngo5 dei6 <span class='highlight'>jing1 goi1</span> do1 jam2 cing1 seoi2.<br>Zeon6 loeng6 <span class='highlight'>m4 jing1 goi1</span> jam2 taai3 do1 tim4 ge3 hei3 seoi2, gam2 joeng2 san1 tai2 sin1 wui5 koeng4 zong3.",
+        english: "In order to keep our bodies healthy, we should pay attention to our dietary habits.<br>Every day we should eat more vegetables and fruits, because they have rich vitamins and nutrition.<br>Children should not eat too many snacks and chocolate, because eating too much sugar causes cavities.<br>When thirsty, we should drink plenty of plain water.<br>Try your best not to drink too much sweet soda; this way the body will be strong.",
+        quizzes: [
+            { q: "為咗身體健康，我哋應該多食咩嘢？", e: "(For a healthy body, what should we eat more of?)", options: [{c: "蔬菜同生果", e: "(Vegetables and fruits)", correct: true}, {c: "薯片同糖", e: "(Chips and candy)", correct: false}, {c: "雪糕", e: "(Ice cream)", correct: false}] },
+            { q: "點解生果同蔬菜對身體好？", e: "(Why are fruits and veggies good for the body?)", options: [{c: "因為有豐富嘅維他命同營養", e: "(Because they have rich vitamins and nutrition)", correct: true}, {c: "因為好甜好肥", e: "(Because they are very sweet and fattening)", correct: false}, {c: "因為有好多防腐劑", e: "(Because they have many preservatives)", correct: false}] },
+            { q: "小朋友唔應該食太多咩嘢？", e: "(What shouldn't children eat too much of?)", options: [{c: "零食同朱古力", e: "(Snacks and chocolate)", correct: true}, {c: "飯同麵", e: "(Rice and noodles)", correct: false}, {c: "蘋果同橙", e: "(Apples and oranges)", correct: false}] },
+            { q: "食太多糖會有咩壞處？", e: "(What is the bad effect of eating too much sugar?)", options: [{c: "會蛀牙", e: "(Will get cavities)", correct: true}, {c: "會變聰明", e: "(Will become smart)", correct: false}, {c: "會跑得快", e: "(Will run fast)", correct: false}] },
+            { q: "口渴嗰陣最好飲咩？", e: "(When thirsty, what is best to drink?)", options: [{c: "清水", e: "(Plain water)", correct: true}, {c: "汽水", e: "(Soda)", correct: false}, {c: "咖啡", e: "(Coffee)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "The Four Seasons", topic: "Time Transitions (到咗...就 - When it arrives... then)",
+        img: "https://images.unsplash.com/photo-1548081440-62eb29b35a39",
+        grammarDesc: "<strong>Time Transitions:</strong> Describing what happens at a certain time.<br>到咗 (dou3 zo2) [Time], 就 (zau6) [Event] means 'When [Time] arrives, then [Event] happens'.",
+        vocab: [
+            {c: "四季", j: "sei3 gwai3", e: "Four seasons"}, {c: "春天", j: "ceon1 tin1", e: "Spring"},
+            {c: "開花", j: "hoi1 faa1", e: "Bloom"}, {c: "夏天", j: "haa6 tin1", e: "Summer"},
+            {c: "熱", j: "jit6", e: "Hot"}, {c: "秋天", j: "cau1 tin1", e: "Autumn / Fall"},
+            {c: "落葉", j: "lok6 jip6", e: "Falling leaves"}, {c: "冬天", j: "dung1 tin1", e: "Winter"},
+            {c: "落雪", j: "lok6 syut3", e: "Snowing"}, {c: "到咗", j: "dou3 zo2", e: "When it reaches / Arrives at"}
+        ],
+        story: "一年有四個季節，氣候會不斷變化。<br>到咗春天，天氣開始回暖，公園啲花就全部開晒。<br>到咗夏天，太陽好猛烈，天氣就變得非常之熱，大家鍾意去游水。<br>到咗秋天，樹葉會變黃同變紅，風一吹就會有落葉。<br>最後到咗冬天，天氣會變得好凍，溫哥華有時候仲會落雪添。",
+        jyutping: "Jat1 nin4 jau5 sei3 go3 gwai3 zit3, hei3 hau6 wui5 bat1 dyun6 bin3 faa3.<br><span class='highlight'>Dou3 zo2</span> ceon1 tin1, tin1 hei3 hoi1 ci2 wui4 nyun5, gung1 jyun2 di1 faa1 <span class='highlight'>zau6</span> cyun4 bou6 hoi1 saai3.<br><span class='highlight'>Dou3 zo2</span> haa6 tin1, taai3 joeng4 hou2 maang5 lit6, tin1 hei3 <span class='highlight'>zau6</span> bin3 dak1 fei1 soeng4 zi1 jit6, daai6 gaa1 zung1 ji3 heoi3 jau4 seoi2.<br><span class='highlight'>Dou3 zo2</span> cau1 tin1, syu6 jip6 wui5 bin3 wong4 tung4 bin3 hung4, fung1 jat1 ceoi1 <span class='highlight'>zau6</span> wui5 jau5 lok6 jip6.<br>Zeoi3 hau6 <span class='highlight'>dou3 zo2</span> dung1 tin1, tin1 hei3 wui5 bin3 dak1 hou2 dung3, Wan1 go1 waa4 jau5 si4 hau6 zung6 wui5 lok6 syut3 tim1.",
+        english: "A year has four seasons, and the climate changes continuously.<br>When Spring arrives, the weather starts to warm up, and the flowers in the park all bloom.<br>When Summer arrives, the sun is very fierce, the weather becomes extremely hot, and everyone likes to go swimming.<br>When Autumn arrives, leaves will turn yellow and red, and when the wind blows there will be falling leaves.<br>Finally, when Winter arrives, the weather will become very cold, and Vancouver will sometimes even have snow.",
+        quizzes: [
+            { q: "一年總共有幾多個季節？", e: "(How many seasons are there in a year in total?)", options: [{c: "四個", e: "(Four)", correct: true}, {c: "三個", e: "(Three)", correct: false}, {c: "十二個", e: "(Twelve)", correct: false}] },
+            { q: "春天嘅時候會有咩變化？", e: "(What changes occur during Spring?)", options: [{c: "天氣回暖，花朵開晒", e: "(Weather warms up, flowers all bloom)", correct: true}, {c: "樹葉變黃落低", e: "(Leaves turn yellow and fall)", correct: false}, {c: "開始落大雪", e: "(Starts snowing heavily)", correct: false}] },
+            { q: "啲人夏天最鍾意做咩活動？", e: "(What activity do people like to do most in Summer?)", options: [{c: "去游水", e: "(Go swimming)", correct: true}, {c: "堆雪人", e: "(Build a snowman)", correct: false}, {c: "着厚褸", e: "(Wear a thick coat)", correct: false}] },
+            { q: "秋天嘅樹葉會變成咩色？", e: "(What colors will the leaves turn in Autumn?)", options: [{c: "黃色同紅色", e: "(Yellow and red)", correct: true}, {c: "藍色同紫色", e: "(Blue and purple)", correct: false}, {c: "黑色同白色", e: "(Black and white)", correct: false}] },
+            { q: "冬天嘅溫哥華有時會點樣？", e: "(What does Vancouver sometimes experience in Winter?)", options: [{c: "落雪", e: "(Snowing)", correct: true}, {c: "打大風", e: "(Typhoon)", correct: false}, {c: "好熱", e: "(Very hot)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Sending a Letter", topic: "Process (將... 放入 - Put [A] into [B])",
+        img: "https://images.unsplash.com/photo-1586769852044-692d7e172e27",
+        grammarDesc: "<strong>Physical Actions:</strong> Describing placing objects.<br>將 (zoeng1) [Object] 放入 (fong3 jap6) [Place] means 'Put [Object] into [Place]'.",
+        vocab: [
+            {c: "寄信", j: "gei3 seon3", e: "Send a letter"}, {c: "信封", j: "seon3 fung1", e: "Envelope"},
+            {c: "郵票", j: "jau4 piu3", e: "Stamp"}, {c: "地址", j: "dei6 zi2", e: "Address"},
+            {c: "將", j: "zoeng1", e: "Take (marker for object)"}, {c: "放入", j: "fong3 jap6", e: "Put into"},
+            {c: "郵筒", j: "jau4 tung2", e: "Mailbox"}, {c: "郵差", j: "jau4 caai1", e: "Mail carrier"},
+            {c: "派信", j: "paai3 seon3", e: "Deliver mail"}, {c: "收到", j: "sau1 dou2", e: "Receive"}
+        ],
+        story: "今日我想寫封信畀遠方嘅朋友。<br>寫完之後，我要將封信放入信封入面，然後封好個口。<br>跟住，我喺信封上面寫清楚朋友嘅地址，同埋貼上郵票。<br>最後，我將信件放入街口嘅紅色郵筒。<br>郵差叔叔會定時去收信，然後將信件派去朋友嘅屋企，佢好快就會收到喇。",
+        jyutping: "Gam1 jat6 ngo5 soeng2 se2 fung1 seon3 bei2 jyun5 fong1 ge3 pang4 jau5.<br>Se2 jyun4 zi1 hau6, ngo5 jiu3 <span class='highlight'>zoeng1</span> fung1 seon3 <span class='highlight'>fong3 jap6</span> seon3 fung1 jap6 min6, jin4 hau6 fung1 hou2 go3 hau2.<br>Gan1 zyu6, ngo5 hai2 seon3 fung1 soeng6 min6 se2 cing1 co2 pang4 jau5 ge3 dei6 zi2, tung4 maai4 tip3 soeng5 jau4 piu3.<br>Zeoi3 hau6, ngo5 <span class='highlight'>zoeng1</span> seon3 gin2 <span class='highlight'>fong3 jap6</span> gaai1 hau2 ge3 hung4 sik1 jau4 tung2.<br>Jau4 caai1 suk1 suk1 wui5 ding6 si4 heoi3 sau1 seon3, jin4 hau6 zoeng1 seon3 gin2 paai3 heoi3 pang4 jau5 ge3 uk1 kei2, keoi5 hou2 faai3 zau6 wui5 sau1 dou2 laa3.",
+        english: "Today I want to write a letter to a friend far away.<br>After writing, I need to put the letter into the envelope, and then seal the opening well.<br>Next, I write my friend's address clearly on the envelope and stick on a stamp.<br>Finally, I put the letter into the red mailbox at the street corner.<br>The mail carrier will regularly collect the mail, then deliver the letter to my friend's house, they will receive it very soon.",
+        quizzes: [
+            { q: "寫完信之後，第一步要做咩？", e: "(After writing the letter, what is the first step to do?)", options: [{c: "將信放入信封", e: "(Put the letter into the envelope)", correct: true}, {c: "即刻交畀郵差", e: "(Give it to the mail carrier immediately)", correct: false}, {c: "打電話畀朋友", e: "(Call the friend on the phone)", correct: false}] },
+            { q: "信封上面必須要有咩嘢？", e: "(What must be on the envelope?)", options: [{c: "地址同郵票", e: "(Address and stamp)", correct: true}, {c: "相片同貼紙", e: "(Photo and stickers)", correct: false}, {c: "銀紙", e: "(Money/Banknote)", correct: false}] },
+            { q: "作者將寫好嘅信放去邊度？", e: "(Where did the author put the finished letter?)", options: [{c: "街口嘅郵筒", e: "(The mailbox at the street corner)", correct: true}, {c: "垃圾桶", e: "(Garbage bin)", correct: false}, {c: "書包入面", e: "(Inside the schoolbag)", correct: false}] },
+            { q: "邊個負責將信件送到朋友屋企？", e: "(Who is responsible for delivering the letter to the friend's house?)", options: [{c: "郵差叔叔", e: "(The mail carrier)", correct: true}, {c: "警察叔叔", e: "(The police officer)", correct: false}, {c: "老師", e: "(The teacher)", correct: false}] },
+            { q: "「將封信放入信封」表示咩動作？", e: "(What action does 'zoeng fung seon fong jap seon fung' indicate?)", options: [{c: "把物品放置喺某個空間裡面", e: "(Placing an object inside a certain space)", correct: true}, {c: "將物品攞出嚟", e: "(Taking an object out)", correct: false}, {c: "將物品撕爛", e: "(Tearing an object apart)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Brushing Teeth", topic: "Frequency (每日... 兩次 - Twice every day)",
+        img: "https://images.unsplash.com/photo-1598462061763-718fa6f33cf2",
+        grammarDesc: "<strong>Frequency:</strong> Explaining how often to do a task.<br>每日 (mui5 jat6) [Action] 兩次 (loeng5 ci3) means '[Action] twice every day'.",
+        vocab: [
+            {c: "保護", j: "bou2 wu6", e: "Protect"}, {c: "牙齒", j: "ngaa4 ci2", e: "Teeth"},
+            {c: "刷牙", j: "caat3 ngaa4", e: "Brush teeth"}, {c: "每日", j: "mui5 jat6", e: "Every day"},
+            {c: "兩次", j: "loeng5 ci3", e: "Twice"}, {c: "朝早", j: "ziu1 zou2", e: "Morning"},
+            {c: "夜晚", j: "je6 maan5", e: "Night"}, {c: "牙醫", j: "ngaa4 ji1", e: "Dentist"},
+            {c: "蛀牙", j: "zyu3 ngaa4", e: "Cavity / Tooth decay"}, {c: "乾淨", j: "gon1 zing6", e: "Clean"}
+        ],
+        story: "為咗保護牙齒健康，我哋每日都要保持口腔清潔。<br>牙醫叔叔話，我哋每日最少要刷牙兩次。<br>一次喺朝早起身之後，另一次喺夜晚臨瞓之前。<br>刷牙可以刷走牙齒上面嘅細菌，防止蛀牙。<br>仲要定期去檢查牙齒，咁樣啲牙先會又白又乾淨。",
+        jyutping: "Wai6 zo2 bou2 wu6 ngaa4 ci2 gin6 hong1, ngo5 dei6 mui5 jat6 dou1 jiu3 bou2 ci4 hau2 hong1 cing1 git3.<br>Ngaa4 ji1 suk1 suk1 waa6, ngo5 dei6 <span class='highlight'>mui5 jat6</span> zeoi3 siu2 jiu3 caat3 ngaa4 <span class='highlight'>loeng5 ci3</span>.<br>Jat1 ci3 hai2 ziu1 zou2 hei2 san1 zi1 hau6, ling6 jat1 ci3 hai2 je6 maan5 lam4 fan3 zi1 cin4.<br>Caat3 ngaa4 ho2 ji5 caat3 zau2 ngaa4 ci2 soeng6 min6 ge3 sai3 kwan2, fong4 zi2 zyu3 ngaa4.<br>Zung6 jiu3 ding6 kei4 heoi3 gim2 caa4 ngaa4 ci2, gam2 joeng2 di1 ngaa4 sin1 wui5 jau6 baak6 jau6 gon1 zing6.",
+        english: "In order to protect dental health, we must keep our mouths clean every day.<br>The dentist says, we must brush our teeth at least twice every day.<br>Once in the morning after waking up, the other time at night before going to sleep.<br>Brushing teeth can brush away the bacteria on the teeth, preventing cavities.<br>Also need to regularly go check the teeth, this way the teeth will be white and clean.",
+        quizzes: [
+            { q: "牙醫建議我哋每日最少刷牙幾多次？", e: "(How many times a day does the dentist advise us to brush our teeth at least?)", options: [{c: "兩次", e: "(Twice)", correct: true}, {c: "一次", e: "(Once)", correct: false}, {c: "五次", e: "(Five times)", correct: false}] },
+            { q: "通常喺邊兩個時間刷牙最好？", e: "(Usually at which two times is it best to brush teeth?)", options: [{c: "朝早起身同夜晚臨瞓前", e: "(Morning after waking and night before sleeping)", correct: true}, {c: "食晏晝飯前後", e: "(Before and after eating lunch)", correct: false}, {c: "返學同放學嗰陣", e: "(Going to and leaving school)", correct: false}] },
+            { q: "點解要刷牙？", e: "(Why do we need to brush our teeth?)", options: [{c: "刷走細菌防止蛀牙", e: "(Brush away bacteria to prevent cavities)", correct: true}, {c: "令到牙齒變長", e: "(Make the teeth grow longer)", correct: false}, {c: "可以食多啲糖", e: "(Can eat more candy)", correct: false}] },
+            { q: "除咗刷牙，仲要做咩保護牙齒？", e: "(Besides brushing teeth, what else to do to protect teeth?)", options: [{c: "定期去睇牙醫檢查", e: "(Go see the dentist regularly for checkups)", correct: true}, {c: "唔食飯", e: "(Not eat meals)", correct: false}, {c: "每日換新牙刷", e: "(Change to a new toothbrush every day)", correct: false}] },
+            { q: "健康嘅牙齒睇起嚟係點樣嘅？", e: "(What do healthy teeth look like?)", options: [{c: "又白又乾淨", e: "(White and clean)", correct: true}, {c: "黑色有窿", e: "(Black with holes)", correct: false}, {c: "黃色而且好痛", e: "(Yellow and very painful)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Riding the Skytrain", topic: "Courtesy (讓座 - Give up a seat)",
+        img: "https://images.unsplash.com/photo-1544372990-eb88cc59c235",
+        grammarDesc: "<strong>Civic Duty:</strong> Expressing polite behavior.<br>讓座 (joeng6 zo6) means to give up one's seat to someone in need.",
+        vocab: [
+            {c: "天車", j: "tin1 ce1", e: "Skytrain"}, {c: "月台", j: "jyut6 toi4", e: "Platform"},
+            {c: "排隊", j: "paai4 deoi2", e: "Line up"}, {c: "扶手", j: "fu4 sau2", e: "Handrail"},
+            {c: "讓座", j: "joeng6 zo6", e: "Give up seat"}, {c: "長者", j: "zoeng2 ze2", e: "Elderly person"},
+            {c: "大肚婆", j: "daai6 tou5 po4", e: "Pregnant woman"}, {c: "需要", j: "seoi1 jiu3", e: "Need"},
+            {c: "落車", j: "lok6 ce1", e: "Get off (vehicle)"}, {c: "禮貌", j: "lai5 maau6", e: "Politeness / Manners"}
+        ],
+        story: "喺溫哥華搭天車，我哋要遵守交通禮儀。<br>喺月台等車嗰陣要排隊，等車廂入面嘅人落車先好行入去。<br>如果車入面冇位坐，就要緊握扶手，小心跌低。<br>見到長者、大肚婆或者有需要嘅人，我哋應該主動讓座畀佢哋。<br>做個有禮貌嘅好乘客，大家都搭得開心安全。",
+        jyutping: "Hai2 Wan1 go1 waa4 daap3 tin1 ce1, ngo5 dei6 jiu3 zeon1 sau2 gaau1 tung1 lai5 ji4.<br>Hai2 jyut6 toi4 dang2 ce1 go2 zan6 jiu3 paai4 deoi2, dang2 ce1 soeng1 jap6 min6 ge3 jan4 lok6 ce1 sin1 hou2 haang4 jap6 heoi3.<br>Jyu4 gwo2 ce1 jap6 min6 mou5 wai2 co5, zau6 jiu3 gan2 ak1 fu4 sau2, siu2 sam1 dit3 dai1.<br>Gin3 dou2 zoeng2 ze2, daai6 tou5 po4 waak6 ze2 jau5 seoi1 jiu3 ge3 jan4, ngo5 dei6 jing1 goi1 zyu2 dung6 <span class='highlight'>joeng6 zo6</span> bei2 keoi5 dei6.<br>Zou6 go3 jau5 lai5 maau6 ge3 hou2 sing4 haak3, daai6 gaa1 dou1 daap3 dak1 hoi1 sam1 on1 cyun4.",
+        english: "When riding the Skytrain in Vancouver, we need to observe transit etiquette.<br>When waiting for the train on the platform, we must line up, wait for the people inside the train car to get off before walking in.<br>If there are no seats inside the train, one must hold tightly to the handrail, careful not to fall down.<br>Seeing elderly people, pregnant women, or people in need, we should proactively give up our seat to them.<br>Be a polite good passenger, and everyone rides happily and safely.",
+        quizzes: [
+            { q: "喺月台等天車應該點做？", e: "(What should be done when waiting for the Skytrain on the platform?)", options: [{c: "排隊等其他人落車先行入去", e: "(Line up and wait for others to exit before walking in)", correct: true}, {c: "第一時間衝入車廂", e: "(Rush into the train car immediately)", correct: false}, {c: "喺月台度跑來跑去", e: "(Run around on the platform)", correct: false}] },
+            { q: "車入面冇位坐嗰陣要注意咩？", e: "(What to pay attention to when there are no seats in the train?)", options: [{c: "緊握扶手，小心跌低", e: "(Hold the handrail tightly, careful not to fall)", correct: true}, {c: "坐喺地下", e: "(Sit on the floor)", correct: false}, {c: "挨住車門", e: "(Lean against the train doors)", correct: false}] },
+            { q: "見到有需要嘅人上車應該點做？", e: "(What should be done seeing a person in need board the train?)", options: [{c: "主動讓座畀佢哋", e: "(Proactively give up the seat to them)", correct: true}, {c: "扮見唔到", e: "(Pretend not to see)", correct: false}, {c: "叫佢哋企遠啲", e: "(Tell them to stand further away)", correct: false}] },
+            { q: "文中有提到咩人係「有需要嘅人」？", e: "(What people are mentioned in the text as 'people in need'?)", options: [{c: "長者同大肚婆", e: "(Elderly and pregnant women)", correct: true}, {c: "後生仔", e: "(Young people)", correct: false}, {c: "司機", e: "(The driver)", correct: false}] },
+            { q: "「讓座」係咩意思？", e: "(What does 'joeng zo' mean?)", options: [{c: "將自己個座位讓畀其他人坐", e: "(Giving one's own seat for another person to sit)", correct: true}, {c: "霸佔兩個座位", e: "(Taking up two seats)", correct: false}, {c: "喺座位度瞓覺", e: "(Sleeping in the seat)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Busy Bees", topic: "Purpose (為咗 - In order to)",
+        img: "https://images.unsplash.com/photo-1588600878108-578307a3cc9d",
+        grammarDesc: "<strong>Purpose:</strong> Describing why an action is done.<br>為咗 (wai6 zo2) means 'In order to' or 'For the sake of'.",
+        vocab: [
+            {c: "蜜蜂", j: "mat6 fung1", e: "Bee"}, {c: "昆蟲", j: "kwan1 cung4", e: "Insect"},
+            {c: "採蜜", j: "coi2 mat6", e: "Collect nectar"}, {c: "花粉", j: "faa1 fan2", e: "Pollen"},
+            {c: "傳播", j: "cyun4 bo3", e: "Spread / Pollinate"}, {c: "為咗", j: "wai6 zo2", e: "In order to"},
+            {c: "製造", j: "zai3 zou6", e: "Make / Produce"}, {c: "蜜糖", j: "mat6 tong4", e: "Honey"},
+            {c: "蜂巢", j: "fung1 caau4", e: "Beehive"}, {c: "勤力", j: "kan4 lik6", e: "Hardworking"}
+        ],
+        story: "蜜蜂係一種非常勤力嘅小昆蟲。<br>為咗製造好味嘅蜜糖，佢哋每日都會飛去唔同嘅花朵上面採蜜。<br>喺採蜜嘅過程入面，蜜蜂嘅腳會黏住花粉。<br>為咗幫植物傳播花粉，佢哋飛來飛去，令到植物可以結出果實。<br>採完蜜之後，蜜蜂就會飛返去自己嘅蜂巢度休息。",
+        jyutping: "Mat6 fung1 hai6 jat1 zung2 fei1 soeng4 kan4 lik6 ge3 siu2 kwan1 cung4.<br><span class='highlight'>Wai6 zo2</span> zai3 zou6 hou2 mei6 ge3 mat6 tong4, keoi5 dei6 mui5 jat6 dou1 wui5 fei1 heoi3 m4 tung4 ge3 faa1 do2 soeng6 min6 coi2 mat6.<br>Hai2 coi2 mat6 ge3 gwo3 cing4 jap6 min6, mat6 fung1 ge3 goek3 wui5 nim1 zyu6 faa1 fan2.<br><span class='highlight'>Wai6 zo2</span> bong1 zik6 mat6 cyun4 bo3 faa1 fan2, keoi5 dei6 fei1 lei4 fei1 heoi3, ling6 dou3 zik6 mat6 ho2 ji5 git3 ceot1 gwo2 sat6.<br>Coi2 jyun4 mat6 zi1 hau6, mat6 fung1 zau6 wui5 fei1 faan1 heoi3 zi6 gei2 ge3 fung1 caau4 dou6 jau1 sik1.",
+        english: "Bees are a type of very hardworking small insect.<br>In order to make delicious honey, they fly to different flowers to collect nectar every day.<br>In the process of collecting nectar, pollen will stick to the bees' legs.<br>In order to help plants spread pollen, they fly back and forth, enabling plants to bear fruit.<br>After finishing collecting nectar, the bees will fly back to their own beehive to rest.",
+        quizzes: [
+            { q: "蜜蜂點解要飛去花朵上面採蜜？", e: "(Why do bees fly to flowers to collect nectar?)", options: [{c: "為咗製造蜜糖", e: "(In order to make honey)", correct: true}, {c: "為咗食花瓣", e: "(In order to eat the flower petals)", correct: false}, {c: "為咗捉蟲", e: "(In order to catch bugs)", correct: false}] },
+            { q: "蜜蜂飛來飛去可以幫植物做咩？", e: "(What can bees flying back and forth help plants do?)", options: [{c: "傳播花粉", e: "(Spread pollen)", correct: true}, {c: "淋水", e: "(Water them)", correct: false}, {c: "剪草", e: "(Cut the grass)", correct: false}] },
+            { q: "傳播花粉之後，植物會有咩變化？", e: "(After spreading pollen, what change will plants have?)", options: [{c: "可以結出果實", e: "(Can bear fruit)", correct: true}, {c: "會變成大樹", e: "(Will become a big tree)", correct: false}, {c: "會即刻枯萎", e: "(Will immediately wither)", correct: false}] },
+            { q: "蜜蜂做完嘢會飛返去邊度休息？", e: "(Where will bees fly back to rest after finishing work?)", options: [{c: "蜂巢", e: "(Beehive)", correct: true}, {c: "雀巢", e: "(Bird's nest)", correct: false}, {c: "地洞", e: "(Burrow/Hole in the ground)", correct: false}] },
+            { q: "「為咗」通常放喺句子邊個位置表達目的？", e: "(Where is 'wai zo' usually placed in a sentence to express purpose?)", options: [{c: "放喺動作嘅前面解釋原因", e: "(Placed before the action to explain the reason)", correct: true}, {c: "放喺句子嘅最後", e: "(Placed at the very end of the sentence)", correct: false}, {c: "只可以單獨使用", e: "(Can only be used independently)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Emergency 911", topic: "Hypothetical (如果發生... 要 - If [A] happens... must [B])",
+        img: "https://images.unsplash.com/photo-1582214418659-f22283b7fb25",
+        grammarDesc: "<strong>Emergency Protocol:</strong> Explaining what to do in case of an event.<br>如果發生 (jyu4 gwo2 faat3 sang1) [Event] 要 (jiu3) [Action] means 'If [Event] happens, must [Action]'.",
+        vocab: [
+            {c: "如果", j: "jyu4 gwo2", e: "If"}, {c: "發生", j: "faat3 sang1", e: "Happen / Occur"},
+            {c: "緊急", j: "gan2 gap1", e: "Emergency"}, {c: "報警", j: "bou3 ging2", e: "Call police / Report"},
+            {c: "火燭", j: "fo2 zuk1", e: "Fire"}, {c: "受傷", j: "sau6 soeng1", e: "Injured"},
+            {c: "冷靜", j: "laang5 zing6", e: "Calm"}, {c: "地址", j: "dei6 zi2", e: "Address"},
+            {c: "消防車", j: "fo2 fong4 ce1", e: "Fire engine"}, {c: "救護車", j: "gau3 wu6 ce1", e: "Ambulance"}
+        ],
+        story: "九一一 (911) 係北美洲嘅緊急求救電話號碼。<br>如果發生緊急事故，例如火燭、有壞人或者有人嚴重受傷，就要打 911 報警。<br>打通電話之後，最重要係保持冷靜，唔好驚。<br>要清楚話畀接線生知你嘅位置同埋屋企地址。<br>之後，警察、消防車或者救護車就會好快嚟到幫你。",
+        jyutping: "Gau2 jat1 jat1 (911) hai6 bak1 mei5 zau1 ge3 gan2 gap1 kau4 gau3 din6 waa2 hou6 maa5.<br><span class='highlight'>Jyu4 gwo2 faat3 sang1</span> gan2 gap1 si6 gu3, lai6 jyu4 fo2 zuk1, jau5 waai6 jan4 waak6 ze2 jau5 jan4 jim4 zung6 sau6 soeng1, zau6 <span class='highlight'>jiu3</span> daa2 911 bou3 ging2.<br>Daa2 tung1 din6 waa2 zi1 hau6, zeoi3 zung6 jiu3 hai6 bou2 ci4 laang5 zing6, m4 hou2 geng1.<br><span class='highlight'>Jiu3</span> cing1 co2 waa6 bei2 zip3 sin3 sang1 zi1 nei5 ge3 wai6 zi3 tung4 maai4 uk1 kei2 dei6 zi2.<br>Zi1 hau6, ging2 caat3, fo2 fong4 ce1 waak6 ze2 gau3 wu6 ce1 zau6 wui5 hou2 faai3 lei4 dou3 bong1 nei5.",
+        english: "911 is the emergency rescue phone number in North America.<br>If an emergency incident happens, such as a fire, bad guys, or someone is severely injured, you must dial 911 to report it.<br>After the call connects, the most important thing is to keep calm and not be scared.<br>You must clearly tell the operator your location and home address.<br>After that, police, fire engines, or ambulances will arrive very quickly to help you.",
+        quizzes: [
+            { q: "遇到緊急情況應該打咩電話號碼？", e: "(What phone number should you call encountering an emergency?)", options: [{c: "911", e: "(911)", correct: true}, {c: "123", e: "(123)", correct: false}, {c: "999", e: "(999)", correct: false}] },
+            { q: "咩情況下先需要打 911？", e: "(Under what circumstances do you need to call 911?)", options: [{c: "火燭、有壞人或者有人嚴重受傷", e: "(Fire, bad guys, or severe injuries)", correct: true}, {c: "唔見咗玩具", e: "(Lost a toy)", correct: false}, {c: "想叫外賣", e: "(Want to order takeout food)", correct: false}] },
+            { q: "打通 911 之後第一樣要做到嘅事係咩？", e: "(What is the first thing to do after 911 connects?)", options: [{c: "保持冷靜，唔好驚", e: "(Keep calm, don't be scared)", correct: true}, {c: "即刻收線", e: "(Hang up immediately)", correct: false}, {c: "大聲喊", e: "(Cry loudly)", correct: false}] },
+            { q: "同接線生講嘢嗰陣，最重要講低咩資料？", e: "(When speaking to the operator, what is the most important info to state?)", options: [{c: "自己嘅位置同屋企地址", e: "(Your location and home address)", correct: true}, {c: "自己幾歲", e: "(How old you are)", correct: false}, {c: "今日天氣點樣", e: "(How the weather is today)", correct: false}] },
+            { q: "報警之後，咩車可能會嚟幫手？", e: "(After reporting, what cars might come to help?)", options: [{c: "消防車或救護車", e: "(Fire engines or ambulances)", correct: true}, {c: "校巴", e: "(School bus)", correct: false}, {c: "雪糕車", e: "(Ice cream truck)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Saving the Earth", topic: "Imperative (記得 - Remember to)",
+        img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09",
+        grammarDesc: "<strong>Reminders:</strong> Giving commands or strong advice.<br>記得 (gei3 dak1) means 'Remember to'.",
+        vocab: [
+            {c: "保護", j: "bou2 wu6", e: "Protect"}, {c: "地球", j: "dei6 kau4", e: "Earth"},
+            {c: "環保", j: "waan4 bou2", e: "Eco-friendly"}, {c: "記得", j: "gei3 dak1", e: "Remember to"},
+            {c: "熄燈", j: "sik1 dang1", e: "Turn off lights"}, {c: "節約", j: "zit3 joek3", e: "Conserve / Save"},
+            {c: "浪費", j: "long6 fai3", e: "Waste"}, {c: "環保袋", j: "waan4 bou2 doi2", e: "Reusable bag"},
+            {c: "膠袋", j: "gaau1 doi2", e: "Plastic bag"}, {c: "責任", j: "zaak3 jam6", e: "Responsibility"}
+        ],
+        story: "地球係我哋嘅家，每個人都有責任保護佢。<br>為咗環保，我哋離開房間嗰陣，記得要熄燈。<br>洗手或者刷牙嘅時候，記得要閂水喉，唔好浪費食水。<br>去超級市場買嘢，我哋要記得自己帶環保袋，減少用膠袋。<br>只要大家一齊努力節約能源，地球就會變得更加靚。",
+        jyutping: "Dei6 kau4 hai6 ngo5 dei6 ge3 gaa1, mui5 go3 jan4 dou1 jau5 zaak3 jam6 bou2 wu6 keoi5.<br>Wai6 zo2 waan4 bou2, ngo5 dei6 lei4 hoi1 fong4 gaan1 go2 zan6, <span class='highlight'>gei3 dak1</span> jiu3 sik1 dang1.<br>Sai2 sau2 waak6 ze2 caat3 ngaa4 ge3 si4 hau6, <span class='highlight'>gei3 dak1</span> jiu3 saan1 seoi2 hau4, m4 hou2 long6 fai3 sik6 seoi2.<br>Heoi3 ciu1 kap1 si5 coeng4 maai5 je5, ngo5 dei6 jiu3 <span class='highlight'>gei3 dak1</span> zi6 gei2 daai3 waan4 bou2 doi2, gaam2 siu2 jung6 gaau1 doi2.<br>Zi2 jiu3 daai6 gaa1 jat1 cai4 nou5 lik6 zit3 joek3 nang4 jyun4, dei6 kau4 zau6 wui5 bin3 dak1 gang3 gaa1 leng3.",
+        english: "Earth is our home, everyone has a responsibility to protect it.<br>For eco-friendliness, when we leave a room, remember to turn off the lights.<br>When washing hands or brushing teeth, remember to turn off the tap, do not waste drinking water.<br>Going to the supermarket to buy things, we must remember to bring our own reusable bags to reduce using plastic bags.<br>As long as everyone works together to conserve energy, the Earth will become even more beautiful.",
+        quizzes: [
+            { q: "離開房間嗰陣應該做咩嚟慳電？", e: "(What should be done when leaving a room to save electricity?)", options: [{c: "記得熄燈", e: "(Remember to turn off lights)", correct: true}, {c: "記得開冷氣", e: "(Remember to turn on AC)", correct: false}, {c: "記得打開門", e: "(Remember to open the door)", correct: false}] },
+            { q: "洗手或者刷牙嗰陣要注意咩？", e: "(What to note when washing hands or brushing teeth?)", options: [{c: "閂水喉唔好浪費水", e: "(Turn off the tap, don't waste water)", correct: true}, {c: "開最大水流", e: "(Turn on the water flow to maximum)", correct: false}, {c: "用好多番梘", e: "(Use a lot of soap)", correct: false}] },
+            { q: "去超級市場買嘢應該帶咩？", e: "(What should you bring going to the supermarket to buy things?)", options: [{c: "自己帶環保袋", e: "(Bring your own reusable bag)", correct: true}, {c: "帶好多膠袋", e: "(Bring lots of plastic bags)", correct: false}, {c: "帶玩具", e: "(Bring toys)", correct: false}] },
+            { q: "點解要減少用膠袋？", e: "(Why do we need to reduce using plastic bags?)", options: [{c: "為咗環保同保護地球", e: "(For eco-friendliness and protecting the Earth)", correct: true}, {c: "因為膠袋太重", e: "(Because plastic bags are too heavy)", correct: false}, {c: "因為膠袋唔靚", e: "(Because plastic bags are not pretty)", correct: false}] },
+            { q: "「記得」喺廣東話通常用嚟表達咩？", e: "(What is 'gei dak' usually used to express in Cantonese?)", options: [{c: "提醒別人唔好忘記做某件事", e: "(Reminding someone not to forget to do something)", correct: true}, {c: "講過去發生嘅故事", e: "(Telling a story that happened in the past)", correct: false}, {c: "表示自己唔知道", e: "(Indicating oneself doesn't know)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Animal Habitats", topic: "Location (住喺 - Live in/at)",
+        img: "https://images.unsplash.com/photo-1549480017-d76466a4b8e8",
+        grammarDesc: "<strong>Habitats/Location:</strong> Saying where someone or something lives.<br>住喺 (zyu6 hai2) means 'lives in' or 'lives at'.",
+        vocab: [
+            {c: "棲息地", j: "cai1 sik1 dei6", e: "Habitat"}, {c: "住喺", j: "zyu6 hai2", e: "Live in / at"},
+            {c: "大海", j: "daai6 hoi2", e: "Ocean / Sea"}, {c: "森林", j: "sam1 lam4", e: "Forest"},
+            {c: "沙漠", j: "saa1 mok6", e: "Desert"}, {c: "鯨魚", j: "king4 jyu2", e: "Whale"},
+            {c: "熊", j: "hung4", e: "Bear"}, {c: "駱駝", j: "lok3 to4", e: "Camel"},
+            {c: "適應", j: "sik1 jing3", e: "Adapt"}, {c: "環境", j: "hwaan4 ging2", e: "Environment"}
+        ],
+        story: "地球上有唔同嘅動物，佢哋住喺唔同嘅地方，呢啲地方叫做棲息地。<br>鯨魚同海豚住喺深藍色嘅大海入面，佢哋可以喺水底游得好快。<br>大灰熊就住喺茂密嘅森林入面，佢哋會喺樹林搵嘢食。<br>而駱駝就住喺又熱又乾嘅沙漠，佢哋背脊嘅駝峰可以儲存脂肪。<br>動物好聰明，佢哋識得適應自己嘅生活環境。",
+        jyutping: "Dei6 kau4 soeng6 jau5 m4 tung4 ge3 dung6 mat6, keoi5 dei6 <span class='highlight'>zyu6 hai2</span> m4 tung4 ge3 dei6 fong1, ni1 di1 dei6 fong1 giu3 zou6 cai1 sik1 dei6.<br>King4 jyu2 tung4 hoi2 tyun4 <span class='highlight'>zyu6 hai2</span> sam1 laam4 sik1 ge3 daai6 hoi2 jap6 min6, keoi5 dei6 ho2 ji5 hai2 seoi2 dai2 jau4 dak1 hou2 faai3.<br>Daai6 fui1 hung4 zau6 <span class='highlight'>zyu6 hai2</span> mau6 mat6 ge3 sam1 lam4 jap6 min6, keoi5 dei6 wui5 hai2 syu6 lam4 wan2 je5 sik6.<br>Ji4 lok3 to4 zau6 <span class='highlight'>zyu6 hai2</span> jau6 jit6 jau6 gon1 ge3 saa1 mok6, keoi5 dei6 bui3 zek3 ge3 to4 fung1 ho2 ji5 cyu5 cyun4 zi1 fong1.<br>Dung6 mat6 hou2 cung1 ming4, keoi5 dei6 sik1 dak1 sik1 jing3 zi6 gei2 ge3 saang1 wut6 waan4 ging2.",
+        english: "There are different animals on Earth, they live in different places; these places are called habitats.<br>Whales and dolphins live inside the deep blue ocean, they can swim very fast underwater.<br>Grizzly bears live inside the dense forest, they will look for food in the woods.<br>And camels live in the hot and dry desert, the humps on their backs can store fat.<br>Animals are very smart, they know how to adapt to their own living environment.",
+        quizzes: [
+            { q: "動物居住嘅地方叫做咩？", e: "(What are the places where animals live called?)", options: [{c: "棲息地", e: "(Habitats)", correct: true}, {c: "圖書館", e: "(Libraries)", correct: false}, {c: "超級市場", e: "(Supermarkets)", correct: false}] },
+            { q: "鯨魚通常住喺邊度？", e: "(Where do whales usually live?)", options: [{c: "大海入面", e: "(Inside the ocean)", correct: true}, {c: "沙漠", e: "(Desert)", correct: false}, {c: "森林", e: "(Forest)", correct: false}] },
+            { q: "大灰熊會喺森林做咩？", e: "(What will grizzly bears do in the forest?)", options: [{c: "喺樹林搵嘢食", e: "(Look for food in the woods)", correct: true}, {c: "游水", e: "(Swim)", correct: false}, {c: "飛上天", e: "(Fly into the sky)", correct: false}] },
+            { q: "駱駝住喺一個點樣嘅環境？", e: "(What kind of environment do camels live in?)", options: [{c: "又熱又乾嘅沙漠", e: "(Hot and dry desert)", correct: true}, {c: "好凍嘅雪地", e: "(Very cold snowy land)", correct: false}, {c: "深海", e: "(Deep sea)", correct: false}] },
+            { q: "「住喺」用嚟表達咩意思？", e: "(What does 'zyu hai' express?)", options: [{c: "居住喺某個特定嘅地點", e: "(Residing at a certain specific location)", correct: true}, {c: "準備離開一個地方", e: "(Preparing to leave a place)", correct: false}, {c: "去旅行", e: "(Going on a trip)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>🎒 Elementary Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Story Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>

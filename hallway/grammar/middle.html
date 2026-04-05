@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: Middle School Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 25px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.6rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 0.95rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 220px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #3949ab; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #303f9f; }
+        .prep-section {
+            background-color: #e8eaf6; border-left: 4px solid #3f51b5;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #283593; font-size: 1.15rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.5; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .vocab-item {
+            background: white; padding: 12px 10px; border-radius: 8px; font-size: 0.9rem;
+            border: 2px solid #c5cae9; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #e8eaf6; border-color: #7986cb; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #3949ab; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #3949ab;
+            padding: 18px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.15rem; line-height: 1.9; margin-bottom: 15px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #666; font-size: 0.95rem; line-height: 1.6; text-align: justify; }
+        .highlight { color: #3949ab; text-decoration: underline; background-color: #e8eaf6; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 25px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 12px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 5px; line-height: 1.5; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 14px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; line-height: 1.4; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 6px; }
+        .translation-box { margin-top: 30px; font-size: 0.95rem; color: #555; background: #eee; padding: 18px; border-radius: 8px; line-height: 1.6; text-align: justify; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 25px; }
+        .nav-btn { background: #3f51b5; color: white; border: none; border-radius: 8px; padding: 14px 24px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+</div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "The Pomodoro Technique", topic: "Study Skills (越嚟越 - More and more)",
+        img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173",
+        grammarDesc: "<strong>Increasing Degree:</strong> Expressing a growing trend.<br>越嚟越 (jyut6 lei4 jyut6) means 'More and more'.",
+        vocab: [
+            {c: "中學", j: "zung1 hok6", e: "Middle school"}, {c: "壓力", j: "aat3 lik6", e: "Stress / Pressure"},
+            {c: "效率", j: "haau6 leot2", e: "Efficiency"}, {c: "專心", j: "zyun1 sam1", e: "Focus / Concentrate"},
+            {c: "休息", j: "jau1 sik1", e: "Rest"}, {c: "循環", j: "ceon4 waan4", e: "Cycle"},
+            {c: "疲勞", j: "pei4 lou4", e: "Fatigue"}, {c: "專注力", j: "zyun1 zyu3 lik6", e: "Concentration"},
+            {c: "測驗", j: "cak1 jim6", e: "Test / Quiz"}, {c: "不妨", j: "bat1 fong4", e: "Might as well / Why not"}
+        ],
+        story: "升上中學之後，功課同考試變得越嚟越多，好多同學都覺得好大壓力。<br>為咗提高溫習效率，老師介紹咗「番茄工作法」畀我哋。<br>呢個方法要求我哋專心溫習二十五分鐘，然後休息五分鐘。<br>呢個循環可以幫我哋保持大腦清醒，避免過度疲勞。<br>我試過之後發覺真係好有用，唔單止專注力提高咗，連做功課嘅速度都快咗好多。<br>大家不妨試下用呢個方法去準備下次嘅測驗。",
+        jyutping: "Sing1 soeng5 zung1 hok6 zi1 hau6, gung1 fo3 tung4 haau2 si3 bin3 dak1 <span class='highlight'>jyut6 lei4 jyut6</span> do1, hou2 do1 tung4 hok6 dou1 gok3 dak1 hou2 daai6 aat3 lik6.<br>Wai6 zo2 tai4 gou1 wan1 zaap6 haau6 leot2, lou5 si1 gaai3 siu6 zo2 「faan1 ke2 gung1 zok3 faat3」 bei2 ngo5 dei6.<br>Ni1 go3 fong1 faat3 jiu1 kau4 ngo5 dei6 zyun1 sam1 wan1 zaap6 ji6 sap6 ng5 fan1 zung1, jin4 hau6 jau1 sik1 ng5 fan1 zung1.<br>Ni1 go3 ceon4 waan4 ho2 ji5 bong1 ngo5 dei6 bou2 ci4 daai6 nou5 cing1 sing2, bei6 min5 gwo3 dou6 pei4 lou4.<br>Ngo5 si3 gwo3 zi1 hau6 faat3 gok3 zan1 hai6 hou2 jau5 jung6, m4 daan1 zi2 zyun1 zyu3 lik6 tai4 gou1 zo2, lin4 zou6 gung1 fo3 ge3 cuk1 dou6 dou1 faai3 zo2 hou2 do1.<br>Daai6 gaa1 bat1 fong4 si3 haa5 jung6 ni1 go3 fong1 faat3 heoi3 zeon2 bei6 haa6 ci3 ge3 cak1 jim6.",
+        english: "After moving up to middle school, homework and exams become more and more numerous, and many classmates feel a lot of stress.<br>In order to improve revision efficiency, the teacher introduced the 'Pomodoro Technique' to us.<br>This method requires us to concentrate on revising for 25 minutes, then rest for 5 minutes.<br>This cycle can help us keep our brains clear and avoid excessive fatigue.<br>After trying it, I realized it is really very useful; not only did my concentration improve, but even my speed of doing homework got much faster.<br>Everyone might as well try using this method to prepare for the next test.",
+        quizzes: [
+            { q: "點解好多中學生會覺得好大壓力？", e: "(Why do many middle schoolers feel a lot of stress?)", options: [{c: "因為功課同考試越嚟越多", e: "(Because homework and exams are getting more and more)", correct: true}, {c: "因為學校冇冷氣", e: "(Because the school has no AC)", correct: false}, {c: "因為冇得打機", e: "(Because they can't play games)", correct: false}] },
+            { q: "「番茄工作法」嘅時間分配係點樣？", e: "(What is the time allocation for the Pomodoro Technique?)", options: [{c: "溫習二十五分鐘，休息五分鐘", e: "(Revise 25 mins, rest 5 mins)", correct: true}, {c: "溫習十分鐘，休息一個鐘", e: "(Revise 10 mins, rest 1 hour)", correct: false}, {c: "連續溫習三個鐘唔休息", e: "(Revise continuously for 3 hours without rest)", correct: false}] },
+            { q: "呢個循環對大腦有咩好處？", e: "(What is the benefit of this cycle for the brain?)", options: [{c: "保持大腦清醒，避免過度疲勞", e: "(Keeps the brain clear, avoids excessive fatigue)", correct: true}, {c: "令大腦可以發夢", e: "(Allows the brain to dream)", correct: false}, {c: "幫大腦記住所有答案", e: "(Helps the brain memorize all answers)", correct: false}] },
+            { q: "作者試用呢個方法之後有咩改變？", e: "(After trying this method, what changed for the author?)", options: [{c: "專注力提高咗，做功課快咗", e: "(Concentration improved, doing homework became faster)", correct: true}, {c: "變得越嚟越眼瞓", e: "(Became more and more sleepy)", correct: false}, {c: "完全唔想做功課", e: "(Completely didn't want to do homework)", correct: false}] },
+            { q: "「越嚟越多」表達咗事物嘅咩狀態？", e: "(What state of things does 'jyut lei jyut do' express?)", options: [{c: "數量或者程度不斷增加", e: "(Quantity or degree continuously increasing)", correct: true}, {c: "保持不變", e: "(Remaining unchanged)", correct: false}, {c: "突然之間減少", e: "(Suddenly decreasing)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "Managing Digital Footprints", topic: "Caution (千祈唔好 - Absolutely do not)",
+        img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113",
+        grammarDesc: "<strong>Strong Warning:</strong> Advising strictly against an action.<br>千祈唔好 (cin1 kei4 m4 hou2) means 'Make absolutely sure not to' or 'Under no circumstances should you'.",
+        vocab: [
+            {c: "網絡", j: "mong5 lok3", e: "Internet / Network"}, {c: "數碼足跡", j: "sou3 maa5 zuk1 zik1", e: "Digital footprint"},
+            {c: "刪除", j: "saan1 ceoi4", e: "Delete"}, {c: "影響", j: "jing2 hoeng2", e: "Affect / Influence"},
+            {c: "社交媒體", j: "se5 gaau1 mui4 tai2", e: "Social media"}, {c: "三思", j: "saam1 si1", e: "Think twice"},
+            {c: "私隱", j: "si1 jan2", e: "Privacy"}, {c: "網絡欺凌", j: "mong5 lok3 hei1 ling4", e: "Cyberbullying"},
+            {c: "截圖", j: "zit6 tou4", e: "Screenshot"}, {c: "聲譽", j: "sing1 jyu6", e: "Reputation"}
+        ],
+        story: "喺網絡世界入面，我哋每一次留言、按讚或者分享相片，都會留低「數碼足跡」。<br>呢啲記錄係好難完全刪除嘅，甚至會影響我哋將來搵工或者升學。<br>所以我哋用社交媒體嗰陣一定要三思而後行，千祈唔好隨便發佈傷害別人嘅說話或者暴露個人私隱。<br>如果遇到網絡欺凌，我哋應該立刻截圖保留證據，然後向老師或者家長求助。<br>保護自己嘅網上聲譽，係每個中學生都要學識嘅重要課題。",
+        jyutping: "Hai2 mong5 lok3 sai3 gaai3 jap6 min6, ngo5 dei6 mui5 jat1 ci3 lau4 jin4, on3 zaan3 waak6 ze2 fan1 hoeng2 soeng2 pin2, dou1 wui5 lau4 dai1 「sou3 maa5 zuk1 zik1」。<br>Ni1 di1 gei3 luk6 hai6 hou2 naan4 jyun4 cyun4 saan1 ceoi4 ge3, sam6 zi3 wui5 jing2 hoeng2 ngo5 dei6 zoeng1 loi4 wan2 gung1 waak6 ze2 sing1 hok6.<br>So2 ji5 ngo5 dei6 jung6 se5 gaau1 mui4 tai2 go2 zan6 jat1 ding6 jiu3 saam1 si1 ji4 hau6 haang4, <span class='highlight'>cin1 kei4 m4 hou2</span> ceoi4 bin2 faat3 bou3 soeng1 hoi6 bit6 jan4 ge3 syut3 waa4 waak6 ze2 bou6 lou6 go3 jan4 si1 jan2.<br>Jyu4 gwo2 jyu6 dou2 mong5 lok3 hei1 ling4, ngo5 dei6 jing1 goi1 lap6 hak1 zit6 tou4 bou2 lau4 zing3 geoi3, jin4 hau6 hoeng3 lou5 si1 waak6 ze2 gaa1 zoeng2 kau4 zo6.<br>Bou2 wu6 zi6 gei2 ge3 mong5 soeng6 sing1 jyu6, hai6 mui5 go3 zung1 hok6 saang1 dou1 jiu3 hok6 sik1 ge3 zung6 jiu3 fo3 tai4.",
+        english: "In the internet world, every time we leave a comment, like, or share a photo, we leave a 'digital footprint'.<br>These records are very hard to completely delete, and may even affect our future job hunting or higher education.<br>Therefore, when using social media we must think twice before acting, make absolutely sure not to casually post words that hurt others or expose personal privacy.<br>If we encounter cyberbullying, we should immediately take screenshots to keep evidence, then seek help from teachers or parents.<br>Protecting one's online reputation is an important subject every middle school student must learn.",
+        quizzes: [
+            { q: "咩嘢叫做「數碼足跡」？", e: "(What is a 'digital footprint'?)", options: [{c: "喺網上留言、按讚或分享留低嘅記錄", e: "(Records left by commenting, liking, or sharing online)", correct: true}, {c: "喺電腦鋪頭買嘢嘅單據", e: "(Receipts from buying things at a computer shop)", correct: false}, {c: "用腳踩喺鍵盤上面嘅印", e: "(Footprints from stepping on a keyboard)", correct: false}] },
+            { q: "數碼足跡對未來有咩潛在影響？", e: "(What potential impact do digital footprints have on the future?)", options: [{c: "會影響將來搵工或者升學", e: "(Will affect future job hunting or higher education)", correct: true}, {c: "會令電腦中毒", e: "(Will infect the computer with a virus)", correct: false}, {c: "會令互聯網斷線", e: "(Will make the internet disconnect)", correct: false}] },
+            { q: "用社交媒體嗰陣「千祈唔好」做咩？", e: "(What should you 'absolutely not' do when using social media?)", options: [{c: "發佈傷害別人嘅說話或暴露私隱", e: "(Post words hurting others or expose privacy)", correct: true}, {c: "按讚朋友嘅相片", e: "(Like a friend's photo)", correct: false}, {c: "睇新聞報導", e: "(Read news reports)", correct: false}] },
+            { q: "遇到網絡欺凌第一步應該點做？", e: "(What should be the first step if encountering cyberbullying?)", options: [{c: "立刻截圖保留證據", e: "(Immediately take a screenshot to keep evidence)", correct: true}, {c: "用更惡毒嘅說話鬧返佢", e: "(Scold them back with more vicious words)", correct: false}, {c: "即刻刪除自己個帳號", e: "(Immediately delete your own account)", correct: false}] },
+            { q: "「三思而後行」係指點樣嘅處事態度？", e: "(What kind of attitude does 'think twice before acting' refer to?)", options: [{c: "做決定之前要仔細考慮清楚", e: "(Carefully consider before making a decision)", correct: true}, {c: "諗三次就唔好做", e: "(Think three times and then don't do it)", correct: false}, {c: "唔使諗，即刻做", e: "(No need to think, do it immediately)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Reducing Carbon Footprints", topic: "Accumulation (積少成多 - Many a mickle makes a muckle)",
+        img: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9",
+        grammarDesc: "<strong>Accumulation:</strong> Explaining how small actions add up to big results.<br>積少成多 (zik1 siu2 sing4 do1) is an idiom meaning 'small amounts accumulate to make a lot'.",
+        vocab: [
+            {c: "全球暖化", j: "cyun4 kau4 nyun5 faa3", e: "Global warming"}, {c: "挑戰", j: "tiu1 zin3", e: "Challenge"},
+            {c: "極端天氣", j: "gik6 dyun1 tin1 hei3", e: "Extreme weather"}, {c: "碳足跡", j: "taan3 zuk1 zik1", e: "Carbon footprint"},
+            {c: "環保", j: "waan4 bou2", e: "Eco-friendly / Environmental protection"}, {c: "公共交通", j: "gung1 gung6 gaau1 tung1", e: "Public transport"},
+            {c: "包裝", j: "baau1 zong1", e: "Packaging"}, {c: "習慣", j: "zaap6 gwaan3", e: "Habit"},
+            {c: "減碳", j: "gaam2 taan3", e: "Reduce carbon"}, {c: "積少成多", j: "zik1 siu2 sing4 do1", e: "Accumulate small amounts into much"}
+        ],
+        story: "全球暖化係而家社會面臨嘅巨大挑戰，氣候變化令到極端天氣越嚟越頻繁。<br>身為地球村嘅一分子，我哋可以透過減少「碳足跡」嚟為環保出一分力。<br>例如，我哋可以多啲搭公共交通工具、減少買過度包裝嘅產品、同埋養成隨手熄燈嘅好習慣。<br>除此之外，少食肉多食菜亦都係一個有效減碳嘅方法。<br>只要每個人喺日常生活中做出一啲小改變，就可以積少成多，拯救我哋嘅地球。",
+        jyutping: "Cyun4 kau4 nyun5 faa3 hai6 ji4 gaa1 se5 wui2 min6 lam4 ge3 geoi6 daai6 tiu1 zin3, hei3 hau6 bin3 faa3 ling6 dou3 gik6 dyun1 tin1 hei3 jyut6 lei4 jyut6 pan4 faan4.<br>San1 wai4 dei6 kau4 cyun1 ge3 jat1 fan6 zi2, ngo5 dei6 ho2 ji5 tau3 gwo3 gaam2 siu2 「taan3 zuk1 zik1」 lei4 wai6 waan4 bou2 ceot1 jat1 fan1 lik6.<br>Lai6 jyu4, ngo5 dei6 ho2 ji5 do1 di1 daap3 gung1 gung6 gaau1 tung1 gung1 geoi6, gaam2 siu2 maai5 gwo3 dou6 baau1 zong1 ge3 caan2 ban2, tung4 maai4 joeng5 sing4 ceoi4 sau2 sik1 dang1 ge3 hou2 zaap6 gwaan3.<br>Ceoi4 ci2 zi1 ngoi6, siu2 sik6 juk6 do1 sik6 coi3 jik6 dou1 hai6 jat1 go3 jau5 haau6 gaam2 taan3 ge3 fong1 faat3.<br>Zi2 jiu3 mui5 go3 jan4 hai2 jat6 soeng4 sang1 wut6 zung1 zou6 ceot1 jat1 di1 siu2 goi2 bin3, zau6 ho2 ji5 <span class='highlight'>zik1 siu2 sing4 do1</span>, cing2 gau3 ngo5 dei6 ge3 dei6 kau4.",
+        english: "Global warming is a huge challenge facing society now; climate change makes extreme weather more and more frequent.<br>As a member of the global village, we can contribute to environmental protection by reducing our 'carbon footprint'.<br>For example, we can take public transport more often, reduce buying over-packaged products, and cultivate the good habit of turning off lights when leaving.<br>Besides this, eating less meat and more vegetables is also an effective carbon reduction method.<br>As long as everyone makes some small changes in daily life, it can accumulate from little to much, saving our Earth.",
+        quizzes: [
+            { q: "全球暖化帶嚟咗咩問題？", e: "(What problem has global warming brought?)", options: [{c: "極端天氣越嚟越頻繁", e: "(Extreme weather is getting more frequent)", correct: true}, {c: "冬天會落好多雪", e: "(It will snow a lot in winter)", correct: false}, {c: "冇晒動物", e: "(All animals disappear)", correct: false}] },
+            { q: "我哋可以透過咩方式為環保出力？", e: "(Through what method can we contribute to environmental protection?)", options: [{c: "減少碳足跡", e: "(Reducing carbon footprints)", correct: true}, {c: "買多啲膠袋", e: "(Buying more plastic bags)", correct: false}, {c: "日日開住冷氣", e: "(Leaving the AC on every day)", correct: false}] },
+            { q: "文中提出咗邊幾種減碳嘅好習慣？", e: "(What carbon-reducing good habits were proposed in the text?)", options: [{c: "搭公共交通、少買過度包裝、隨手熄燈", e: "(Take public transport, buy less over-packaging, turn off lights)", correct: true}, {c: "多啲開車出街", e: "(Drive out more often)", correct: false}, {c: "每日食好多肉", e: "(Eat a lot of meat every day)", correct: false}] },
+            { q: "飲食方面點樣可以有效減碳？", e: "(How can one effectively reduce carbon in terms of diet?)", options: [{c: "少食肉多食菜", e: "(Eat less meat and more vegetables)", correct: true}, {c: "只食海鮮", e: "(Only eat seafood)", correct: false}, {c: "飲多啲汽水", e: "(Drink more soda)", correct: false}] },
+            { q: "「積少成多」喺環保入面有咩意義？", e: "(What is the significance of 'many a mickle makes a muckle' in environmentalism?)", options: [{c: "每個人嘅小改變加埋就會產生巨大影響", e: "(Everyone's small changes added up create a huge impact)", correct: true}, {c: "儲好多垃圾喺屋企", e: "(Hoarding a lot of garbage at home)", correct: false}, {c: "用最少嘅錢買最多嘅嘢", e: "(Using the least money to buy the most things)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Pocket Money & Budgets", topic: "Differentiation (分辨 - To distinguish)",
+        img: "https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6",
+        grammarDesc: "<strong>Differentiation:</strong> Telling the difference between concepts.<br>分辨 (fan1 bin6) means 'to distinguish' or 'to differentiate'.",
+        vocab: [
+            {c: "零用錢", j: "ling4 jung6 cin2", e: "Pocket money"}, {c: "財務", j: "coi4 mou6", e: "Finances"},
+            {c: "理財", j: "lei5 coi4", e: "Financial management"}, {c: "分辨", j: "fan1 bin6", e: "Distinguish"},
+            {c: "需要", j: "seoi1 jiu3", e: "Needs"}, {c: "想要", j: "soeng2 jiu3", e: "Wants"},
+            {c: "儲蓄", j: "cyu5 cuk1", e: "Savings"}, {c: "開支", j: "hoi1 zi1", e: "Expenses"},
+            {c: "記帳", j: "gei3 zoeng3", e: "Keep accounts / Track spending"}, {c: "月光族", j: "jyut6 gwong1 zuk6", e: "Living paycheck to paycheck"}
+        ],
+        story: "升上中學之後，好多父母都會開始畀多啲零用錢子女，等佢哋學習自己管理財務。<br>建立良好嘅理財觀念非常重要，首先要學識分辨「需要」同埋「想要」嘅分別。<br>我哋每個月可以將零用錢分成三部分：儲蓄、日常開支同埋緊急備用。<br>遇到好想買嘅名牌波鞋或者最新款手機嗰陣，最好冷靜幾日先再決定。<br>養成記帳嘅習慣，可以幫我哋清楚知道啲錢去咗邊，避免做一到月底就冇晒錢嘅「月光族」。",
+        jyutping: "Sing1 soeng5 zung1 hok6 zi1 hau6, hou2 do1 fu6 mou5 dou1 wui5 hoi1 ci2 bei2 do1 di1 ling4 jung6 cin2 zi2 neoi5, dang2 keoi5 dei6 hok6 zaap6 zi6 gei2 gun2 lei5 coi4 mou6.<br>Gin3 laap6 loeng4 hou2 ge3 lei5 coi4 gun1 nim6 fei1 soeng4 zung6 jiu3, sau2 sin1 jiu3 hok6 sik1 <span class='highlight'>fan1 bin6</span> 「seoi1 jiu3」 tung4 maai4 「soeng2 jiu3」 ge3 fan1 bit6.<br>Ngo5 dei6 mui5 go3 jyut6 ho2 ji5 zoeng1 ling4 jung6 cin2 fan1 sing4 saam1 bou6 fan6: cyu5 cuk1, jat6 soeng4 hoi1 zi1 tung4 maai4 gan2 gap1 bei6 jung6.<br>Jyu6 dou2 hou2 soeng2 maai5 ge3 ming4 paai4 bo1 haai4 waak6 ze2 zeoi3 san1 fun2 sau2 gei1 go2 zan6, zeoi3 hou2 laang5 zing6 gei2 jat6 sin1 zoi3 kyut3 ding6.<br>Joeng5 sing4 gei3 zoeng3 ge3 zaap6 gwaan3, ho2 ji5 bong1 ngo5 dei6 cing1 co2 zi1 dou3 di1 cin2 heoi3 zo2 bin1, bei6 min5 zou6 jat1 dou3 jyut6 dai2 zau6 mou5 saai3 cin2 ge3 「jyut6 gwong1 zuk6」。",
+        english: "After moving up to middle school, many parents will start giving more pocket money to their children, letting them learn to manage finances themselves.<br>Establishing a good financial management concept is very important; first you must learn to distinguish the difference between 'needs' and 'wants'.<br>Every month we can divide our pocket money into three parts: savings, daily expenses, and emergency reserve.<br>When encountering brand-name sneakers or the newest smartphone you really want to buy, it's best to calm down for a few days before deciding.<br>Cultivating the habit of tracking spending can help us clearly know where the money went, avoiding becoming a 'moonlight clan' (living paycheck to paycheck) who runs out of money by the end of the month.",
+        quizzes: [
+            { q: "理財嘅第一步要學識咩嘢？", e: "(What is the first step in financial management to learn?)", options: [{c: "分辨「需要」同「想要」", e: "(Distinguish 'needs' from 'wants')", correct: true}, {c: "將所有錢儲起", e: "(Save all the money)", correct: false}, {c: "買最平嘅嘢", e: "(Buy the cheapest things)", correct: false}] },
+            { q: "零用錢建議分成邊三部分？", e: "(What three parts is it suggested to divide pocket money into?)", options: [{c: "儲蓄、日常開支、緊急備用", e: "(Savings, daily expenses, emergency reserve)", correct: true}, {c: "買鞋、買飯、打機", e: "(Buying shoes, buying food, gaming)", correct: false}, {c: "交租、交稅、搭車", e: "(Paying rent, paying taxes, taking transit)", correct: false}] },
+            { q: "遇到好想買嘅貴嘢應該點做？", e: "(What should you do when encountering an expensive item you really want?)", options: [{c: "冷靜幾日先再決定", e: "(Calm down for a few days before deciding)", correct: true}, {c: "即刻碌卡買", e: "(Immediately swipe card to buy)", correct: false}, {c: "問朋友借錢買", e: "(Borrow money from friends to buy)", correct: false}] },
+            { q: "養成咩習慣可以清楚知道啲錢去咗邊？", e: "(Cultivating what habit can clearly let you know where money went?)", options: [{c: "記帳", e: "(Keeping accounts / Tracking spending)", correct: true}, {c: "寫日記", e: "(Writing a diary)", correct: false}, {c: "每日睇銀行", e: "(Looking at the bank every day)", correct: false}] },
+            { q: "咩叫做「月光族」？", e: "(What is a 'jyut gwong zuk'?)", options: [{c: "一到月底就將啲錢用晒嘅人", e: "(People who spend all their money by the end of the month)", correct: true}, {c: "鍾意夜晚出去玩嘅人", e: "(People who like to go out at night)", correct: false}, {c: "鍾意望月亮嘅人", e: "(People who like looking at the moon)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Time Management Matrix", topic: "Categorization (分為 - Divided into)",
+        img: "https://images.unsplash.com/photo-1506784951206-89d1b01691a5",
+        grammarDesc: "<strong>Categorization:</strong> Explaining how a system is structured.<br>將... 分為... (zoeng1... fan1 wai4...) means 'To divide [A] into [B]'.",
+        vocab: [
+            {c: "豐富", j: "fung1 fu3", e: "Rich / Abundant"}, {c: "繁重", j: "faan4 cung5", e: "Heavy / Burdensome"},
+            {c: "課外活動", j: "fo3 ngoi6 wut6 dung6", e: "Extracurricular activities"}, {c: "管理時間", j: "gun2 lei5 si4 gaan3", e: "Manage time"},
+            {c: "抖唔過氣", j: "dau2 m4 gwo3 hei3", e: "Overwhelmed / Breathless"}, {c: "捱夜", j: "ngaai4 je6", e: "Stay up late"},
+            {c: "優先次序", j: "jau1 sin1 ci3 zeoi6", e: "Priorities"}, {c: "處理", j: "cyu2 lei5", e: "Handle / Deal with"},
+            {c: "制定", j: "zai3 ding6", e: "Formulate / Create"}, {c: "遵守", j: "zeon1 sau2", e: "Observe / Abide by"}
+        ],
+        story: "中學生活非常豐富，除咗要應付繁重嘅學業，仲有好多課外活動同埋校隊訓練。<br>如果唔識得好好管理時間，好容易就會覺得抖唔過氣，甚至要捱夜趕功課。<br>我哋可以利用「優先次序矩陣」，將事情分為緊急同重要四個等級。<br>最重要同最緊急嘅事一定要最先處理，而唔重要又唔緊急嘅事就可以放埋一邊。<br>制定一個每日時間表，嚴格遵守，係平衡學習同埋玩樂嘅最佳方法。",
+        jyutping: "Zung1 hok6 saang1 wut6 fei1 soeng4 fung1 fu3, ceoi4 zo2 jiu3 jing3 fu3 faan4 cung5 ge3 hok6 jip6, zung6 jau5 hou2 do1 fo3 ngoi6 wut6 dung6 tung4 maai4 haau6 deoi2 fan3 lin6.<br>Jyu4 gwo2 m4 sik1 dak1 hou2 hou2 gun2 lei5 si4 gaan3, hou2 jung4 ji6 zau6 wui5 gok3 dak1 dau2 m4 gwo3 hei3, sam6 zi3 jiu3 ngaai4 je6 gon2 gung1 fo3.<br>Ngo5 dei6 ho2 ji5 lei6 jung6 「jau1 sin1 ci3 zeoi6 geoi2 zan6」, <span class='highlight'>zoeng1</span> si6 cing4 <span class='highlight'>fan1 wai4</span> gan2 gap1 tung4 zung6 jiu3 sei3 go3 dang2 kap1.<br>Zeoi3 zung6 jiu3 tung4 zeoi3 gan2 gap1 ge3 si6 jat1 ding6 jiu3 zeoi3 sin1 cyu2 lei5, ji4 m4 zung6 jiu3 jau6 m4 gan2 gap1 ge3 si6 zau6 ho2 ji5 fong3 maai4 jat1 bin1.<br>Zai3 ding6 jat1 go3 mui5 jat6 si4 gaan3 biu2, jim4 gaak3 zeon1 sau2, hai6 ping4 hang4 hok6 zaap6 tung4 maai4 waan2 lok6 ge3 zeoi3 gaai1 fong1 faat3.",
+        english: "Middle school life is very rich; besides having to cope with heavy academics, there are also many extracurricular activities and school team trainings.<br>If you don't know how to manage time well, it's easy to feel overwhelmed, even having to stay up late to rush homework.<br>We can use the 'Priority Matrix', to divide tasks into four levels of urgent and important.<br>The most important and most urgent things must absolutely be handled first, while the not important and not urgent things can be put aside.<br>Formulating a daily schedule and strictly abiding by it is the best method to balance learning and playing.",
+        quizzes: [
+            { q: "唔識管理時間會有咩後果？", e: "(What is the consequence of not knowing how to manage time?)", options: [{c: "會覺得抖唔過氣，要捱夜趕功課", e: "(Will feel overwhelmed, must stay up late to rush homework)", correct: true}, {c: "會被學校開除", e: "(Will be expelled from school)", correct: false}, {c: "會變得好有錢", e: "(Will become very rich)", correct: false}] },
+            { q: "「優先次序矩陣」將事情分為邊幾個等級？", e: "(What levels does the 'Priority Matrix' divide tasks into?)", options: [{c: "緊急同重要", e: "(Urgent and Important)", correct: true}, {c: "好玩同無聊", e: "(Fun and Boring)", correct: false}, {c: "平同貴", e: "(Cheap and Expensive)", correct: false}] },
+            { q: "咩嘢事一定要最先處理？", e: "(What kind of things must be handled first?)", options: [{c: "最重要同最緊急嘅事", e: "(The most important and most urgent things)", correct: true}, {c: "自己最鍾意做嘅事", e: "(The things you like to do most)", correct: false}, {c: "最簡單嘅事", e: "(The simplest things)", correct: false}] },
+            { q: "對於唔重要又唔緊急嘅事，可以點樣處理？", e: "(How can you handle not important and not urgent things?)", options: [{c: "放埋一邊", e: "(Put them aside)", correct: true}, {c: "即刻去做", e: "(Do them immediately)", correct: false}, {c: "叫父母幫手做", e: "(Ask parents to help do them)", correct: false}] },
+            { q: "平衡學習同玩樂嘅最佳方法係咩？", e: "(What is the best method to balance learning and playing?)", options: [{c: "制定每日時間表並且嚴格遵守", e: "(Formulate a daily schedule and strictly abide by it)", correct: true}, {c: "每日只係玩唔溫書", e: "(Only play every day and not study)", correct: false}, {c: "取消所有課外活動", e: "(Cancel all extracurricular activities)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "Teen Sleep Health", topic: "Cause and Effect (因為... 會 - Because [A]... will [B])",
+        img: "https://images.unsplash.com/photo-1541781774459-bb2af2892515",
+        grammarDesc: "<strong>Biological Causality:</strong> Explaining scientific cause and effect.<br>因為 (jan1 wai6) [Cause] 會 (wui5) [Effect] explains why something happens biologically.",
+        vocab: [
+            {c: "青少年", j: "cing1 siu3 nin4", e: "Teenagers"}, {c: "半夜三更", j: "bun3 je6 saam1 gaang1", e: "Late at night"},
+            {c: "發育", j: "faat3 juk6", e: "Development / Growth"}, {c: "質量", j: "zat1 loeng6", e: "Quality"},
+            {c: "睡眠不足", j: "seoi6 min4 bat1 zuk1", e: "Lack of sleep"}, {c: "免疫力", j: "min5 jik6 lik6", e: "Immunity"},
+            {c: "記憶力", j: "gei3 jik1 lik6", e: "Memory"}, {c: "螢幕", j: "jing4 mok6", e: "Screen"},
+            {c: "藍光", j: "laam4 gwong1", e: "Blue light"}, {c: "生理時鐘", j: "sang1 lei5 si4 zung1", e: "Biological clock"}
+        ],
+        story: "好多青少年為咗打機或者同朋友傾偈，經常搞到半夜三更先至肯瞓覺。<br>其實，處於發育時期嘅中學生，每日需要八至十個鐘頭嘅高質量睡眠。<br>睡眠不足唔單止會影響第二日上堂嘅精神，仲會降低免疫力同埋記憶力。<br>為咗改善睡眠質素，睡前一個鐘頭最好放低手機，因為螢幕發出嘅藍光會抑制褪黑激素分泌。<br>建立規律嘅生理時鐘，對我哋嘅大腦同埋身體發育都有莫大嘅益處。",
+        jyutping: "Hou2 do1 cing1 siu3 nin4 wai6 zo2 daa2 gei1 waak6 ze2 tung4 pang4 jau5 king1 gai2, ging1 soeng4 gaau2 dou3 bun3 je6 saam1 gaang1 sin1 zi3 hang2 fan3 gaau3.<br>Kei4 sat6, cyu5 jyu1 faat3 juk6 si4 kei4 ge3 zung1 hok6 saang1, mui5 jat6 seoi1 jiu3 baat3 zi3 sap6 go3 zung1 tau4 ge3 gou1 zat1 loeng6 seoi6 min4.<br>Seoi6 min4 bat1 zuk1 m4 daan1 zi2 wui5 jing2 hoeng2 dai6 ji6 jat6 soeng5 tong4 ge3 zing1 san4, zung6 wui5 gong3 dai1 min5 jik6 lik6 tung4 maai4 gei3 jik1 lik6.<br>Wai6 zo2 goi2 sin6 seoi6 min4 zat1 sou3, seoi6 cin4 jat1 go3 zung1 tau4 zeoi3 hou2 fong3 dai1 sau2 gei1, <span class='highlight'>jan1 wai6</span> jing4 mok6 faat3 ceot1 ge3 laam4 gwong1 <span class='highlight'>wui5</span> jik1 zai3 teoi3 hak1 gik1 sou3 fan1 bei3.<br>Gin3 laap6 gwai1 leot6 ge3 sang1 lei5 si4 zung1, deoi3 ngo5 dei6 ge3 daai6 nou5 tung4 maai4 san1 tai2 faat3 juk6 dou1 jau5 mok6 daai6 ge3 jik1 cyu3.",
+        english: "Many teenagers, in order to play games or chat with friends, often stay up late into the night before they are willing to sleep.<br>Actually, middle school students in their developmental stage need 8 to 10 hours of high-quality sleep every day.<br>Lack of sleep not only affects energy for classes the next day, but also lowers immunity and memory.<br>To improve sleep quality, it is best to put down the phone an hour before bed, because the blue light emitted from the screen will inhibit melatonin secretion.<br>Establishing a regular biological clock has immense benefits for our brain and physical development.",
+        quizzes: [
+            { q: "發育時期嘅中學生每日需要幾多睡眠？", e: "(How much sleep do middle schoolers in development need daily?)", options: [{c: "八至十個鐘頭", e: "(8 to 10 hours)", correct: true}, {c: "四至五個鐘頭", e: "(4 to 5 hours)", correct: false}, {c: "十二個鐘頭以上", e: "(More than 12 hours)", correct: false}] },
+            { q: "睡眠不足會對身體造成咩負面影響？", e: "(What negative impact does lack of sleep have on the body?)", options: [{c: "降低免疫力同記憶力", e: "(Lowers immunity and memory)", correct: true}, {c: "令到身高變矮", e: "(Makes you shorter)", correct: false}, {c: "會令視力變好", e: "(Improves eyesight)", correct: false}] },
+            { q: "點解睡前一個鐘唔應該玩手機？", e: "(Why shouldn't you play on the phone an hour before bed?)", options: [{c: "因為藍光會影響褪黑激素分泌", e: "(Because blue light affects melatonin secretion)", correct: true}, {c: "因為手機會冇電", e: "(Because the phone will run out of battery)", correct: false}, {c: "因為會嘈醒父母", e: "(Because it will wake up parents)", correct: false}] },
+            { q: "建立規律嘅生理時鐘對青少年有咩好處？", e: "(What benefit does a regular biological clock have for teens?)", options: [{c: "對大腦同身體發育有莫大益處", e: "(Immense benefits for brain and physical development)", correct: true}, {c: "可以打機打得叻啲", e: "(Can become better at gaming)", correct: false}, {c: "可以食多啲嘢", e: "(Can eat more food)", correct: false}] },
+            { q: "文中提到青少年成日半夜三更唔瞓係為咗咩？", e: "(Why does the text say teens often don't sleep late at night?)", options: [{c: "打機或者同朋友傾偈", e: "(Play games or chat with friends)", correct: true}, {c: "溫書準備考試", e: "(Study for exams)", correct: false}, {c: "做運動", e: "(Do exercise)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Volunteering & Empathy", topic: "Value (唔單止係... 更加係 - Not only... but moreover)",
+        img: "https://images.unsplash.com/photo-1593113580332-cec88e4ebc71",
+        grammarDesc: "<strong>Value Proposition:</strong> Elevating the meaning of an action.<br>唔單止係... 更加係... (m4 daan1 zi2 hai6... gang3 gaa1 hai6...) means 'Not only is it... but it is moreover...'",
+        vocab: [
+            {c: "鼓勵", j: "gu2 lai6", e: "Encourage"}, {c: "社區", j: "se5 keoi1", e: "Community"},
+            {c: "義工", j: "ji6 gung1", e: "Volunteer"}, {c: "探訪", j: "taam3 fong2", e: "Visit"},
+            {c: "滿足", j: "mun5 zuk1", e: "Satisfy"}, {c: "同理心", j: "tung4 lei5 sam1", e: "Empathy"},
+            {c: "責任感", j: "zaak3 jam6 gam2", e: "Sense of responsibility"}, {c: "弱勢社群", j: "joek6 sai3 se5 kwan4", e: "Underprivileged groups"},
+            {c: "施比受更有福", j: "si1 bei2 sau6 gang3 jau5 fuk1", e: "More blessed to give than receive"}, {c: "眼界", j: "ngaan5 gaai3", e: "Horizons / Outlook"}
+        ],
+        story: "學校經常鼓勵我哋參與社區義工服務，例如去老人院探訪或者去海灘執垃圾。<br>做義工唔單止係為咗滿足學校嘅服務時數要求，更加係培養同理心同埋責任感嘅好機會。<br>透過幫助社會上嘅弱勢社群，我哋可以體會到施比受更有福嘅道理。<br>喺做義工嘅過程入面，我哋仲可以認識到來自唔同背景嘅朋友，擴闊自己嘅眼界。<br>呢啲寶貴嘅人生經驗，係喺課本上學唔到㗎。",
+        jyutping: "Hok6 haau6 ging1 soeng4 gu2 lai6 ngo5 dei6 caam1 jyu5 se5 keoi1 ji6 gung1 fuk6 mou6, lai6 jyu4 heoi3 lou5 jan4 jyun2 taam3 fong2 waak6 ze2 heoi3 hoi2 taan1 zap1 laap6 saap3.<br>Zou6 ji6 gung1 <span class='highlight'>m4 daan1 zi2 hai6</span> wai6 zo2 mun5 zuk1 hok6 haau6 ge3 fuk6 mou6 si4 sou3 jiu1 kau4, <span class='highlight'>gang3 gaa1 hai6</span> pui4 joeng5 tung4 lei5 sam1 tung4 maai4 zaak3 jam6 gam2 ge3 hou2 gei1 wui6.<br>Tau3 gwo3 bong1 zo6 se5 wui2 soeng6 ge3 joek6 sai3 se5 kwan4, ngo5 dei6 ho2 ji5 tai2 wui6 dou3 si1 bei2 sau6 gang3 jau5 fuk1 ge3 dou6 lei5.<br>Hai2 zou6 ji6 gung1 ge3 gwo3 cing4 jap6 min6, ngo5 dei6 zung6 ho2 ji5 jing6 sik1 dou3 loi4 zi6 m4 tung4 bui3 ging2 ge3 pang4 jau5, kwong3 fut3 zi6 gei2 ge3 ngaan5 gaai3.<br>Ni1 di1 bou2 gwai3 ge3 jan4 sang1 ging1 jim6, hai6 hai2 fo3 bun2 soeng6 hok6 m4 dou2 gaa3.",
+        english: "Schools often encourage us to participate in community volunteer services, such as visiting nursing homes or picking up trash at the beach.<br>Doing volunteer work is not only to satisfy the school's service hour requirements, but is moreover a good opportunity to cultivate empathy and a sense of responsibility.<br>Through helping the underprivileged groups in society, we can experience the truth that it is more blessed to give than to receive.<br>In the process of doing volunteer work, we can also meet friends from different backgrounds, broadening our own horizons.<br>These valuable life experiences cannot be learned from textbooks.",
+        quizzes: [
+            { q: "做義工除咗可以儲服務時數，仲有咩更重要嘅意義？", e: "(Besides logging service hours, what deeper meaning does volunteering have?)", options: [{c: "培養同理心同責任感", e: "(Cultivate empathy and responsibility)", correct: true}, {c: "可以賺取零用錢", e: "(Can earn pocket money)", correct: false}, {c: "可以逃避做功課", e: "(Can escape doing homework)", correct: false}] },
+            { q: "幫助弱勢社群可以令我哋體會到咩道理？", e: "(What truth can helping underprivileged groups make us experience?)", options: [{c: "施比受更有福", e: "(It is more blessed to give than to receive)", correct: true}, {c: "時間就係金錢", e: "(Time is money)", correct: false}, {c: "失敗乃成功之母", e: "(Failure is the mother of success)", correct: false}] },
+            { q: "做義工點樣可以擴闊眼界？", e: "(How can volunteering broaden your horizons?)", options: [{c: "可以認識來自唔同背景嘅朋友", e: "(Can meet friends from different backgrounds)", correct: true}, {c: "可以免費去外國旅行", e: "(Can travel abroad for free)", correct: false}, {c: "可以學識多國語言", e: "(Can learn multiple languages)", correct: false}] },
+            { q: "文中提到嘅「人生經驗」有咩特別？", e: "(What is special about the 'life experience' mentioned in the text?)", options: [{c: "喺課本上學唔到", e: "(Cannot be learned from textbooks)", correct: true}, {c: "可以寫入大學履歷", e: "(Can be written into university resumes)", correct: false}, {c: "需要畀錢去學", e: "(Requires paying money to learn)", correct: false}] },
+            { q: "「同理心」係指咩能力？", e: "(What ability does 'empathy' refer to?)", options: [{c: "設身處地理解他人感受嘅能力", e: "(Ability to put oneself in others' shoes and understand their feelings)", correct: true}, {c: "計數計得好快嘅能力", e: "(Ability to calculate math very fast)", correct: false}, {c: "記性好好嘅能力", e: "(Ability to have a very good memory)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "Junk Food vs Healthy Diet", topic: "Advice (應該... 而唔係 - Should... rather than)",
+        img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061",
+        grammarDesc: "<strong>Choosing Alternatives:</strong> Advising a better choice over a bad one.<br>應該 (jing1 goi1) [A] 而唔係 (ji4 m4 hai6) [B] means 'Should [A] rather than [B]'.",
+        vocab: [
+            {c: "便利店", j: "bin6 lei6 dim3", e: "Convenience store"}, {c: "垃圾食物", j: "laap6 saap3 sik6 mat6", e: "Junk food"},
+            {c: "惹味", j: "je5 mei6", e: "Appetizing / Tasty"}, {c: "卡路里", j: "kaa1 lou6 lei5", e: "Calories"},
+            {c: "反式脂肪", j: "faan2 sik1 zi1 fong1", e: "Trans fat"}, {c: "長期", j: "coeng4 gei4", e: "Long-term"},
+            {c: "肥胖症", j: "fei4 bun6 zing3", e: "Obesity"}, {c: "均衡", j: "gwan1 hang4", e: "Balanced"},
+            {c: "纖維", j: "cim1 wai4", e: "Fiber"}, {c: "偶爾", j: "ngau5 ji5", e: "Occasionally"}
+        ],
+        story: "放學之後，好多同學都鍾意去便利店買薯片或者去快餐店食炸雞。<br>雖然呢啲被稱為「垃圾食物」嘅嘢食落去好惹味，但係佢哋含有極高嘅卡路里同反式脂肪。<br>長期食用會增加患上肥胖症同埋心血管疾病嘅風險。<br>我哋正處於發育嘅黃金時期，應該選擇營養均衡嘅食物，而唔係日日食零食。<br>偶爾獎勵下自己食少少無妨，但絕對唔可以當正餐。",
+        jyutping: "Fong3 hok6 zi1 hau6, hou2 do1 tung4 hok6 dou1 zung1 ji3 heoi3 bin6 lei6 dim3 maai5 syu4 pin2 waak6 ze2 heoi3 faai3 caan1 dim3 sik6 zaa3 gai1.<br>Seoi1 jin4 ni1 di1 bei6 cing1 wai4 「laap6 saap3 sik6 mat6」 ge3 je5 sik6 lok6 heoi3 hou2 je5 mei6, daan6 hai6 keoi5 dei6 ham4 jau5 gik6 gou1 ge3 kaa1 lou6 lei5 tung4 faan2 sik1 zi1 fong1.<br>Coeng4 kei4 sik6 jung6 wui5 zang1 gaa1 waan6 soeng5 fei4 bun6 zing3 tung4 maai4 sam1 hyut3 gun2 zat6 beng6 ge3 fung1 him2.<br>Ngo5 dei6 zing3 cyu5 jyu1 faat3 juk6 ge3 wong4 gam1 si4 kei4, <span class='highlight'>jing1 goi1</span> syun2 zaak6 jing4 joeng5 gwan1 hang4 ge3 sik6 mat6, <span class='highlight'>ji4 m4 hai6</span> jat6 jat6 sik6 ling4 sik6.<br>Ngau5 ji5 zoeng2 lai6 haa5 zi6 gei2 sik6 siu2 siu2 mou4 fong4, daan6 zyut6 deoi3 m4 ho2 ji5 dong3 zing3 caan1.",
+        english: "After school, many classmates like to go to the convenience store to buy chips or to the fast food restaurant to eat fried chicken.<br>Although these things called 'junk food' taste very appetizing, they contain extremely high calories and trans fats.<br>Long-term consumption will increase the risk of suffering from obesity and cardiovascular diseases.<br>We are currently in the golden period of physical development, we should choose nutritionally balanced food, rather than eating snacks every day.<br>Occasionally rewarding yourself by eating a little is harmless, but it absolutely cannot be treated as a main meal.",
+        quizzes: [
+            { q: "點解快餐同薯片被稱為「垃圾食物」？", e: "(Why are fast food and chips called 'junk food'?)", options: [{c: "因為含有極高卡路里同反式脂肪", e: "(Because they contain extremely high calories and trans fats)", correct: true}, {c: "因為係喺垃圾桶執出嚟嘅", e: "(Because they are picked out of the trash can)", correct: false}, {c: "因為價錢太過便宜", e: "(Because the price is too cheap)", correct: false}] },
+            { q: "長期食垃圾食物會有咩健康風險？", e: "(What health risks come from long-term junk food consumption?)", options: [{c: "增加患肥胖症同心血管疾病嘅風險", e: "(Increase risk of obesity and cardiovascular disease)", correct: true}, {c: "會令牙齒變白", e: "(Will make teeth turn white)", correct: false}, {c: "會影響視力", e: "(Will affect eyesight)", correct: false}] },
+            { q: "發育時期嘅中學生應該點樣選擇食物？", e: "(How should developing middle schoolers choose food?)", options: [{c: "選擇營養均衡嘅食物", e: "(Choose nutritionally balanced food)", correct: true}, {c: "只食蔬菜唔食肉", e: "(Only eat vegetables and no meat)", correct: false}, {c: "每日只食一餐", e: "(Only eat one meal a day)", correct: false}] },
+            { q: "作者對食零食有咩建議？", e: "(What is the author's advice on eating snacks?)", options: [{c: "偶爾獎勵下自己無妨，但唔可以當正餐", e: "(Occasional reward is fine, but cannot be a main meal)", correct: true}, {c: "絕對一口都唔可以食", e: "(Absolutely cannot eat even a single bite)", correct: false}, {c: "只要鍾意就可以日日食", e: "(Can eat every day as long as you like it)", correct: false}] },
+            { q: "「惹味」係用嚟形容食物嘅咩特點？", e: "(What characteristic of food does 'je mei' describe?)", options: [{c: "味道好吸引，令人好想食", e: "(Very attractive taste, makes you really want to eat it)", correct: true}, {c: "顏色好鮮艷", e: "(Very bright color)", correct: false}, {c: "價錢好昂貴", e: "(Very expensive price)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Mental Health Awareness", topic: "Reassurance (千祈唔好... 應該 - Make sure not to... should)",
+        img: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b",
+        grammarDesc: "<strong>Seeking Help:</strong> Giving psychological advice.<br>千祈唔好 (cin1 kei4 m4 hou2) [hide it]... 應該 (jing1 goi1) [seek help].",
+        vocab: [
+            {c: "競爭", j: "ging6 zang1", e: "Competition"}, {c: "忽視", j: "fat1 si6", e: "Ignore / Neglect"},
+            {c: "成績", j: "sing4 zik1", e: "Grades / Results"}, {c: "誤會", j: "ng6 wui6", e: "Misunderstanding"},
+            {c: "沮喪", j: "zeoi2 song3", e: "Depressed / Frustrated"}, {c: "負面情緒", j: "fu6 min6 cing4 seoi5", e: "Negative emotions"},
+            {c: "發洩", j: "faat3 sit3", e: "Vent / Release"}, {c: "獨自", j: "duk6 zi6", e: "Alone / By oneself"},
+            {c: "社工", j: "se5 gung1", e: "Social worker"}, {c: "傾訴", j: "king1 sou3", e: "Confide in / Pour out one's heart"}
+        ],
+        story: "喺競爭激烈嘅學習環境下，中學生面對嘅心理壓力絕對唔可以忽視。<br>有時候我哋會因為考試成績未如理想，或者同朋友發生誤會而感到沮喪。<br>當負面情緒累積到一定程度，我哋一定要搵合適嘅途徑去發洩，例如做運動或者聽音樂。<br>如果覺得自己無法獨自應付，千祈唔好怕醜自己死撐，應該主動向社工、老師或者信任嘅長輩傾訴。<br>保持心理健康，同保持身體健康一樣咁重要。",
+        jyutping: "Hai2 ging6 zang1 gik1 lit6 ge3 hok6 zaap6 waan4 ging2 haa6, zung1 hok6 saang1 min6 deoi3 ge3 sam1 lei5 aat3 lik6 zyut6 deoi3 m4 ho2 ji5 fat1 si6.<br>Jau5 si4 hau6 ngo5 dei6 wui5 jan1 wai6 haau2 si3 sing4 zik1 mei6 jyu4 lei5 soeng2, waak6 ze2 tung4 pang4 jau5 faat3 sang1 ng6 wui6 ji4 gam2 dou3 zeoi2 song3.<br>Dong1 fu6 min6 cing4 seoi5 leoi5 zik1 dou3 jat1 ding6 cing4 dou6, ngo5 dei6 jat1 ding6 jiu3 wan2 hap6 sik1 ge3 tou4 ging3 heoi3 faat3 sit3, lai6 jyu4 zou6 wan6 dung6 waak6 ze2 teng1 jam1 ngok6.<br>Jyu4 gwo2 gok3 dak1 zi6 gei2 mou4 faat3 duk6 zi6 jing3 fu3, <span class='highlight'>cin1 kei4 m4 hou2</span> paa3 cau2 zi6 gei2 sei2 caang1, <span class='highlight'>jing1 goi1</span> zyu2 dung6 hoeng3 se5 gung1, lou5 si1 waak6 ze2 seon3 jam6 ge3 zoeng2 bui3 king1 sou3.<br>Bou2 ci4 sam1 lei5 gin6 hong1, tung4 bou2 ci4 san1 tai2 gin6 hong1 jat1 joeng6 gam3 zung6 jiu3.",
+        english: "In a fiercely competitive learning environment, the psychological pressure faced by middle schoolers absolutely cannot be ignored.<br>Sometimes we will feel frustrated because exam results are not as ideal, or misunderstandings occur with friends.<br>When negative emotions accumulate to a certain degree, we must find suitable channels to vent, such as doing exercise or listening to music.<br>If you feel unable to cope alone, absolutely do not be shy and tough it out by yourself, you should proactively confide in social workers, teachers, or trusted elders.<br>Maintaining mental health is just as important as maintaining physical health.",
+        quizzes: [
+            { q: "中學生通常因為咩事會感到沮喪？", e: "(What usually causes middle schoolers to feel frustrated?)", options: [{c: "考試成績唔好或者同朋友有誤會", e: "(Bad exam grades or misunderstandings with friends)", correct: true}, {c: "因為天氣太熱", e: "(Because the weather is too hot)", correct: false}, {c: "因為冇得去旅行", e: "(Because they cannot go traveling)", correct: false}] },
+            { q: "累積咗負面情緒應該點樣處理？", e: "(How should one handle accumulated negative emotions?)", options: [{c: "搵合適途徑發洩，例如做運動", e: "(Find a suitable channel to vent, like doing exercise)", correct: true}, {c: "收埋喺心入面唔講", e: "(Hide it in the heart and not say it)", correct: false}, {c: "發脾氣打爛屋企啲嘢", e: "(Lose temper and break things at home)", correct: false}] },
+            { q: "如果自己無法應付壓力，千祈唔好點做？", e: "(If unable to cope with stress yourself, what should you absolutely not do?)", options: [{c: "怕醜自己死撐", e: "(Be shy and tough it out by yourself)", correct: true}, {c: "主動去搵社工傾訴", e: "(Proactively find a social worker to confide in)", correct: false}, {c: "聽音樂放鬆", e: "(Listen to music to relax)", correct: false}] },
+            { q: "心理健康同身體健康邊樣重要啲？", e: "(Which is more important: mental health or physical health?)", options: [{c: "兩樣一樣咁重要", e: "(Both are equally important)", correct: true}, {c: "身體健康重要啲", e: "(Physical health is more important)", correct: false}, {c: "心理健康重要啲", e: "(Mental health is more important)", correct: false}] },
+            { q: "「傾訴」係咩意思？", e: "(What does 'king sou' mean?)", options: [{c: "將心事同煩惱講畀信任嘅人聽", e: "(Telling matters of the heart and worries to a trusted person)", correct: true}, {c: "聽人哋唱歌", e: "(Listening to people sing)", correct: false}, {c: "大聲鬧人", e: "(Scolding someone loudly)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "The Power of Reading", topic: "Value Assessment (無可替代 - Irreplaceable)",
+        img: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da",
+        grammarDesc: "<strong>Value Assessment:</strong> Describing something's unique worth.<br>無可替代 (mou4 ho2 tai3 doi6) means 'Irreplaceable'.",
+        vocab: [
+            {c: "短視頻", j: "dyun2 si6 pan4", e: "Short videos"}, {c: "普及", j: "pou2 kap6", e: "Popularization / Widespread"},
+            {c: "實體書", j: "sat6 tai2 syu1", e: "Physical book"}, {c: "深度閱讀", j: "sam1 dou6 jyut6 duk6", e: "Deep reading"},
+            {c: "無可替代", j: "mou4 ho2 tai3 doi6", e: "Irreplaceable"}, {c: "邏輯", j: "lo4 cap1", e: "Logic"},
+            {c: "科幻小說", j: "fo1 waan6 siu2 syut3", e: "Science fiction"}, {c: "傳記", j: "zyun6 gei3", e: "Biography"},
+            {c: "題材", j: "tai4 coi4", e: "Topic / Theme"}, {c: "樂趣", j: "lok6 ceoi3", e: "Joy / Pleasure"}
+        ],
+        story: "隨住短視頻同埋手機遊戲嘅普及，越嚟越少中學生會主動攞起一本實體書嚟睇。<br>其實，深度閱讀係一種無可替代嘅大腦訓練，可以提升我哋嘅專注力同埋邏輯思考能力。<br>科幻小說可以激發我哋嘅想像力，而人物傳記就可以畀我哋從偉人嘅失敗中學習。<br>我哋可以由自己感興趣嘅題材開始，每日抽二十分鐘時間放低電子產品，享受閱讀嘅樂趣。<br>書本就好似一扇窗，帶我哋去睇見更廣闊嘅世界。",
+        jyutping: "Ceoi4 zyu6 dyun2 si6 pan4 tung4 maai4 sau2 gei1 jau4 hei3 ge3 pou2 kap6, jyut6 lei4 jyut6 siu2 zung1 hok6 saang1 wui5 zyu2 dung6 lo2 hei2 jat1 bun2 sat6 tai2 syu1 lei4 tai2.<br>Kei4 sat6, sam1 dou6 jyut6 duk6 hai6 jat1 zung2 <span class='highlight'>mou4 ho2 tai3 doi6</span> ge3 daai6 nou5 fan3 lin6, ho2 ji5 tai4 sing1 ngo5 dei6 ge3 zyun1 zyu3 lik6 tung4 maai4 lo4 cap1 si1 haau2 nang4 lik6.<br>Fo1 waan6 siu2 syut3 ho2 ji5 gik1 faat3 ngo5 dei6 ge3 soeng2 zoeng6 lik6, ji4 jan4 mat6 zyun6 gei3 zau6 ho2 ji5 bei2 ngo5 dei6 cung4 wai5 jan4 ge3 sat1 baai6 zung1 hok6 zaap6.<br>Ngo5 dei6 ho2 ji5 jau4 zi6 gei2 gam2 hing3 ceoi3 ge3 tai4 coi4 hoi1 ci2, mui5 jat6 cau1 ji6 sap6 fan1 zung1 si4 gaan3 fong3 dai1 din6 zi2 caan2 ban2, hoeng2 sau6 jyut6 duk6 ge3 lok6 ceoi3.<br>Syu1 bun2 zau6 hou2 ci5 jat1 sin3 coeng1, daai3 ngo5 dei6 heoi3 tai2 gin3 gang3 gwong2 fut3 ge3 sai3 gaai3.",
+        english: "With the popularization of short videos and mobile games, fewer and fewer middle school students proactively pick up a physical book to read.<br>Actually, deep reading is an irreplaceable brain training that can improve our concentration and logical thinking abilities.<br>Science fiction novels can stimulate our imagination, while biographies can let us learn from the failures of great people.<br>We can start from topics we are interested in, taking 20 minutes a day to put down electronic devices and enjoy the pleasure of reading.<br>Books are just like a window, taking us to see a broader world.",
+        quizzes: [
+            { q: "點解而家越嚟越少學生睇實體書？", e: "(Why do fewer and fewer students read physical books now?)", options: [{c: "因為短視頻同手機遊戲普及", e: "(Because short videos and mobile games are widespread)", correct: true}, {c: "因為實體書太貴", e: "(Because physical books are too expensive)", correct: false}, {c: "因為圖書館唔開門", e: "(Because libraries are not open)", correct: false}] },
+            { q: "深度閱讀對大腦有咩好處？", e: "(What benefits does deep reading have for the brain?)", options: [{c: "提升專注力同邏輯思考能力", e: "(Improves concentration and logical thinking ability)", correct: true}, {c: "會令大腦覺得好眼瞓", e: "(Makes the brain feel very sleepy)", correct: false}, {c: "可以增強打機嘅反應", e: "(Can enhance reaction times in gaming)", correct: false}] },
+            { q: "睇人物傳記有咩用？", e: "(What is the use of reading biographies?)", options: [{c: "可以從偉人嘅失敗中學習", e: "(Can learn from the failures of great people)", correct: true}, {c: "可以學習點樣寫電腦程式", e: "(Can learn how to write computer programs)", correct: false}, {c: "可以教你點樣做廚師", e: "(Can teach you how to be a chef)", correct: false}] },
+            { q: "作者建議每日抽幾多時間閱讀？", e: "(How much time does the author suggest taking to read every day?)", options: [{c: "二十分鐘", e: "(Twenty minutes)", correct: true}, {c: "三個鐘頭", e: "(Three hours)", correct: false}, {c: "五分鐘", e: "(Five minutes)", correct: false}] },
+            { q: "「無可替代」係咩意思？", e: "(What does 'mou ho tai doi' mean?)", options: [{c: "非常珍貴，冇其他嘢可以代替", e: "(Very precious, nothing else can substitute it)", correct: true}, {c: "完全冇用嘅嘢", e: "(Completely useless thing)", correct: false}, {c: "可以隨時被換走", e: "(Can be swapped out at any time)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Sportsmanship & Teamwork", topic: "Prerequisite (只要... 就 - As long as... then)",
+        img: "https://images.unsplash.com/photo-1526676037777-05a232554f77",
+        grammarDesc: "<strong>Prerequisite for Success:</strong> Setting the condition for victory.<br>只要 (zi2 jiu3) [Condition] 就 (zau6) [Result] means 'As long as... then...'",
+        vocab: [
+            {c: "陸運會", j: "luk6 wan6 wui2", e: "Athletics meet / Sports day"}, {c: "接力賽", j: "zip3 lik6 coi3", e: "Relay race"},
+            {c: "團隊", j: "tyun4 deoi2", e: "Team"}, {c: "默契", j: "mak6 gai3", e: "Tacit understanding / Chemistry"},
+            {c: "致勝", j: "zi3 sing3", e: "Winning / Lead to victory"}, {c: "團結", j: "tyun4 git3", e: "Unite / Solidarity"},
+            {c: "反敗為勝", j: "faan2 baai6 wai4 sing3", e: "Turn defeat into victory"}, {c: "體育精神", j: "tai2 juk6 zing1 san4", e: "Sportsmanship"},
+            {c: "尊重", j: "zyun1 zung6", e: "Respect"}, {c: "勝不驕敗不餒", j: "sing3 bat1 giu1 baai6 bat1 neoi5", e: "Not arrogant in victory, not discouraged in defeat"}
+        ],
+        story: "每年一度嘅校際陸運會係同學最期待嘅盛事。<br>喺接力賽或者籃球比賽入面，個人嘅能力固然重要，但係團隊之間嘅默契同埋信任先至係致勝嘅關鍵。<br>就算遇到實力比自己強嘅對手，只要大家團結一致，互相鼓勵，就有機會反敗為勝。<br>即使最後輸咗比賽，我哋都應該展現出良好嘅體育精神，尊重裁判嘅決定，同埋恭喜贏咗嘅隊伍。<br>勝不驕，敗不餒，先係真正嘅運動員。",
+        jyutping: "Mui5 nin4 jat1 dou6 ge3 haau6 zai3 luk6 wan6 wui2 hai6 tung4 hok6 zeoi3 kei4 doi6 ge3 sing6 si6.<br>Hai2 zip3 lik6 coi3 waak6 ze2 laam4 kau4 bei2 coi3 jap6 min6, go3 jan4 ge3 nang4 lik6 gu3 jin4 zung6 jiu3, daan6 hai6 tyun4 deoi2 zi1 gaan1 ge3 mak6 gai3 tung4 maai4 seon3 jam6 sin1 zi3 hai6 zi3 sing3 ge3 gwaan1 gin6.<br>Zau6 syun3 jyu6 dou2 sat6 lik6 bei2 zi6 gei2 koeng4 ge3 deoi3 sau2, <span class='highlight'>zi2 jiu3</span> daai6 gaa1 tyun4 git3 jat1 zi3, wu6 soeng1 gu2 lai6, <span class='highlight'>zau6</span> jau5 gei1 wui6 faan2 baai6 wai4 sing3.<br>Zik1 si2 zeoi3 hau6 syu1 zo2 bei2 coi3, ngo5 dei6 dou1 jing1 goi1 zin2 jin6 ceot1 loeng4 hou2 ge3 tai2 juk6 zing1 san4, zyun1 zung6 coi4 pun3 ge3 kyut3 ding6, tung4 maai4 gung1 hei2 jeng4 zo2 ge3 deoi2 ng5.<br>Sing3 bat1 giu1, baai6 bat1 neoi5, sin1 hai6 zan1 zing3 ge3 wan6 dung6 jyun4.",
+        english: "The annual inter-school athletics meet is the event classmates look forward to the most.<br>In relay races or basketball games, individual ability is of course important, but the tacit understanding and trust between the team is the real key to winning.<br>Even when encountering opponents stronger than oneself, as long as everyone unites as one and encourages each other, there is a chance to turn defeat into victory.<br>Even if the game is lost in the end, we should display good sportsmanship, respect the referee's decision, and congratulate the winning team.<br>Not arrogant in victory, not discouraged in defeat; that is a true athlete.",
+        quizzes: [
+            { q: "喺接力賽入面，咩嘢先係致勝嘅關鍵？", e: "(In a relay race, what is the real key to winning?)", options: [{c: "團隊之間嘅默契同信任", e: "(Tacit understanding and trust within the team)", correct: true}, {c: "個人跑得最快嘅速度", e: "(Individual's fastest running speed)", correct: false}, {c: "着最貴嘅波鞋", e: "(Wearing the most expensive sneakers)", correct: false}] },
+            { q: "遇到強大嘅對手，只要點樣就有機會反敗為勝？", e: "(Encountering a strong opponent, as long as you do what, is there a chance to win?)", options: [{c: "團結一致，互相鼓勵", e: "(Unite as one, encourage each other)", correct: true}, {c: "即刻放棄比賽", e: "(Immediately give up the race)", correct: false}, {c: "投訴對手犯規", e: "(Complain that the opponent fouled)", correct: false}] },
+            { q: "輸咗比賽之後應該展現咩精神？", e: "(After losing a game, what spirit should be displayed?)", options: [{c: "良好嘅體育精神", e: "(Good sportsmanship)", correct: true}, {c: "憤怒嘅復仇精神", e: "(Angry spirit of revenge)", correct: false}, {c: "逃避嘅精神", e: "(Escapist spirit)", correct: false}] },
+            { q: "「勝不驕，敗不餒」係咩意思？", e: "(What does 'sing bat giu, baai bat neoi' mean?)", options: [{c: "贏咗唔驕傲，輸咗唔灰心", e: "(Not arrogant when winning, not discouraged when losing)", correct: true}, {c: "贏咗要大肆慶祝，輸咗要喊", e: "(Celebrate wildly when winning, cry when losing)", correct: false}, {c: "無論輸贏都唔出聲", e: "(Say nothing regardless of winning or losing)", correct: false}] },
+            { q: "點樣對待贏咗嘅隊伍先啱？", e: "(How should you correctly treat the winning team?)", options: [{c: "恭喜佢哋", e: "(Congratulate them)", correct: true}, {c: "唔睬佢哋", e: "(Ignore them)", correct: false}, {c: "要求重新比賽", e: "(Demand a rematch)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Career Exploration", topic: "Advice (唔好淨係... 先可以 - Don't just... only then can)",
+        img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c",
+        grammarDesc: "<strong>Career Advice:</strong> Giving profound advice for the future.<br>唔好淨係 (m4 hou2 zing6 hai6) [A]... 先可以 (sin1 ho2 ji5) [B] means 'Don't just [A]... only then can you [B]'.",
+        vocab: [
+            {c: "職業", j: "zik1 jip6", e: "Career / Profession"}, {c: "方向", j: "fong1 hoeng3", e: "Direction"},
+            {c: "人工智能", j: "jan4 gung1 zi3 nang4", e: "Artificial Intelligence (AI)"}, {c: "取代", j: "ceoi2 doi6", e: "Replace"},
+            {c: "新興", j: "san1 hing1", e: "Emerging"}, {c: "講座", j: "gong2 zo6", e: "Seminar / Lecture"},
+            {c: "博覽", j: "bok3 laam5", e: "Expo / Exhibition"}, {c: "發掘", j: "faat3 gwat6", e: "Discover / Explore"},
+            {c: "專長", j: "zyun1 coeng4", e: "Specialty / Strengths"}, {c: "滿足感", j: "mun5 zuk1 gam2", e: "Sense of satisfaction"}
+        ],
+        story: "雖然距離中學畢業仲有一段時間，但係我哋而家就應該開始思考未來嘅職業方向。<br>社會發展得好快，好多傳統嘅工作可能會被人工智能取代，同時亦會產生好多新興嘅行業。<br>我哋可以透過參加唔同嘅興趣班、講座或者職業博覽，去發掘自己嘅專長同埋熱情。<br>唔好淨係為咗賺錢去揀一份工，選擇一份自己真正鍾意而且有意義嘅事業，先可以令我哋喺未來嘅工作入面保持動力同埋滿足感。",
+        jyutping: "Seoi1 jin4 geoi5 lei4 zung1 hok6 bat1 jip6 zung6 jau5 jat1 dyun6 si4 gaan3, daan6 hai6 ngo5 dei6 ji4 gaa1 zau6 jing1 goi1 hoi1 ci2 si1 haau2 mei6 loi4 ge3 zik1 jip6 fong1 hoeng3.<br>Se5 wui2 faat3 zin2 dak1 hou2 faai3, hou2 do1 cyun4 tung2 ge3 gung1 zok3 ho2 nang4 wui5 bei6 jan4 gung1 zi3 nang4 ceoi2 doi6, tung4 si4 jik6 wui5 caan2 sang1 hou2 do1 san1 hing1 ge3 hong4 jip6.<br>Ngo5 dei6 ho2 ji5 tau3 gwo3 caam1 gaa1 m4 tung4 ge3 hing3 ceoi3 baan1, gong2 zo6 waak6 ze2 zik1 jip6 bok3 laam5, heoi3 faat3 gwat6 zi6 gei2 ge3 zyun1 coeng4 tung4 maai4 jit6 cing4.<br><span class='highlight'>M4 hou2 zing6 hai6</span> wai6 zo2 zaan6 cin2 heoi3 gaan2 jat1 fan6 gung1, syun2 zaak6 jat1 fan6 zi6 gei2 zan1 zing3 zung1 ji3 ji4 ce2 jau5 ji3 ji6 ge3 si6 jip6, <span class='highlight'>sin1 ho2 ji5</span> ling6 ngo5 dei6 hai2 mei6 loi4 ge3 gung1 zok3 jap6 min6 bou2 ci4 dung6 lik6 tung4 maai4 mun5 zuk1 gam2.",
+        english: "Although there is still some time until middle school graduation, we should start thinking about our future career direction now.<br>Society develops very fast, many traditional jobs might be replaced by Artificial Intelligence, while many emerging industries will also be created.<br>We can discover our specialties and passions by participating in different interest classes, seminars, or career expos.<br>Don't just pick a job for the sake of making money; choosing a career you truly like and is meaningful, only then can you maintain motivation and a sense of satisfaction in your future work.",
+        quizzes: [
+            { q: "點解傳統工作可能會消失？", e: "(Why might traditional jobs disappear?)", options: [{c: "可能會被人工智能取代", e: "(Might be replaced by Artificial Intelligence)", correct: true}, {c: "因為冇人想返工", e: "(Because nobody wants to go to work)", correct: false}, {c: "因為學校唔再教", e: "(Because schools don't teach it anymore)", correct: false}] },
+            { q: "我哋可以透過咩途徑去發掘專長？", e: "(Through what channels can we discover our specialties?)", options: [{c: "參加興趣班、講座或職業博覽", e: "(Participate in interest classes, seminars, or career expos)", correct: true}, {c: "日日喺屋企睇電視", e: "(Watch TV at home every day)", correct: false}, {c: "問占卜師", e: "(Ask a fortune teller)", correct: false}] },
+            { q: "作者建議揀工嗰陣唔應該淨係考慮咩？", e: "(What does the author suggest you shouldn't solely consider when picking a job?)", options: [{c: "唔好淨係為咗賺錢", e: "(Don't just do it for the sake of making money)", correct: true}, {c: "唔好淨係考慮返工地點", e: "(Don't just consider the work location)", correct: false}, {c: "唔好淨係睇公司有冇包飯", e: "(Don't just see if the company provides meals)", correct: false}] },
+            { q: "做咩類型嘅事業先可以保持工作動力？", e: "(Doing what type of career can maintain work motivation?)", options: [{c: "自己真正鍾意而且有意義嘅事業", e: "(A career you truly like and is meaningful)", correct: true}, {c: "最輕鬆最得閒嘅工", e: "(The easiest and most relaxing job)", correct: false}, {c: "父母逼你做嘅工", e: "(A job your parents force you to do)", correct: false}] },
+            { q: "「新興」行業係指咩？", e: "(What does 'emerging' industry mean?)", options: [{c: "最新出現並且發展緊嘅行業", e: "(Newly appearing and developing industries)", correct: true}, {c: "已經被淘汰嘅行業", e: "(Industries that are already obsolete)", correct: false}, {c: "只有老人家先做嘅行業", e: "(Industries only old people do)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Public Speaking", topic: "Misconception (其實... 而唔係 - Actually... and not)",
+        img: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2",
+        grammarDesc: "<strong>Clarifying Misconceptions:</strong> Correcting a false belief.<br>其實 (kei4 sat6) [A] 而唔係 (ji4 m4 hai6) [B] means 'Actually it is [A] and not [B]'.",
+        vocab: [
+            {c: "公開演講", j: "gung1 hoi1 jin2 gong2", e: "Public speaking"}, {c: "緊張", j: "gan2 zoeng1", e: "Nervous"},
+            {c: "結巴", j: "git3 baa1", e: "Stutter"}, {c: "技巧", j: "gei6 haau2", e: "Skill"},
+            {c: "天生", j: "tin1 saang1", e: "Innate / Born with"}, {c: "克服", j: "hak1 fuk6", e: "Overcome"},
+            {c: "恐懼", j: "hung2 geoi6", e: "Fear"}, {c: "大綱", j: "daai6 gong1", e: "Outline"},
+            {c: "反覆", j: "faan2 fuk1", e: "Repeatedly"}, {c: "眼神交流", j: "ngaan5 san4 gaau1 lau4", e: "Eye contact"}
+        ],
+        story: "好多中學生一聽到要企喺全班同學面前做演講，就會緊張到手心出汗、講嘢結巴。<br>其實公開演講係一種可以透過訓練嚟提升嘅技巧，而唔係天生嘅才能。<br>克服恐懼嘅第一步係要做好充分嘅準備，搜集好資料並且寫好大綱。<br>喺屋企對住塊鏡或者錄低自己嘅演講嚟反覆練習，可以增加自信心。<br>演講嗰陣，嘗試同台下嘅聽眾有眼神交流，深呼吸，將專注力放喺你想傳達嘅信息上，而唔係自己嘅緊張情緒。",
+        jyutping: "Hou2 do1 zung1 hok6 saang1 jat1 teng1 dou2 jiu3 kei5 hai2 cyun4 baan1 tung4 hok6 min6 cin4 zou6 jin2 gong2, zau6 wui5 gan2 zoeng1 dou3 sau2 sam1 ceot1 hon6, gong2 je5 git3 baa1.<br><span class='highlight'>Kei4 sat6</span> gung1 hoi1 jin2 gong2 hai6 jat1 zung2 ho2 ji5 tau3 gwo3 fan3 lin6 lei4 tai4 sing1 ge3 gei6 haau2, <span class='highlight'>ji4 m4 hai6</span> tin1 saang1 ge3 coi4 nang4.<br>Hak1 fuk6 hung2 geoi6 ge3 dai6 jat1 bou6 hai6 jiu3 zou6 hou2 cung1 fan6 ge3 zeon2 bei6, sau2 zaap6 hou2 zi1 liu2 bing6 ce2 se2 hou2 daai6 gong1.<br>Hai2 uk1 kei2 deoi3 zyu6 faai3 geng3 waak6 ze2 luk6 dai1 zi6 gei2 ge3 jin2 gong2 lei4 faan2 fuk1 lin6 zaap6, ho2 ji5 zang1 gaa1 zi6 seon3 sam1.<br>Jin2 gong2 go2 zan6, soeng4 si3 tung4 toi4 haa6 ge3 ting3 zung3 jau5 ngaan5 san4 gaau1 lau4, sam1 fu1 kap1, zoeng1 zyun1 zyu3 lik6 fong3 hai2 nei5 soeng2 cyun4 daat6 ge3 seon3 sik1 soeng6, ji4 m4 hai6 zi6 gei2 ge3 gan2 zoeng1 cing4 seoi5.",
+        english: "Many middle schoolers, as soon as they hear they have to stand in front of the whole class to give a speech, will get so nervous that their palms sweat and they stutter.<br>Actually, public speaking is a skill that can be improved through training, and not an innate talent.<br>The first step to overcoming fear is to make ample preparation, gather data, and write a good outline.<br>Practicing repeatedly at home facing a mirror or recording your own speech can increase self-confidence.<br>During the speech, try to have eye contact with the audience below the stage, take deep breaths, and put your concentration on the message you want to convey, rather than your own nervous emotions.",
+        quizzes: [
+            { q: "對於公開演講，作者指正咗咩誤解？", e: "(What misconception about public speaking did the author correct?)", options: [{c: "其實係可以訓練嘅技巧，而唔係天生嘅", e: "(Actually a trainable skill, and not innate)", correct: true}, {c: "演講係唔需要準備嘅", e: "(Speeches require no preparation)", correct: false}, {c: "演講一定要好大聲鬧人", e: "(Speeches must loudly scold people)", correct: false}] },
+            { q: "克服演講恐懼嘅第一步係咩？", e: "(What is the first step to overcoming the fear of speaking?)", options: [{c: "做好充分準備同寫好大綱", e: "(Make ample preparation and write a good outline)", correct: true}, {c: "直接上台即興發揮", e: "(Go straight on stage and improvise)", correct: false}, {c: "請病假唔去學校", e: "(Call in sick and not go to school)", correct: false}] },
+            { q: "點樣可以喺屋企增加自信心？", e: "(How can you increase self-confidence at home?)", options: [{c: "對住塊鏡或者錄音反覆練習", e: "(Practice repeatedly facing a mirror or recording)", correct: true}, {c: "食好多甜品", e: "(Eat a lot of desserts)", correct: false}, {c: "瞓多啲覺", e: "(Sleep more)", correct: false}] },
+            { q: "演講嗰陣應該將專注力放喺邊度？", e: "(Where should you place your concentration during the speech?)", options: [{c: "想傳達嘅信息上", e: "(On the message you want to convey)", correct: true}, {c: "自己嘅緊張情緒上", e: "(On your own nervous emotions)", correct: false}, {c: "台下同學嘅笑聲上", e: "(On the classmates' laughter below the stage)", correct: false}] },
+            { q: "「手心出汗、講嘢結巴」形容緊人嘅咩狀態？", e: "(What state of a person does 'sweaty palms, stuttering' describe?)", options: [{c: "非常緊張同害怕", e: "(Extremely nervous and scared)", correct: true}, {c: "好肚餓", e: "(Very hungry)", correct: false}, {c: "非常自信", e: "(Extremely confident)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Identifying Fake News", topic: "Critical Thinking (唔好... 應該先 - Don't... should first)",
+        img: "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+        grammarDesc: "<strong>Critical Process:</strong> Instructing to pause and verify.<br>唔好急住 (m4 hou2 gap1 zyu6) [Action A]... 應該先 (jing1 goi1 sin1) [Action B] means 'Don't rush to [A]... should first [B]'.",
+        vocab: [
+            {c: "資訊爆炸", j: "zi1 seon3 baau3 zaa3", e: "Information explosion"}, {c: "海量", j: "hoi2 loeng6", e: "Massive amount"},
+            {c: "標題黨", j: "biu1 tai4 dong2", e: "Clickbait"}, {c: "假新聞", j: "gaa2 san1 man4", e: "Fake news"},
+            {c: "點擊率", j: "dim2 gik1 leot2", e: "Click-through rate"}, {c: "批判性思考", j: "pai1 pun3 sing3 si1 haau2", e: "Critical thinking"},
+            {c: "素質", j: "sou3 zat1", e: "Quality / Attribute"}, {c: "誇張", j: "kwaa1 zoeng1", e: "Exaggerated"},
+            {c: "來源", j: "loi4 jyun4", e: "Source"}, {c: "人云亦云", j: "jan4 wan4 jik6 wan4", e: "Echo others' views"}
+        ],
+        story: "喺資訊爆炸嘅年代，我哋每日都會喺互聯網上接收到海量嘅新聞同埋消息。<br>其中有唔少係標題黨或者未經證實嘅假新聞，目的係為咗博取點擊率。<br>培養批判性思考能力，係每個現代公民必須具備嘅素質。<br>當我哋見到一單好誇張嘅新聞嗰陣，唔好急住轉發畀朋友。<br>我哋應該先檢查消息嘅來源係咪可靠，睇下其他主流媒體有冇相關報導，保持獨立思考，唔好人云亦云。",
+        jyutping: "Hai2 zi1 seon3 baau3 zaa3 ge3 nin4 doi6, ngo5 dei6 mui5 jat6 dou1 wui5 hai2 wu6 lyun4 mong5 soeng6 zip3 sau1 dou3 hoi2 loeng6 ge3 san1 man4 tung4 maai4 siu1 sik1.<br>Kei4 zung1 jau5 m4 siu2 hai6 biu1 tai4 dong2 waak6 ze2 mei6 ging1 zing3 sat6 ge3 gaa2 san1 man4, muk6 dik1 hai6 wai6 zo2 bok3 ceoi2 dim2 gik1 leot2.<br>Pui4 joeng5 pai1 pun3 sing3 si1 haau2 nang4 lik6, hai6 mui5 go3 jin6 doi6 gung1 man4 bit1 seoi1 geoi6 bei6 ge3 sou3 zat1.<br>Dong1 ngo5 dei6 gin3 dou3 jat1 daan1 hou2 kwaa1 zoeng1 ge3 san1 man4 go2 zan6, <span class='highlight'>m4 hou2 gap1 zyu6</span> zyun2 faat3 bei2 pang4 jau5.<br>Ngo5 dei6 <span class='highlight'>jing1 goi1 sin1</span> gim2 caa4 siu1 sik1 ge3 loi4 jyun4 hai6 mai6 ho2 kaau3, tai2 haa5 kei4 taa1 zyu2 lau4 mui4 tai2 jau5 mou5 soeng1 gwaan1 bou3 dou6, bou2 ci4 duk6 laap6 si1 haau2, m4 hou2 jan4 wan4 jik6 wan4.",
+        english: "In the era of information explosion, every day we receive a massive amount of news and messages on the internet.<br>Among them, many are clickbait or unverified fake news, whose purpose is to grab click-through rates.<br>Cultivating critical thinking ability is a quality every modern citizen must possess.<br>When we see a very exaggerated piece of news, don't rush to forward it to friends.<br>We should first check if the source of the message is reliable, see if other mainstream media have related reports, maintain independent thinking, and not just echo what others say.",
+        quizzes: [
+            { q: "假新聞同標題黨嘅主要目的係咩？", e: "(What is the main purpose of fake news and clickbait?)", options: [{c: "為咗博取點擊率", e: "(In order to grab click-through rates)", correct: true}, {c: "為咗教人做功課", e: "(In order to teach people how to do homework)", correct: false}, {c: "為咗傳播正確知識", e: "(In order to spread correct knowledge)", correct: false}] },
+            { q: "現代公民必須具備咩素質嚟應對資訊爆炸？", e: "(What quality must modern citizens possess to cope with info explosion?)", options: [{c: "批判性思考能力", e: "(Critical thinking ability)", correct: true}, {c: "打字好快嘅能力", e: "(Typing very fast ability)", correct: false}, {c: "唔上網嘅決心", e: "(Determination to not go online)", correct: false}] },
+            { q: "見到好誇張嘅新聞，第一時間「唔好」做咩？", e: "(Seeing an exaggerated news piece, what shouldn't you do immediately?)", options: [{c: "急住轉發畀朋友", e: "(Rush to forward it to friends)", correct: true}, {c: "去查證來源", e: "(Go verify the source)", correct: false}, {c: "冷靜思考", e: "(Think calmly)", correct: false}] },
+            { q: "轉發新聞之前「應該先」點做？", e: "(What 'should you do first' before forwarding news?)", options: [{c: "檢查來源係咪可靠同埋睇主流媒體", e: "(Check if source is reliable and see mainstream media)", correct: true}, {c: "改一個更誇張嘅標題", e: "(Change to an even more exaggerated title)", correct: false}, {c: "刪除自己個社交帳號", e: "(Delete your own social media account)", correct: false}] },
+            { q: "「人云亦云」係指一種點樣嘅行為？", e: "(What kind of behavior does 'jan wan jik wan' refer to?)", options: [{c: "人哋講咩就跟住講咩，冇獨立思考", e: "(Saying whatever others say, lacking independent thought)", correct: true}, {c: "同人哋辯論到底", e: "(Debating with others to the end)", correct: false}, {c: "大聲唱歌", e: "(Singing loudly)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Setting SMART Goals", topic: "Clarity (即係要 - That is to say...)",
+        img: "https://images.unsplash.com/photo-1506784365847-bbad939e9335",
+        grammarDesc: "<strong>Definition/Elaboration:</strong> Explaining an acronym or concept.<br>即係要 (zik1 hai6 jiu3) means 'That is to say, it must be...'.",
+        vocab: [
+            {c: "設定", j: "cit3 ding6", e: "Set"}, {c: "清晰", j: "cing1 sik1", e: "Clear"},
+            {c: "目標", j: "muk6 biu1", e: "Goal"}, {c: "原則", j: "jyun4 zak1", e: "Principle"},
+            {c: "具體", j: "geoi6 tai2", e: "Specific"}, {c: "可量度", j: "ho2 loeng4 dok6", e: "Measurable"},
+            {c: "可達到", j: "ho2 daat6 dou3", e: "Achievable"}, {c: "限期", j: "haan6 kei4", e: "Deadline / Time-bound"},
+            {c: "模糊", j: "mou4 wu4", e: "Vague / Blurry"}, {c: "任務", j: "jam6 mou6", e: "Task"}
+        ],
+        story: "無論係想學好一門新語言，定係想喺考試考到好成績，成功嘅第一步都係要設定一個清晰嘅目標。<br>老師教我哋用「SMART」原則嚟定立目標：即係要具體、可量度、可達到、有相關性同埋有明確嘅限期。<br>例如，「我想英文變好」係一個好模糊嘅目標。<br>而「我要喺三個月內背熟一千個英文字彙」就係一個 SMART 目標。<br>將大目標拆分成每日嘅小任務，會令我哋更容易堅持落去。",
+        jyutping: "Mou4 leon6 hai6 soeng2 hok6 hou2 jat1 mun4 san1 jyu5 jin4, ding6 hai6 soeng2 hai2 haau2 si3 haau2 dou2 hou2 sing4 zik1, sing4 gung1 ge3 dai6 jat1 bou6 dou1 hai6 jiu3 cit3 ding6 jat1 go3 cing1 sik1 ge3 muk6 biu1.<br>Lou5 si1 gaau3 ngo5 dei6 jung6 「SMART」 jyun4 zak1 lei4 ding6 laap6 muk6 biu1: <span class='highlight'>zik1 hai6 jiu3</span> geoi6 tai2, ho2 loeng4 dok6, ho2 daat6 dou3, jau5 soeng1 gwaan1 sing3 tung4 maai4 jau5 ming4 kok3 ge3 haan6 kei4.<br>Lai6 jyu4, 「Ngo5 soeng2 jing1 man2 bin3 hou2」 hai6 jat1 go3 hou2 mou4 wu4 ge3 muk6 biu1.<br>Ji4 「Ngo5 jiu3 hai2 saam1 go3 jyut6 noi6 bui6 suk6 jat1 cin1 go3 jing1 man2 zi6 wui6」 zau6 hai6 jat1 go3 SMART muk6 biu1.<br>Zoeng1 daai6 muk6 biu1 caak3 fan1 sing4 mui5 jat6 ge3 siu2 jam6 mou6, wui5 ling6 ngo5 dei6 gang3 jung4 ji6 gin1 ci4 lok6 heoi3.",
+        english: "Whether wanting to learn a new language well, or wanting to get good grades in exams, the first step to success is setting a clear goal.<br>The teacher taught us to use the 'SMART' principle to set goals: that is to say, it must be Specific, Measurable, Achievable, Relevant, and have a clear Time-bound deadline.<br>For example, 'I want my English to get better' is a very vague goal.<br>Whereas 'I want to memorize 1000 English vocabulary words within three months' is a SMART goal.<br>Breaking down big goals into small daily tasks will make it easier for us to persist.",
+        quizzes: [
+            { q: "成功嘅第一步係咩？", e: "(What is the first step to success?)", options: [{c: "設定一個清晰嘅目標", e: "(Set a clear goal)", correct: true}, {c: "即刻去圖書館溫書", e: "(Immediately go to the library to study)", correct: false}, {c: "買好多文具", e: "(Buy a lot of stationery)", correct: false}] },
+            { q: "「SMART」原則即係要包含邊五個條件？", e: "(What five conditions must the SMART principle contain?)", options: [{c: "具體、可量度、可達到、相關、限期", e: "(Specific, Measurable, Achievable, Relevant, Time-bound)", correct: true}, {c: "簡單、多錢、快、靚、正", e: "(Simple, lots of money, fast, pretty, awesome)", correct: false}, {c: "聽話、勤力、聰明、有錢、幸運", e: "(Obedient, hardworking, smart, rich, lucky)", correct: false}] },
+            { q: "「我想英文變好」點解唔係一個好目標？", e: "(Why is 'I want my English to get better' not a good goal?)", options: [{c: "因為太過模糊，冇具體數字同限期", e: "(Because it's too vague, no specific numbers and deadline)", correct: true}, {c: "因為英文根本學唔好", e: "(Because English simply cannot be learned well)", correct: false}, {c: "因為應該學法文先", e: "(Because one should learn French first)", correct: false}] },
+            { q: "點樣可以令自己更容易堅持完成大目標？", e: "(How can you make it easier for yourself to persist in completing a big goal?)", options: [{c: "將大目標拆分成每日嘅小任務", e: "(Break down big goals into small daily tasks)", correct: true}, {c: "叫朋友幫手做", e: "(Ask friends to help do it)", correct: false}, {c: "每日瞓覺發夢", e: "(Dream while sleeping every day)", correct: false}] },
+            { q: "文中提到嘅 SMART 目標例子係咩？", e: "(What is the example of the SMART goal mentioned in the text?)", options: [{c: "三個月內背熟一千個英文字彙", e: "(Memorize 1000 English vocabulary words within 3 months)", correct: true}, {c: "聽日考到一百分", e: "(Get 100 marks tomorrow)", correct: false}, {c: "買一本新嘅英文書", e: "(Buy a new English book)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>🎒 Middle School Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Story Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
