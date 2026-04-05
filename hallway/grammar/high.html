@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: High School Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 750px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px 25px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.7rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 0.95rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 240px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #b71c1c; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #880e4f; }
+        .prep-section {
+            background-color: #ffebee; border-left: 4px solid #d32f2f;
+            padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #b71c1c; font-size: 1.15rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.5; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .vocab-item {
+            background: white; padding: 12px 10px; border-radius: 8px; font-size: 0.9rem;
+            border: 2px solid #ffcdd2; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #ffebee; border-color: #ef5350; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #d32f2f; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #b71c1c;
+            padding: 18px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.15rem; line-height: 1.9; margin-bottom: 15px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #666; font-size: 0.95rem; line-height: 1.6; text-align: justify; }
+        .highlight { color: #b71c1c; text-decoration: underline; background-color: #ffebee; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 25px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 12px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 5px; line-height: 1.5; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 14px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; line-height: 1.4; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 6px; }
+        .translation-box { margin-top: 30px; font-size: 0.95rem; color: #555; background: #eee; padding: 18px; border-radius: 8px; line-height: 1.6; text-align: justify; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 25px; }
+        .nav-btn { background: #b71c1c; color: white; border: none; border-radius: 8px; padding: 14px 24px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "University Admissions Strategy", topic: "Concession (即使... 都 - Even if... still)",
+        img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1",
+        grammarDesc: "<strong>Concession:</strong> Maintaining a stance regardless of obstacles.<br>即使 (zik1 si2) [Condition]... 都 (dou1) [Result] means 'Even if... still...'",
+        vocab: [
+            {c: "聯招", j: "lyun4 ziu1", e: "Joint university admissions"}, {c: "學科", j: "hok6 fo1", e: "Academic subject / Major"},
+            {c: "競爭", j: "ging6 zang1", e: "Competition"}, {c: "面試", j: "min6 si5", e: "Interview"},
+            {c: "即使", j: "zik1 si2", e: "Even if"}, {c: "錄取", j: "luk6 ceoi2", e: "Admit / Accept"},
+            {c: "門檻", j: "mun4 laam5", e: "Threshold / Requirement"}, {c: "志願", j: "zi3 jyun6", e: "Aspiration / Choice"},
+            {c: "迷惘", j: "mai4 mong5", e: "Confused / Lost"}, {c: "出路", j: "ceot1 lou6", e: "Way out / Career prospects"}
+        ],
+        story: "高中最後一年，面對大學聯招嘅選擇，好多同學都會覺得非常迷惘。<br>揀學科唔單止要睇自己嘅興趣，仲要考慮將來嘅就業出路同埋入學門檻。<br>有啲神科嘅競爭極之激烈，每年只有極少數嘅頂尖學生先會被錄取。<br>即使成績未如理想，我哋都唔應該輕言放棄。<br>因為而家嘅升學途徑好多完化，就算入唔到首選大學，只要肯努力，一樣可以透過副學士或者高級文憑銜接上大學。<br>最重要係喺面試嗰陣展現出你嘅熱誠同埋解難能力。",
+        jyutping: "Gou1 zung1 zeoi3 hau6 jat1 nin4, min6 deoi3 daai6 hok6 lyun4 ziu1 ge3 syun2 zaak3, hou2 do1 tung4 hok6 dou1 wui5 gok3 dak1 fei1 soeng4 mai4 mong5.<br>Gaan2 hok6 fo1 m4 daan1 zi2 jiu3 tai2 zi6 gei2 ge3 hing3 ceoi3, zung6 jiu3 haau2 leoi6 zoeng1 loi4 ge3 zau6 jip6 ceot1 lou6 tung4 maai4 jap6 hok6 mun4 laam5.<br>Jau5 di1 san4 fo1 ge3 ging6 zang1 gik6 zi1 gik1 lit6, mui5 nin4 zi2 jau5 gik6 siu2 sou3 ge3 ding2 zim1 hok6 saang1 sin1 wui5 bei6/bei2 luk6 ceoi2.<br><span class='highlight'>Zik1 si2</span> sing4 zik1 mei6 jyu4 lei5 soeng2, ngo5 dei6 <span class='highlight'>dou1</span> m4 jing1 goi1 hing1 jin4 fong3 hei3.<br>Jan1 wai6 ji4 gaa1 ge3 sing1 hok6 tou4 ging3 hou2 do1 jyun4 faa3, zau6 syun3 jap6 m4 dou2 sau2 syun2 daai6 hok6, zi2 jiu3 hang2 nou5 lik6, jat1 joeng6 ho2 ji5 tau3 gwo3 fu3 hok6 si6 waak6 ze2 gou1 kap1 man4 ping4 haam4 zip3 soeng5 daai6 hok6.<br>Zeoi3 zung6 jiu3 hai6 hai2 min6 si5 go2 zan6 zin2 jin6 ceot1 nei5 ge3 jit6 sing4 tung4 maai4 gaai2 naan4 nang4 lik6.",
+        english: "In the final year of high school, facing the choices of joint university admissions, many classmates feel extremely confused.<br>Choosing a major doesn't just involve looking at your own interests, but also considering future career prospects and admission thresholds.<br>The competition for some elite majors is fiercely intense; every year only a very small number of top students will be admitted.<br>Even if grades are not as ideal, we still should not give up lightly.<br>Because current pathways to higher education are very diversified, even if you don't get into your first-choice university, as long as you are willing to work hard, you can equally transition to university through associate degrees or higher diplomas.<br>The most important thing is to demonstrate your passion and problem-solving skills during the interview.",
+        quizzes: [
+            { q: "高中生喺最後一年通常因為咩事覺得迷惘？", e: "(Why do high schoolers usually feel confused in their final year?)", options: [{c: "面對大學聯招揀學科嘅選擇", e: "(Facing major choices for joint university admissions)", correct: true}, {c: "唔知道去邊度畢業旅行", e: "(Not knowing where to go for graduation trip)", correct: false}, {c: "買唔到演唱會飛", e: "(Unable to buy concert tickets)", correct: false}] },
+            { q: "揀學科嗰陣除咗興趣仲要考慮咩？", e: "(When choosing a major, besides interest, what else must be considered?)", options: [{c: "將來嘅就業出路同入學門檻", e: "(Future career prospects and admission thresholds)", correct: true}, {c: "間大學嘅飯堂好唔好食", e: "(Whether the university cafeteria is good)", correct: false}, {c: "大學有幾多靚女靚仔", e: "(How many attractive people are in the university)", correct: false}] },
+            { q: "如果公開試成績未如理想，作者建議點做？", e: "(If public exam grades are not ideal, what does the author suggest doing?)", options: [{c: "唔好放棄，可以考慮副學士等銜接途徑", e: "(Don't give up, consider bridging pathways like associate degrees)", correct: true}, {c: "即刻出嚟搵工做", e: "(Come out to find a job immediately)", correct: false}, {c: "日日喺屋企打機", e: "(Stay home and play games every day)", correct: false}] },
+            { q: "大學面試最睇重學生嘅咩特質？", e: "(What traits does university interview value the most in students?)", options: [{c: "熱誠同埋解難能力", e: "(Passion and problem-solving skills)", correct: true}, {c: "唱歌好唔好聽", e: "(Whether they sing well)", correct: false}, {c: "屋企有幾多錢", e: "(How much money their family has)", correct: false}] },
+            { q: "「神科」喺香港通常指咩類型嘅學科？", e: "(What does 'san fo' usually refer to in Hong Kong?)", options: [{c: "入學門檻極高、競爭激烈嘅頂尖學科", e: "(Elite majors with extremely high thresholds and intense competition)", correct: true}, {c: "研究神學同宗教嘅學科", e: "(Majors studying theology and religion)", correct: false}, {c: "完全冇人想讀嘅學科", e: "(Majors that absolutely nobody wants to study)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "The First Part-Time Job", topic: "Condition (既然... 就 - Since... then)",
+        img: "https://images.unsplash.com/photo-1521791136064-7986c2920216",
+        grammarDesc: "<strong>Logical Consequence:</strong> Accepting a premise and stating the next step.<br>既然 (gei3 jin4) [Fact]... 就 (zau6) [Action] means 'Since [Fact] is true, then [Action]'.",
+        vocab: [
+            {c: "兼職", j: "gim1 zik1", e: "Part-time job"}, {c: "履歷", j: "lei5 lik6", e: "Resume / CV"},
+            {c: "既然", j: "gei3 jin4", e: "Since / Now that"}, {c: "經驗", j: "ging1 jim6", e: "Experience"},
+            {c: "態度", j: "taai3 dou6", e: "Attitude"}, {c: "責任感", j: "zaak3 jam6 gam2", e: "Sense of responsibility"},
+            {c: "碰壁", j: "pung3 bik1", e: "Hit a wall / Be rejected"}, {c: "獨立", j: "duk6 laap6", e: "Independent"},
+            {c: "溝通技巧", j: "kau1 tung1 gei6 haau2", e: "Communication skills"}, {c: "累積", j: "leoi5 zik1", e: "Accumulate"}
+        ],
+        story: "高中生開始做兼職，係邁向經濟獨立同社會嘅第一步。<br>寫第一份履歷嗰陣，好多人都會因為冇工作經驗而覺得好難落筆。<br>其實僱主請學生做兼職，最睇重嘅唔係經驗，而係你嘅工作態度同埋責任感。<br>既然決定咗要出嚟做嘢，就要有心理準備會遇到挫折同埋碰壁。<br>面試被拒絕係好正常嘅事，最重要係從失敗中學習，改善自己嘅溝通技巧。<br>每一份工作，無論係做侍應定係補習，都可以幫你累積寶貴嘅人生經驗。",
+        jyutping: "Gou1 zung1 saang1 hoi1 ci2 zou6 gim1 zik1, hai6 maai6 hoeng3 ging1 zai3 duk6 laap6 tung4 se5 wui2 ge3 dai6 jat1 bou6.<br>Se2 dai6 jat1 fan6 lei5 lik6 go2 zan6, hou2 do1 jan4 dou1 wui5 jan1 wai6 mou5 gung1 zok3 ging1 jim6 ji4 gok3 dak1 hou2 naan4 lok6 bat1.<br>Kei4 sat6 gu3 zyu2 ceng2 hok6 saang1 zou6 gim1 zik1, zeoi3 tai2 zung6 ge3 m4 hai6 ging1 jim6, ji4 hai6 nei5 ge3 gung1 zok3 taai3 dou6 tung4 maai4 zaak3 jam6 gam2.<br><span class='highlight'>Gei3 jin4</span> kyut3 ding6 zo2 jiu3 ceot1 lei4 zou6 je5, <span class='highlight'>zau6</span> jiu3 jau5 sam1 lei5 zeon2 bei6 wui5 jyu6 dou2 co3 zit3 tung4 maai4 pung3 bik1.<br>Min6 si5 bei6/bei2 keoi5 zyut6 hai6 hou2 zing3 soeng4 ge3 si6, zeoi3 zung6 jiu3 hai6 cung4 sat1 baai6 zung1 hok6 zaap6, goi2 sin6 zi6 gei2 ge3 kau1 tung1 gei6 haau2.<br>Mui5 jat1 fan6 gung1 zok3, mou4 leon6 hai6 zou6 si6 jing3 ding6 hai6 bou2 zaap6, dou1 ho2 ji5 bong1 nei5 leoi5 zik1 bou2 gwai3 ge3 jan4 sang1 ging1 jim6.",
+        english: "High schoolers starting to do part-time jobs is the first step towards financial independence and society.<br>When writing their first resume, many people will feel it's hard to put pen to paper because they have no work experience.<br>Actually, when employers hire students for part-time jobs, what they value most is not experience, but rather your work attitude and sense of responsibility.<br>Since you have decided to come out and work, then you must be mentally prepared to encounter setbacks and hit walls.<br>Being rejected in an interview is a very normal thing; the most important thing is to learn from failure and improve your communication skills.<br>Every job, whether it's being a waiter or tutoring, can help you accumulate valuable life experience.",
+        quizzes: [
+            { q: "做兼職對高中生有咩重大意義？", e: "(What profound meaning does doing part-time work have for high schoolers?)", options: [{c: "係邁向經濟獨立同接觸社會嘅第一步", e: "(It is the first step toward financial independence and contacting society)", correct: true}, {c: "可以唔使返學", e: "(Can avoid going to school)", correct: false}, {c: "可以賺錢買豪宅", e: "(Can earn money to buy a mansion)", correct: false}] },
+            { q: "點解學生寫第一份履歷會覺得困難？", e: "(Why do students find writing their first resume difficult?)", options: [{c: "因為缺乏實際嘅工作經驗", e: "(Because they lack actual work experience)", correct: true}, {c: "因為唔識寫字", e: "(Because they don't know how to write)", correct: false}, {c: "因為履歷紙太貴", e: "(Because resume paper is too expensive)", correct: false}] },
+            { q: "僱主聘請學生做兼職最睇重咩條件？", e: "(What condition do employers value most when hiring students part-time?)", options: [{c: "良好嘅工作態度同責任感", e: "(Good work attitude and sense of responsibility)", correct: true}, {c: "極之豐富嘅經驗", e: "(Extremely rich experience)", correct: false}, {c: "考試考第一名", e: "(Getting 1st place in exams)", correct: false}] },
+            { q: "面試被拒絕之後應該抱住咩心態？", e: "(What mindset should one hold after an interview rejection?)", options: [{c: "當作正常挫折，從失敗中改善溝通技巧", e: "(Treat as a normal setback, improve communication skills from failure)", correct: true}, {c: "從此以後唔再搵工", e: "(Never look for a job ever again)", correct: false}, {c: "返去鬧個老闆", e: "(Go back and scold the boss)", correct: false}] },
+            { q: "「既然... 就」表達咗一種點樣嘅邏輯？", e: "(What kind of logic does 'since... then' express?)", options: [{c: "基於已定嘅事實，推導出應該採取嘅行動", e: "(Based on a set fact, deriving the action that should be taken)", correct: true}, {c: "兩件事完全無關", e: "(Two things are completely unrelated)", correct: false}, {c: "如果條件唔成立就唔做", e: "(If the condition is not met, then don't do it)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Getting a Driver's License", topic: "Strict Condition (除非... 否則 - Unless... otherwise)",
+        img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d",
+        grammarDesc: "<strong>Strict Condition:</strong> Stating the only way to avoid a consequence.<br>除非 (ceoi4 fei1) [Condition]... 否則 (fau2 zak1) [Consequence] means 'Unless... otherwise...'",
+        vocab: [
+            {c: "考車牌", j: "haau2 ce1 paai4", e: "Get a driver's license"}, {c: "筆試", j: "bat1 si5", e: "Written test"},
+            {c: "路試", j: "lou6 si5", e: "Road test"}, {c: "除非", j: "ceoi4 fei1", e: "Unless"},
+            {c: "否則", j: "fau2 zak1", e: "Otherwise"}, {c: "交通規則", j: "gaau1 tung1 gwai1 zak1", e: "Traffic rules"},
+            {c: "盲點", j: "maang4 dim2", e: "Blind spot"}, {c: "心態", j: "sam1 taai3", e: "Mindset"},
+            {c: "安全意識", j: "on1 cyun4 ji3 sik1", e: "Safety awareness"}, {c: "馬路如虎口", j: "maa5 lou6 jyu4 fu2 hau2", e: "The road is as dangerous as a tiger's mouth"}
+        ],
+        story: "喺北美洲，好多高中生一夠年齡就會去考車牌，因為有車代步真係方便好多。<br>考車牌分為筆試同路試兩個階段。筆試主要測試你對交通標誌同埋法例嘅認識。<br>路試就嚴格好多，考官會評估你嘅駕駛技術同埋安全意識。<br>除非你喺轉線嗰陣有做足擰頭睇盲點嘅動作，否則考官一定會扣你分，甚至直接肥佬（不及格）。<br>馬路如虎口，考車牌唔單止係學識點樣控制架車，更重要係培養負責任嘅駕駛心態。<br>時刻保持警覺，先可以保障自己同其他道路使用者嘅安全。",
+        jyutping: "Hai2 bak1 mei5 zau1, hou2 do1 gou1 zung1 saang1 jat1 gau3 nin4 ling4 zau6 wui5 heoi3 haau2 ce1 paai4, jan1 wai6 jau5 ce1 doi6 bou6 zan1 hai6 fong1 bin6 hou2 do1.<br>Haau2 ce1 paai4 fan1 wai4 bat1 si5 tung4 lou6 si5 loeng5 go3 gaai1 dyun6. Bat1 si5 zyu2 jiu3 cak1 si3 nei5 deoi3 gaau1 tung1 biu1 zi3 tung4 maai4 faat3 lai6 ge3 jing6 sik1.<br>Lou6 si5 zau6 jim4 gaak3 hou2 do1, haau2 gun1 wui5 ping4 gu2 nei5 ge3 gaa3 sai2 gei6 seot6 tung4 maai4 on1 cyun4 ji3 sik1.<br><span class='highlight'>Ceoi4 fei1</span> nei5 hai2 zyun3 sin3 go2 zan6 jau5 zou6 zuk1 ning6 tau4 tai2 maang4 dim2 ge3 dung6 zok3, <span class='highlight'>fau2 zak1</span> haau2 gun1 jat1 ding6 wui5 kau3 nei5 fan1, sam6 zi3 zik6 zip3 fei4 lou2 (bat1 kap6 gaak3).<br>Maa5 lou6 jyu4 fu2 hau2, haau2 ce1 paai4 m4 daan1 zi2 hai6 hok6 sik1 dim2 joeng2 hung3 zai3 gaa3 ce1, gang3 zung6 jiu3 hai6 pui4 joeng5 fu6 zaak3 jam6 ge3 gaa3 sai2 sam1 taai3.<br>Si4 hak1 bou2 ci4 ging2 gok3, sin1 ho2 ji5 bou2 zoeng3 zi6 gei2 tung4 kei4 taa1 dou6 lou6 si3 jung6 ze2 ge3 on1 cyun4.",
+        english: "In North America, many high schoolers will go get a driver's license as soon as they are of age, because having a car to get around is really much more convenient.<br>Getting a license is divided into two stages: the written test and the road test. The written test mainly tests your knowledge of traffic signs and laws.<br>The road test is much stricter; the examiner will evaluate your driving skills and safety awareness.<br>Unless you fully do the shoulder-check action to look at blind spots when changing lanes, otherwise the examiner will definitely deduct your points, or even directly fail you.<br>The road is as dangerous as a tiger's mouth; getting a license is not just learning how to control the car, more importantly it is cultivating a responsible driving mindset.<br>Maintaining vigilance at all times is the only way to protect the safety of yourself and other road users.",
+        quizzes: [
+            { q: "考車牌通常分為邊兩個階段？", e: "(What two stages is getting a driver's license usually divided into?)", options: [{c: "筆試同埋路試", e: "(Written test and road test)", correct: true}, {c: "體能測試同視力測試", e: "(Physical test and vision test)", correct: false}, {c: "買車同埋買保險", e: "(Buying a car and buying insurance)", correct: false}] },
+            { q: "路試轉線嗰陣，如果唔做咩動作就會被扣分？", e: "(During a road test lane change, failing to do what action will result in deducted points?)", options: [{c: "擰頭睇盲點", e: "(Turning head to look at blind spots)", correct: true}, {c: "開大收音機", e: "(Turning the radio up loud)", correct: false}, {c: "同考官傾偈", e: "(Chatting with the examiner)", correct: false}] },
+            { q: "「除非... 否則」呢個句型強調咗咩？", e: "(What does the sentence pattern 'unless... otherwise' emphasize?)", options: [{c: "強調某個條件係避免壞結果嘅唯一方法", e: "(Emphasizes a condition is the ONLY way to avoid a bad consequence)", correct: true}, {c: "表示兩件事可以同時發生", e: "(Indicates two things can happen simultaneously)", correct: false}, {c: "表示事情已經發生咗", e: "(Indicates the thing has already happened)", correct: false}] },
+            { q: "「馬路如虎口」呢句俗語想帶出咩信息？", e: "(What message does the idiom 'the road is as dangerous as a tiger's mouth' want to convey?)", options: [{c: "馬路上充滿危險，必須時刻保持警覺", e: "(The road is full of danger, must maintain vigilance at all times)", correct: true}, {c: "馬路上有好多野生動物", e: "(There are many wild animals on the road)", correct: false}, {c: "馬路嘅形狀好似老虎", e: "(The shape of the road looks like a tiger)", correct: false}] },
+            { q: "作者認為考車牌最重要係培養咩嘢？", e: "(What does the author think is the most important thing to cultivate when getting a license?)", options: [{c: "負責任嘅駕駛心態同安全意識", e: "(A responsible driving mindset and safety awareness)", correct: true}, {c: "揸快車嘅技術", e: "(Skills for driving fast)", correct: false}, {c: "維修汽車嘅能力", e: "(Ability to repair cars)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Managing Exam Stress", topic: "Preference (與其... 不如 - Instead of... better to)",
+        img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173",
+        grammarDesc: "<strong>Preference:</strong> Choosing a constructive action over a negative one.<br>與其 (jyu5 kei4) [Action A]... 不如 (bat1 jyu4) [Action B] means 'Instead of [A]... it is better to [B]'.",
+        vocab: [
+            {c: "公開試", j: "gung1 hoi1 si3", e: "Public examination"}, {c: "焦慮", j: "ziu1 leoi6", e: "Anxiety"},
+            {c: "失眠", j: "sat1 min4", e: "Insomnia"}, {c: "與其", j: "jyu5 kei4", e: "Instead of"},
+            {c: "不如", j: "bat1 jyu4", e: "Better to / Might as well"}, {c: "溫習計劃", j: "wan1 zaap6 gai3 waak6", e: "Study plan"},
+            {c: "臨急抱佛腳", j: "lam4 gap1 pou5 fat6 goek3", e: "Cramming at the last minute"}, {c: "心態", j: "sam1 taai3", e: "Mindset"},
+            {c: "盡力而為", j: "zeon6 lik6 ji4 wai4", e: "Do one's best"}, {c: "深呼吸", j: "sam1 fu1 kap1", e: "Deep breath"}
+        ],
+        story: "公開試係每個高中生都要面對嘅重大挑戰，好多同學會因為過度擔憂而產生焦慮，甚至失眠。<br>其實，壓力往往源於對未知嘅恐懼同埋準備不足。<br>與其日日喺度擔心考得唔好，不如腳踏實地咁制定一個切實可行嘅溫習計劃。<br>千祈唔好臨急抱佛腳，因為填鴨式嘅溫習只會令個腦更加混亂。<br>喺考試期間，我哋要學識調整心態，話畀自己聽只要盡力而為就足夠。<br>如果覺得緊張，可以試下做幾下深呼吸，放鬆肌肉，用平常心去應付每一科。",
+        jyutping: "Gung1 hoi1 si3 hai6 mui5 go3 gou1 zung1 saang1 dou1 jiu3 min6 deoi3 ge3 zung6 daai6 tiu1 zin3, hou2 do1 tung4 hok6 wui5 jan1 wai6 gwo3 dou6 daam1 jau1 ji4 caan2 sang1 ziu1 leoi6, sam6 zi3 sat1 min4.<br>Kei4 sat6, aat3 lik6 wong5 wong5 jyun4 jyu1 deoi3 mei6 zi1 ge3 hung2 geoi6 tung4 maai4 zeon2 bei6 bat1 zuk1.<br><span class='highlight'>Jyu5 kei4</span> jat6 jat6 hai2 dou6 daam1 sam1 haau2 dak1 m4 hou2, <span class='highlight'>bat1 jyu4</span> goek3 daap6 sat6 dei6 gam2 zai3 ding6 jat1 go3 cit3 sat6 ho2 hang4 ge3 wan1 zaap6 gai3 waak6.<br>Cin1 kei4 m4 hou2 lam4 gap1 pou5 fat6 goek3, jan1 wai6 tin4 aap3 sik1 ge3 wan1 zaap6 zi2 wui5 ling6 go3 nou5 gang3 gaa1 wan6 lyun6.<br>Hai2 haau2 si3 gei4 gaan1, ngo5 dei6 jiu3 hok6 sik1 tiu4 zing2 sam1 taai3, waa6 bei2 zi6 gei2 teng1 zi2 jiu3 zeon6 lik6 ji4 wai4 zau6 zuk1 gau3.<br>Jyu4 gwo2 gok3 dak1 gan2 zoeng1, ho2 ji5 si3 haa5 zou6 gei2 haa5 sam1 fu1 kap1, fong3 sung1 gei1 juk6, jung6 ping4 soeng4 sam1 heoi3 jing3 fu3 mui5 jat1 fo1.",
+        english: "Public exams are a major challenge every high schooler must face; many classmates will develop anxiety or even insomnia due to excessive worrying.<br>Actually, pressure often originates from the fear of the unknown and insufficient preparation.<br>Instead of worrying every day about not testing well, it is better to down-to-earth formulate a realistic and viable study plan.<br>Absolutely do not cram at the last minute, because spoon-fed revision will only make the brain more confused.<br>During the exam period, we must learn to adjust our mindset, telling ourselves that as long as we do our best, it is enough.<br>If you feel nervous, you can try taking a few deep breaths, relax the muscles, and use a calm mind to tackle each subject.",
+        quizzes: [
+            { q: "公開試壓力通常源於咩原因？", e: "(What does public exam pressure usually originate from?)", options: [{c: "對未知嘅恐懼同準備不足", e: "(Fear of the unknown and insufficient preparation)", correct: true}, {c: "食得太多零食", e: "(Eating too many snacks)", correct: false}, {c: "學校嘅枱櫈太硬", e: "(The school's desks and chairs are too hard)", correct: false}] },
+            { q: "面對考試焦慮，作者建議用咩行動去代替擔心？", e: "(Facing exam anxiety, what action does the author suggest to replace worrying?)", options: [{c: "腳踏實地制定溫習計劃", e: "(Down-to-earth formulate a study plan)", correct: true}, {c: "每日瞓十二個鐘", e: "(Sleep 12 hours every day)", correct: false}, {c: "去便利店買嘢食", e: "(Go to the convenience store to buy food)", correct: false}] },
+            { q: "「臨急抱佛腳」即係咩意思？", e: "(What does 'cramming at the last minute' literally mean?)", options: [{c: "平時唔準備，到最後關頭先至急忙應付", e: "(Not preparing normally, rushing to cope only at the final moment)", correct: true}, {c: "去寺廟拜神祈求好成績", e: "(Going to a temple to pray for good grades)", correct: false}, {c: "抱住同學對腳喊", e: "(Hugging a classmate's leg and crying)", correct: false}] },
+            { q: "考試期間應該保持咩心態？", e: "(What mindset should be maintained during the exam period?)", options: [{c: "盡力而為就足夠，用平常心應付", e: "(Doing one's best is enough, tackle it with a calm mind)", correct: true}, {c: "一定要考全班第一", e: "(Must test 1st place in the whole class)", correct: false}, {c: "考得差就世界末日", e: "(If tested poorly it's the end of the world)", correct: false}] },
+            { q: "「與其 A 不如 B」呢個句型嘅作用係咩？", e: "(What is the function of the 'Instead of A better to B' sentence pattern?)", options: [{c: "比較兩個選擇，並且強烈建議選擇 B", e: "(Compares two choices, and strongly advises choosing B)", correct: true}, {c: "表示 A 同 B 都一樣咁差", e: "(Indicates A and B are equally bad)", correct: false}, {c: "表示 A 發生咗 B 就會發生", e: "(Indicates if A happens B will happen)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Credit Cards & Debt", topic: "Consequence (一旦... 就 - Once... then)",
+        img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d",
+        grammarDesc: "<strong>Inevitable Consequence:</strong> Explaining a domino effect.<br>一旦 (jat1 daan3) [Trigger]... 就 (zau6) [Result] means 'Once [Trigger] happens, then [Result] follows'.",
+        vocab: [
+            {c: "信用卡", j: "seon3 jung6 kaat1", e: "Credit card"}, {c: "信貸評級", j: "seon3 taai3 ping4 kap1", e: "Credit rating"},
+            {c: "先使未來錢", j: "sin1 sai2 mei6 loi4 cin2", e: "Spend future money (buy on credit)"}, {c: "一旦", j: "jat1 daan3", e: "Once / In case"},
+            {c: "卡數", j: "kaat1 sou3", e: "Credit card debt"}, {c: "利息", j: "lei6 sik1", e: "Interest"},
+            {c: "雪球效應", j: "syut3 kau4 haau6 jing3", e: "Snowball effect"}, {c: "破產", j: "po3 caan2", e: "Bankruptcy"},
+            {c: "量入為出", j: "loeng4 jap6 wai4 ceot1", e: "Live within one's means"}, {c: "理財觀念", j: "lei5 coi4 gun1 nim6", e: "Financial concepts"}
+        ],
+        story: "滿十八歲之後，好多學生都會申請人生第一張信用卡。<br>信用卡雖然方便，但佢本質上係一種「先使未來錢」嘅借貸工具。<br>如果冇良好嘅理財觀念，隨便亂碌卡，後果可以好嚴重。<br>一旦你只係還最低還款額，剩低嘅卡數就會產生極高嘅利息。<br>呢啲利息會產生雪球效應，越滾越大，最終可能導致破產，甚至摧毀你嘅信貸評級。<br>所以我哋一定要量入為出，每個月全數找清卡數，做金錢嘅主人而唔係奴隸。",
+        jyutping: "Mun5 sap6 baat3 seoi3 zi1 hau6, hou2 do1 hok6 saang1 dou1 wui5 san1 cing2 jan4 sang1 dai6 jat1 zoeng1 seon3 jung6 kaat1.<br>Seon3 jung6 kaat1 seoi1 jin4 fong1 bin6, daan6 keoi5 bun2 zat1 soeng6 hai6 jat1 zung2 「sin1 sai2 mei6 loi4 cin2」 ge3 ze3 taai3 gung1 geoi6.<br>Jyu4 gwo2 mou5 loeng4 hou2 ge3 lei5 coi4 gun1 nim6, ceoi4 bin2 lyun2 luk1 kaat1, hau6 gwo2 ho2 ji5 hou2 jim4 zung6.<br><span class='highlight'>Jat1 daan3</span> nei5 zi2 hai6 waan4 zeoi3 dai1 waan4 fun2 ngaak2, zing6 dai1 ge3 kaat1 sou3 <span class='highlight'>zau6</span> wui5 caan2 sang1 gik6 gou1 ge3 lei6 sik1.<br>Ni1 di1 lei6 sik1 wui5 caan2 sang1 syut3 kau4 haau6 jing3, jyut6 gwan2 jyut6 daai6, zeoi3 zung1 ho2 nang4 dou6 zi3 po3 caan2, sam6 zi3 ceoi1 wai2 nei5 ge3 seon3 taai3 ping4 kap1.<br>So2 ji5 ngo5 dei6 jat1 ding6 jiu3 loeng4 jap6 wai4 ceot1, mui5 go3 jyut6 cyun4 sou3 zaau2 cing1 kaat1 sou3, zou6 gam1 cin4 ge3 zyu2 jan4 ji4 m4 hai6 nou4 dai6.",
+        english: "After turning 18, many students will apply for the first credit card of their lives.<br>Although credit cards are convenient, fundamentally they are a borrowing tool that 'spends future money'.<br>If there is no good financial concept and you swipe the card recklessly, the consequences can be very serious.<br>Once you only pay the minimum repayment amount, the remaining credit card debt will generate extremely high interest.<br>This interest will create a snowball effect, rolling bigger and bigger, ultimately possibly leading to bankruptcy, even destroying your credit rating.<br>Therefore we must live within our means, paying off the credit card debt in full every month, to be the master of money rather than a slave.",
+        quizzes: [
+            { q: "信用卡嘅本質係咩？", e: "(What is the fundamental nature of a credit card?)", options: [{c: "一種「先使未來錢」嘅借貸工具", e: "(A borrowing tool to 'spend future money')", correct: true}, {c: "銀行送畀你嘅免費錢", e: "(Free money given to you by the bank)", correct: false}, {c: "用嚟儲蓄生息嘅戶口", e: "(An account used to save and generate interest)", correct: false}] },
+            { q: "如果每個月只還最低還款額會有咩後果？", e: "(What is the consequence of only paying the minimum repayment amount every month?)", options: [{c: "剩低嘅卡數會產生極高嘅利息，越滾越大", e: "(The remaining debt will generate extremely high interest, rolling bigger and bigger)", correct: true}, {c: "銀行會獎勵你，提升信貸額", e: "(The bank will reward you and increase your credit limit)", correct: false}, {c: "卡數會自動消失", e: "(The debt will automatically disappear)", correct: false}] },
+            { q: "「信貸評級」被摧毀會點樣？", e: "(What happens if your 'credit rating' is destroyed?)", options: [{c: "將來好難再向銀行借錢買車或買樓", e: "(Very hard to borrow money from banks in the future for a car or house)", correct: true}, {c: "只係收唔到銀行嘅宣傳信", e: "(Just won't receive promotional mail from the bank)", correct: false}, {c: "可以無限期延遲還錢", e: "(Can delay repaying money indefinitely)", correct: false}] },
+            { q: "「量入為出」即係建議我哋點樣理財？", e: "(What does 'live within one's means' suggest we do in financial management?)", options: [{c: "根據自己嘅收入去決定開支，唔好超支", e: "(Determine expenses based on one's income, don't overspend)", correct: true}, {c: "盡量將所有錢用晒", e: "(Try to spend all the money)", correct: false}, {c: "賺幾多都只可以使一半", e: "(No matter how much you earn, can only spend half)", correct: false}] },
+            { q: "「一旦... 就」用嚟強調咩邏輯關係？", e: "(What logic does 'once... then' emphasize?)", options: [{c: "觸發一個條件後，必然會引致嚴重嘅連鎖反應", e: "(After triggering a condition, it will inevitably cause a serious chain reaction)", correct: true}, {c: "兩件毫不相干嘅獨立事件", e: "(Two completely unrelated independent events)", correct: false}, {c: "如果唔做A，就唔會發生B", e: "(If A is not done, B will not happen)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "AI and the Future of Work", topic: "Parallel Change (隨住... - Along with / As...)",
+        img: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+        grammarDesc: "<strong>Parallel Change:</strong> Describing how one trend affects another.<br>隨住 (ceoi4 zyu6) [Trend A]... [Trend B] means 'Along with / As [A] happens... [B] happens'.",
+        vocab: [
+            {c: "人工智能", j: "jan4 gung1 zi3 nang4", e: "Artificial Intelligence (AI)"}, {c: "普及", j: "pou2 kap6", e: "Popularization"},
+            {c: "隨住", j: "ceoi4 zyu6", e: "Along with / As"}, {c: "自動化", j: "zi6 dung6 faa3", e: "Automation"},
+            {c: "取代", j: "ceoi2 doi6", e: "Replace"}, {c: "重複性", j: "cung4 fuk1 sing3", e: "Repetitive"},
+            {c: "創造力", j: "cong3 zou6 lik6", e: "Creativity"}, {c: "同理心", j: "tung4 lei5 sam1", e: "Empathy"},
+            {c: "終身學習", j: "zung1 sang1 hok6 zaap6", e: "Lifelong learning"}, {c: "不可或缺", j: "bat1 ho2 waak6 kyut3", e: "Indispensable"}
+        ],
+        story: "隨住人工智能同埋自動化技術嘅迅速普及，未來嘅職場將會發生翻天覆地嘅改變。<br>好多包含大量重複性勞動嘅工作，例如資料輸入或者流水線生產，好快就會被機器取代。<br>面對呢個不可逆轉嘅趨勢，高中生唔應該感到恐慌，反而要思考點樣裝備自己。<br>AI 雖然計數快過人類，但佢哋缺乏人類獨有嘅創造力、批判性思考同埋同理心。<br>所以我哋要注重培養呢啲軟技能，並且抱住終身學習嘅態度。<br>只有不斷進步，我哋先可以喺未來嘅 AI 時代入面成為不可或缺嘅人才。",
+        jyutping: "<span class='highlight'>Ceoi4 zyu6</span> jan4 gung1 zi3 nang4 tung4 maai4 zi6 dung6 faa3 gei6 seot6 ge3 seon3 cuk1 pou2 kap6, mei6 loi4 ge3 zik1 coeng4 zoeng1 wui5 faat3 sang1 faan1 tin1 fuk1 dei6 ge3 goi2 bin3.<br>Hou2 do1 baau1 ham4 daai6 loeng6 cung4 fuk1 sing3 lou4 dung6 ge3 gung1 zok3, lai6 jyu4 zi1 liu2 syu1 jap6 waak6 ze2 lau4 seoi2 sin3 sang1 caan2, hou2 faai3 zau6 wui5 bei6 gei1 hei3 ceoi2 doi6.<br>Min6 deoi3 ni1 go3 bat1 ho2 jik6 zyun2 ge3 ceoi1 sai3, gou1 zung1 saang1 m4 jing1 goi1 gam2 dou3 hung2 fong1, faan2 ji4 jiu3 si1 haau2 dim2 joeng2 zong1 bei6 zi6 gei2.<br>AI seoi1 jin4 gai3 sou3 faai3 gwo3 jan4 leoi6, daan6 keoi5 dei6 kyut3 fat6 jan4 leoi6 duk6 jau5 ge3 cong3 zou6 lik6, pai1 pun3 sing3 si1 haau2 tung4 maai4 tung4 lei5 sam1.<br>So2 ji5 ngo5 dei6 jiu3 zyu3 zung6 pui4 joeng5 ni1 di1 jyun5 gei6 nang4, bing6 ce2 pou5 zyu6 zung1 sang1 hok6 zaap6 ge3 taai3 dou6.<br>Zi2 jiu3 bat1 dyun6 zeon3 bou6, ngo5 dei6 sin1 ho2 ji5 hai2 mei6 loi4 ge3 AI si4 doi6 jap6 min6 sing4 wai4 bat1 ho2 waak6 kyut3 ge3 jan4 coi4.",
+        english: "Along with the rapid popularization of artificial intelligence and automation technology, the future workplace will undergo earth-shattering changes.<br>Many jobs containing a large amount of repetitive labor, such as data entry or assembly line production, will very soon be replaced by machines.<br>Facing this irreversible trend, high schoolers should not feel panic, but instead should think about how to equip themselves.<br>Although AI calculates faster than humans, they lack humans' unique creativity, critical thinking, and empathy.<br>Therefore we must focus on cultivating these soft skills, and hold a lifelong learning attitude.<br>Only by continuously improving can we become indispensable talents in the future AI era.",
+        quizzes: [
+            { q: "咩類型嘅工作最容易被人工智能取代？", e: "(What type of jobs are most easily replaced by AI?)", options: [{c: "包含大量重複性勞動嘅工作", e: "(Jobs containing a large amount of repetitive labor)", correct: true}, {c: "需要高度創造力嘅工作", e: "(Jobs requiring high creativity)", correct: false}, {c: "需要同人建立深厚感情嘅工作", e: "(Jobs requiring building deep emotional connections with people)", correct: false}] },
+            { q: "AI 缺乏人類獨有嘅邊三樣特質？", e: "(What three unique human traits does AI lack?)", options: [{c: "創造力、批判性思考同理心", e: "(Creativity, critical thinking, empathy)", correct: true}, {c: "計算能力、記憶力同速度", e: "(Calculation ability, memory, and speed)", correct: false}, {c: "食飯、瞓覺同打機嘅能力", e: "(Ability to eat, sleep, and play games)", correct: false}] },
+            { q: "面對 AI 時代嘅挑戰，作者建議中學生抱住咩態度？", e: "(Facing the challenges of the AI era, what attitude does the author suggest middle/high schoolers hold?)", options: [{c: "終身學習嘅態度", e: "(A lifelong learning attitude)", correct: true}, {c: "得過且過嘅態度", e: "(A 'muddle through' attitude)", correct: false}, {c: "極度恐慌嘅態度", e: "(An extremely panicked attitude)", correct: false}] },
+            { q: "「軟技能」喺呢度通常指咩？", e: "(What does 'soft skills' usually refer to here?)", options: [{c: "溝通、解難、同理心等非技術性能力", e: "(Communication, problem-solving, empathy and other non-technical abilities)", correct: true}, {c: "寫電腦程式嘅能力", e: "(The ability to write computer programs)", correct: false}, {c: "整軟綿綿蛋糕嘅技巧", e: "(The skill to make soft and fluffy cakes)", correct: false}] },
+            { q: "「隨住...」呢個句式用嚟描述咩情況？", e: "(What situation is the sentence pattern 'Along with...' used to describe?)", options: [{c: "一個趨勢發展帶動另一個變化發生", e: "(One developing trend driving another change to occur)", correct: true}, {c: "兩件完全靜止唔變嘅事", e: "(Two completely static and unchanging things)", correct: false}, {c: "因為做錯事而受到懲罰", e: "(Being punished because of doing something wrong)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Global Climate Crisis", topic: "Exclusive Condition (只有... 先至 - Only if... then)",
+        img: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9",
+        grammarDesc: "<strong>Exclusive Condition:</strong> The sole prerequisite for a desired outcome.<br>只有 (zi2 jau5) [Condition]... 先至 (sin1 zi3) [Result] means 'Only if... then...'",
+        vocab: [
+            {c: "氣候危機", j: "hei3 hau6 ngai4 gei1", e: "Climate crisis"}, {c: "溫室氣體", j: "wan1 sat1 hei3 tai2", e: "Greenhouse gases"},
+            {c: "碳排放", j: "taan3 paai4 fong3", e: "Carbon emissions"}, {c: "只有", j: "zi2 jau5", e: "Only if"},
+            {c: "先至", j: "sin1 zi3", e: "Then and only then"}, {c: "可持續發展", j: "ho2 ci4 zuk6 faat3 zin2", e: "Sustainable development"},
+            {c: "環保政策", j: "waan4 bou2 zing3 caak3", e: "Environmental policies"}, {c: "迫在眉睫", j: "bik1 zoi6 mei4 zit3", e: "Imminent / Extremely urgent"},
+            {c: "再生能源", j: "zoi3 sang1 nang4 jyun4", e: "Renewable energy"}, {c: "覺醒", j: "gok3 sing2", e: "Awakening"}
+        ],
+        story: "全球氣候危機已經係一個迫在眉睫嘅生存問題，冰川融化同埋海平面上升正在威脅住無數沿海城市。<br>科學家警告，溫室氣體嘅過度排放係導致極端天氣嘅罪魁禍首。<br>面對呢個全球性嘅災難，單靠幾個國家嘅努力係絕對唔夠嘅。<br>只有全世界所有國家達成共識，嚴格執行減排嘅環保政策，先至可以減慢地球變暖嘅速度。<br>同時，我哋必須大力發展太陽能同風力等再生能源，推動可持續發展。<br>作為年輕一代，我哋嘅環保覺醒同埋行動，決定咗地球未來嘅命運。",
+        jyutping: "Cyun4 kau4 hei3 hau6 ngai4 gei1 ji5 ging1 hai6 jat1 go3 bik1 zoi6 mei4 zit3 ge3 sang1 cyun4 man6 tai4, bing1 cyun1 jung4 faa3 tung4 maai4 hoi2 ping4 min6 soeng5 sing1 zing3 zoi6 wai1 hip3 zyu6 mou4 sou3 jyun4 hoi2 sing4 si5.<br>Fo1 hok6 gaa1 ging2 gou3, wan1 sat1 hei3 tai2 ge3 gwo3 dou6 paai4 fong3 hai6 dou6 zi3 gik6 dyun1 tin1 hei3 ge3 zeoi6 fui1 wo6 sau2.<br>Min6 deoi3 ni1 go3 cyun4 kau4 sing3 ge3 zoi1 naan6, daan1 kaau3 gei2 go3 gwok3 gaa1 ge3 nou5 lik6 hai6 zyut6 deoi3 m4 gau3 ge3.<br><span class='highlight'>Zi2 jau5</span> cyun4 sai3 gaai3 so2 jau5 gwok3 gaa1 daat6 sing4 gung6 sik1, jim4 gaak3 zap1 hang4 gaam2 paai4 ge3 waan4 bou2 zing3 caak3, <span class='highlight'>sin1 zi3</span> ho2 ji5 gaam2 maan6 dei6 kau4 bin3 nyun5 ge3 cuk1 dou6.<br>Tung4 si4, ngo5 dei6 bit1 seoi1 daai6 lik6 faat3 zin2 taai3 joeng4 nang4 tung4 fung1 lik6 dang2 zoi3 sang1 nang4 jyun4, teoi1 dung6 ho2 ci4 zuk6 faat3 zin2.<br>Zok3 wai4 nin4 hing1 jat1 doi6, ngo5 dei6 ge3 waan4 bou2 gok3 sing2 tung4 maai4 haang4 dung6, kyut3 ding6 zo2 dei6 kau4 mei6 loi4 ge3 ming6 wan6.",
+        english: "The global climate crisis is already an imminent survival issue; melting glaciers and rising sea levels are currently threatening countless coastal cities.<br>Scientists warn that the excessive emission of greenhouse gases is the chief culprit leading to extreme weather.<br>Facing this global disaster, relying solely on the efforts of a few countries is absolutely not enough.<br>Only if all countries in the whole world reach a consensus, and strictly execute emission-reducing environmental policies, can we slow down the speed of the Earth's warming.<br>At the same time, we must vigorously develop renewable energy like solar and wind power, promoting sustainable development.<br>As the younger generation, our environmental awakening and actions determine the future destiny of the Earth.",
+        quizzes: [
+            { q: "導致極端天氣嘅「罪魁禍首」係咩？", e: "(What is the 'chief culprit' leading to extreme weather?)", options: [{c: "溫室氣體嘅過度排放", e: "(The excessive emission of greenhouse gases)", correct: true}, {c: "太多人用太陽能", e: "(Too many people using solar energy)", correct: false}, {c: "冰川水太凍", e: "(Glacier water being too cold)", correct: false}] },
+            { q: "要減慢地球變暖，有咩唯一嘅先決條件？", e: "(What is the ONLY prerequisite to slow down global warming?)", options: [{c: "全世界所有國家達成共識，執行減排政策", e: "(All countries worldwide reach consensus, execute emission reduction policies)", correct: true}, {c: "單靠一兩個大國嘅努力", e: "(Rely solely on the efforts of one or two big countries)", correct: false}, {c: "等外星人嚟拯救地球", e: "(Wait for aliens to come save the Earth)", correct: false}] },
+            { q: "文中提到應該大力發展咩類型嘅能源？", e: "(What type of energy does the text mention should be vigorously developed?)", options: [{c: "太陽能同風力等再生能源", e: "(Renewable energy like solar and wind power)", correct: true}, {c: "煤炭同石油", e: "(Coal and oil)", correct: false}, {c: "核能同天然氣", e: "(Nuclear power and natural gas)", correct: false}] },
+            { q: "「迫在眉睫」形容緊咩狀況？", e: "(What situation does 'imminent / pressing on the eyelashes' describe?)", options: [{c: "事情非常緊急，必須立刻處理", e: "(The matter is extremely urgent and must be handled immediately)", correct: true}, {c: "事情好遙遠，唔使擔心", e: "(The matter is very far away, no need to worry)", correct: false}, {c: "眼眉毛生得太長", e: "(Eyebrows growing too long)", correct: false}] },
+            { q: "「只有 A 先至 B」呢個句型表示咩邏輯？", e: "(What logic does the 'Only if A then B' sentence pattern express?)", options: [{c: "A 係達成 B 嘅唯一必須條件", e: "(A is the ONLY necessary condition to achieve B)", correct: true}, {c: "做咗 A 就一定做唔到 B", e: "(If you do A, you definitely cannot do B)", correct: false}, {c: "A 同 B 完全冇關係", e: "(A and B have absolutely no relationship)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "Critical Media Literacy", topic: "Contrast (表面上... 實際上 - On the surface... actually)",
+        img: "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+        grammarDesc: "<strong>Uncovering Truths:</strong> Contrasting appearance with reality.<br>表面上 (biu2 min6 soeng6) [Appearance]... 實際上 (sat6 zai3 soeng6) [Reality] means 'On the surface... but actually...'",
+        vocab: [
+            {c: "媒體素養", j: "mui4 tai2 sou3 joeng5", e: "Media literacy"}, {c: "表面上", j: "biu2 min6 soeng6", e: "On the surface"},
+            {c: "實際上", j: "sat6 zai3 soeng6", e: "Actually / In reality"}, {c: "客觀", j: "haak3 gun1", e: "Objective"},
+            {c: "偏見", j: "pin1 gin3", e: "Bias / Prejudice"}, {c: "帶風向", j: "daai3 fung1 hoeng3", e: "Manipulate public opinion"},
+            {c: "演算法", j: "jin2 syun3 faat3", e: "Algorithm"}, {c: "同溫層", j: "tung4 wan1 cang4", e: "Echo chamber / Bubble"},
+            {c: "查證", j: "caa4 zing3", e: "Verify / Fact-check"}, {c: "煽動", j: "sin3 dung6", e: "Incite / Provoke"}
+        ],
+        story: "身處數碼時代，擁有良好嘅媒體素養比以往任何時候都更加重要。<br>好多社交平台上嘅新聞報導，表面上睇落去好客觀中立，實際上卻隱藏住作者嘅強烈偏見。<br>有啲內容農場甚至會故意用煽動性嘅字眼嚟「帶風向」，挑起網民之間嘅對立。<br>加上平台嘅演算法會不斷推送我哋鍾意睇嘅內容，令我哋好容易跌入「同溫層」嘅陷阱，聽唔到唔同嘅聲音。<br>為咗避免被操控，我哋必須學識主動查證資訊嘅來源。<br>遇到極端或者充滿情緒化嘅報導，要保持清醒嘅頭腦，多角度去分析事件嘅真相。",
+        jyutping: "San1 cyu2 sou3 maa5 si4 doi6, jung2 jau5 loeng4 hou2 ge3 mui4 tai2 sou3 joeng5 bei2 ji5 wong5 jam6 ho4 si4 hau6 dou1 gang3 gaa1 zung6 jiu3.<br>Hou2 do1 se5 gaau1 ping4 toi4 soeng6 ge3 san1 man4 bou3 dou6, <span class='highlight'>biu2 min6 soeng6</span> tai2 lok6 heoi3 hou2 haak3 gun1 zung1 laap6, <span class='highlight'>sat6 zai3 soeng6</span> koek3 jan2 cong4 zyu6 zok3 ze2 ge3 koeng4 lit6 pin1 gin3.<br>Jau5 di1 noi6 jung4 nung4 coeng4 sam6 zi3 wui5 gu3 ji3 jung6 sin3 dung6 sing3 ge3 zi6 ngaan5 lei4 「daai3 fung1 hoeng3」, tiu1 hei2 mong5 man4 zi1 gaan1 ge3 deoi3 laap6.<br>Gaa1 soeng5 ping4 toi4 ge3 jin2 syun3 faat3 wui5 bat1 dyun6 teoi1 sung3 ngo5 dei6 zung1 ji3 tai2 ge3 noi6 jung4, ling6 ngo5 dei6 hou2 jung4 ji6 dit3 jap6 「tung4 wan1 cang4」 ge3 haam6 zing6, teng1 m4 dou2 m4 tung4 ge3 sing1 jam1.<br>Wai6 zo2 bei6 min5 bei6/bei2 cou1 kung3, ngo5 dei6 bit1 seoi1 hok6 sik1 zyu2 dung6 caa4 zing3 zi1 seon3 ge3 loi4 jyun4.<br>Jyu6 dou2 gik6 dyun1 waak6 ze2 cung1 mun5 cing4 seoi5 faa3 ge3 bou3 dou6, jiu3 bou2 ci4 cing1 sing2 ge3 tau4 nou5, do1 gok3 dou6 heoi3 fan1 sik1 si6 gin2 ge3 zan1 soeng3.",
+        english: "Living in the digital age, possessing good media literacy is more important than at any time in the past.<br>Many news reports on social platforms, on the surface look very objective and neutral, but actually hide the author's strong biases.<br>Some content farms will even intentionally use inflammatory words to 'manipulate public opinion', provoking confrontation among netizens.<br>Plus, the platforms' algorithms will continuously push content we like to see, making it very easy for us to fall into the 'echo chamber' trap, unable to hear different voices.<br>To avoid being manipulated, we must learn to proactively verify the sources of information.<br>Encountering extreme or emotionally charged reports, we need to maintain a clear head, and analyze the truth of the event from multiple angles.",
+        quizzes: [
+            { q: "有啲新聞報導「表面上」同「實際上」有咩反差？", e: "(What is the contrast between 'on the surface' and 'actually' for some news reports?)", options: [{c: "表面客觀中立，實際隱藏強烈偏見", e: "(On the surface objective/neutral, actually hiding strong bias)", correct: true}, {c: "表面好短，實際好長", e: "(On the surface very short, actually very long)", correct: false}, {c: "表面係中文，實際係英文", e: "(On the surface it is Chinese, actually it is English)", correct: false}] },
+            { q: "內容農場用煽動性字眼嘅目的係咩？", e: "(What is the purpose of content farms using inflammatory words?)", options: [{c: "為咗帶風向，挑起網民對立", e: "(To manipulate public opinion and provoke netizen confrontation)", correct: true}, {c: "為咗教人寫作技巧", e: "(To teach people writing skills)", correct: false}, {c: "為咗宣傳新產品", e: "(To advertise new products)", correct: false}] },
+            { q: "點解網民好容易跌入「同溫層」陷阱？", e: "(Why do netizens easily fall into the 'echo chamber' trap?)", options: [{c: "因為演算法不斷推送佢哋鍾意睇嘅內容", e: "(Because algorithms continuously push content they like to see)", correct: true}, {c: "因為佢哋冇錢買報紙", e: "(Because they have no money to buy newspapers)", correct: false}, {c: "因為天氣太凍需要保暖", e: "(Because the weather is too cold and they need warmth)", correct: false}] },
+            { q: "遇到充滿情緒化嘅報導應該點樣處理？", e: "(How should you handle reports full of emotional charge?)", options: [{c: "保持清醒頭腦，主動查證來源", e: "(Maintain a clear head, proactively verify sources)", correct: true}, {c: "即刻轉發畀所有人睇", e: "(Immediately forward it for everyone to see)", correct: false}, {c: "跟住一齊喺網上鬧人", e: "(Join in scolding people online)", correct: false}] },
+            { q: "「帶風向」喺網絡用語中指咩行為？", e: "(What does 'manipulate public opinion / lead the wind direction' mean in internet slang?)", options: [{c: "故意引導大眾嘅輿論同埋睇法", e: "(Intentionally guiding the public's public opinion and views)", correct: true}, {c: "教人點樣預測天氣", e: "(Teaching people how to forecast the weather)", correct: false}, {c: "喺網上賣風扇", e: "(Selling fans on the internet)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Healthy Boundaries", topic: "Unconditional (無論... 都 - No matter... still)",
+        img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac",
+        grammarDesc: "<strong>Unconditional State:</strong> Maintaining a boundary despite pressure.<br>無論 (mou4 leon6) [Situation]... 都 (dou1) [Action] means 'No matter [Situation]... still [Action]'.",
+        vocab: [
+            {c: "人際關係", j: "jan4 zai3 gwaan1 hai6", e: "Interpersonal relationships"}, {c: "界線", j: "gaai3 sin3", e: "Boundaries"},
+            {c: "無論", j: "mou4 leon6", e: "No matter"}, {c: "討好", j: "tou2 hou2", e: "Please / Pander to"},
+            {c: "委屈", j: "wai2 wat1", e: "Feel wronged / Suffer grievance"}, {c: "拒絕", j: "keoi5 zyut6", e: "Reject / Refuse"},
+            {c: "自尊", j: "zi6 zyun1", e: "Self-esteem"}, {c: "同儕壓力", j: "tung4 caai4 aat3 lik6", e: "Peer pressure"},
+            {c: "底線", j: "dai2 sin3", e: "Bottom line"}, {c: "真誠", j: "zan1 sing4", e: "Sincere / Genuine"}
+        ],
+        story: "喺青春期，建立健康嘅人際關係同埋個人界線係非常重要嘅一課。<br>好多同學為咗融入圈子，面對同儕壓力嗰陣會選擇妥協，甚至做一啲自己唔想做嘅事。<br>其實，無論對方係你幾好嘅朋友，你都絕對有權利拒絕唔合理嘅要求。<br>一段真誠嘅友誼係建立喺互相尊重嘅基礎上，而唔係靠委屈自己去討好別人。<br>我哋必須清楚自己嘅底線，學識勇敢咁講「唔好」。<br>保護自己嘅自尊同埋心理健康，遠比盲目追求受歡迎更加有價值。",
+        jyutping: "Hai2 cing1 ceon1 kei4, gin3 laap6 gin6 hong1 ge3 jan4 zai3 gwaan1 hai6 tung4 maai4 go3 jan4 gaai3 sin3 hai6 fei1 soeng4 zung6 jiu3 ge3 jat1 fo3.<br>Hou2 do1 tung4 hok6 wai6 zo2 jung4 jap6 hyun1 zi2, min6 deoi3 tung4 caai4 aat3 lik6 go2 zan6 wui5 syun2 zaak6 to2 hip3, sam6 zi3 zou6 jat1 di1 zi6 gei2 m4 soeng2 zou6 ge3 si6.<br>Kei4 sat6, <span class='highlight'>mou4 leon6</span> deoi3 fong1 hai6 nei5 gei2 hou2 ge3 pang4 jau5, nei5 <span class='highlight'>dou1</span> zyut6 deoi3 jau5 kyun4 lei6 keoi5 zyut6 m4 hap6 lei5 ge3 jiu1 kau4.<br>Jat1 dyun6 zan1 sing4 ge3 jau5 ji4 hai6 gin3 laap6 hai2 wu6 soeng1 zyun1 zung6 ge3 gei1 co2 soeng6, ji4 m4 hai6 kaau3 wai2 wat1 zi6 gei2 heoi3 tou2 hou2 bit6 jan4.<br>Ngo5 dei6 bit1 seoi1 cing1 co2 zi6 gei2 ge3 dai2 sin3, hok6 sik1 jung5 gam2 gam2 gong2 「m4 hou2」。<br>Bou2 wu6 zi6 gei2 ge3 zi6 zyun1 tung4 maai4 sam1 lei5 gin6 hong1, jyun5 bei2 mong4 muk6 zeoi1 kau4 sau6 fun1 jing4 gang3 gaa1 jau5 gaa3 zik6.",
+        english: "During adolescence, establishing healthy interpersonal relationships and personal boundaries is a very important lesson.<br>Many classmates, in order to blend into the circle, when facing peer pressure will choose to compromise, even doing things they don't want to do.<br>Actually, no matter how good a friend the other person is to you, you still absolutely have the right to refuse unreasonable demands.<br>A genuine friendship is built on the foundation of mutual respect, rather than relying on wronging yourself to please others.<br>We must be clear about our bottom lines, and learn to bravely say 'no'.<br>Protecting your own self-esteem and mental health is far more valuable than blindly pursuing popularity.",
+        quizzes: [
+            { q: "面對同儕壓力，好多同學會犯咩錯誤？", e: "(Facing peer pressure, what mistake do many classmates make?)", options: [{c: "委屈自己去妥協，做唔想做嘅事", e: "(Wrong themselves to compromise, doing things they don't want to do)", correct: true}, {c: "即刻轉校", e: "(Immediately transfer schools)", correct: false}, {c: "打電話報警", e: "(Call the police)", correct: false}] },
+            { q: "「無論... 都」喺文中用嚟帶出咩重要觀念？", e: "(What important concept does 'no matter... still' bring out in the text?)", options: [{c: "不論友誼深淺，都有權利拒絕唔合理要求", e: "(Regardless of friendship depth, you have the right to refuse unreasonable demands)", correct: true}, {c: "無論天氣點樣都要返學", e: "(No matter the weather, must go to school)", correct: false}, {c: "無論幾貴都要買名牌", e: "(No matter how expensive, must buy designer brands)", correct: false}] },
+            { q: "真誠嘅友誼應該建立喺咩基礎上？", e: "(What foundation should genuine friendship be built upon?)", options: [{c: "互相尊重", e: "(Mutual respect)", correct: true}, {c: "互相利用", e: "(Mutual exploitation)", correct: false}, {c: "互相送貴重禮物", e: "(Giving each other expensive gifts)", correct: false}] },
+            { q: "作者認為保護自尊比咩更加有價值？", e: "(What does the author think protecting self-esteem is more valuable than?)", options: [{c: "盲目追求受歡迎", e: "(Blindly pursuing popularity)", correct: true}, {c: "考試考第一", e: "(Getting first place in exams)", correct: false}, {c: "搵到好多錢", e: "(Making a lot of money)", correct: false}] },
+            { q: "「底線」喺人際關係入面指咩？", e: "(What does 'bottom line' refer to in interpersonal relationships?)", options: [{c: "自己絕對唔可以接受或退讓嘅界線", e: "(The boundary one absolutely cannot accept or yield on)", correct: true}, {c: "畫喺地下嘅一條黑線", e: "(A black line drawn on the ground)", correct: false}, {c: "成績表上最低嘅分數", e: "(The lowest score on a report card)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Civic Duty & Voting", topic: "Concession (就算... 都 - Even if... still)",
+        img: "https://images.unsplash.com/photo-1541888087588-926c45731671",
+        grammarDesc: "<strong>Concession:</strong> Believing in action despite seemingly small impact.<br>就算 (zau6 syun3) [Condition]... 都 (dou1) [Action] means 'Even if... still...'",
+        vocab: [
+            {c: "公民", j: "gung1 man4", e: "Citizen"}, {c: "選舉", j: "syun2 geoi2", e: "Election"},
+            {c: "投票權", j: "tau4 piu3 kyun4", e: "Right to vote"}, {c: "就算", j: "zau6 syun3", e: "Even if"},
+            {c: "微不足道", j: "mei4 bat1 zuk1 dou6", e: "Insignificant / Negligible"}, {c: "發聲", j: "faat3 sing1", e: "Speak up / Voice out"},
+            {c: "冷漠", j: "laang5 mok6", e: "Apathy / Indifference"}, {c: "政策", j: "zing3 caak3", e: "Policy"},
+            {c: "息息相關", j: "sik1 sik1 soeng1 gwaan1", e: "Closely related"}, {c: "義務", j: "ji6 mou6", e: "Duty / Obligation"}
+        ],
+        story: "當我哋年滿十八歲，就會擁有社會賦予我哋嘅神聖權利——投票權。<br>有啲後生仔可能會覺得政治好遙遠，認為多自己一票唔多，少自己一票唔少。<br>但係，政府嘅各項政策，由教育、房屋到醫療，其實同我哋嘅日常生活息息相關。<br>就算你覺得自己嘅力量微不足道，都應該行使你嘅權利去為自己關心嘅議題發聲。<br>政治冷漠只會令到社會資源分配變得唔公平。<br>行出嚟投票，唔單止係一種權利，更加係每一個成年公民應盡嘅義務。",
+        jyutping: "Dong1 ngo5 dei6 nin4 mun5 sap6 baat3 seoi3, zau6 wui5 jung2 jau5 se5 wui2 fu3 jyu5 ngo5 dei6 ge3 san4 sing3 kyun4 lei6 —— tau4 piu3 kyun4.<br>Jau5 di1 hau6 saang1 zai2 ho2 nang4 wui5 gok3 dak1 zing3 zi6 hou2 jiu4 jyun5, jing6 wai4 do1 zi6 gei2 jat1 piu3 m4 do1, siu2 zi6 gei2 jat1 piu3 m4 siu2.<br>Daan6 hai6, zing3 fu2 ge3 gok3 hong6 zing3 caak3, jau4 gaau3 juk6, fong4 uk1 dou3 ji1 liu4, kei4 sat6 tung4 ngo5 dei6 ge3 jat6 soeng4 sang1 wut6 sik1 sik1 soeng1 gwaan1.<br><span class='highlight'>Zau6 syun3</span> nei5 gok3 dak1 zi6 gei2 ge3 lik6 loeng6 mei4 bat1 zuk1 dou6, <span class='highlight'>dou1</span> jing1 goi1 hang4 sai2 nei5 ge3 kyun4 lei6 heoi3 wai6 zi6 gei2 gwaan1 sam1 ge3 ji5 tai4 faat3 sing1.<br>Zing3 zi6 laang5 mok6 zi2 wui5 ling6 dou3 se5 wui2 zi1 jyun4 fan1 pui3 bin3 dak1 m4 gung1 ping4.<br>Haang4 ceot1 lei4 tau4 piu3, m4 daan1 zi2 hai6 jat1 zung2 kyun4 lei6, gang3 gaa1 hai6 mui5 jat1 go3 sing4 nin4 gung1 man4 jing1 zeon6 ge3 ji6 mou6.",
+        english: "When we reach 18 years of age, we will possess the sacred right endowed to us by society—the right to vote.<br>Some young people might feel politics is very far away, believing that their one extra vote is not much, and their one missing vote is not a loss.<br>But, the government's various policies, from education and housing to healthcare, are actually closely related to our daily lives.<br>Even if you feel your own power is insignificant, you still should exercise your right to speak up for the issues you care about.<br>Political apathy will only make the allocation of societal resources become unfair.<br>Stepping out to vote is not only a right, but moreover the duty that every adult citizen should fulfill.",
+        quizzes: [
+            { q: "年滿十八歲會獲得咩神聖權利？", e: "(What sacred right is gained upon reaching 18 years of age?)", options: [{c: "投票權", e: "(The right to vote)", correct: true}, {c: "駕駛飛機嘅權利", e: "(The right to fly an airplane)", correct: false}, {c: "免交稅嘅權利", e: "(The right to be exempt from taxes)", correct: false}] },
+            { q: "點解有啲後生仔唔想投票？", e: "(Why do some young people not want to vote?)", options: [{c: "覺得自己一票影響力微不足道", e: "(Feel the influence of their one vote is insignificant)", correct: true}, {c: "因為投票站冇冷氣", e: "(Because the polling station has no AC)", correct: false}, {c: "因為唔識寫字", e: "(Because they don't know how to write)", correct: false}] },
+            { q: "政府嘅政策同我哋有咩關係？", e: "(What relationship do government policies have with us?)", options: [{c: "同我哋嘅日常生活息息相關", e: "(They are closely related to our daily lives)", correct: true}, {c: "完全冇任何關係", e: "(Absolutely no relationship)", correct: false}, {c: "只會影響有錢人", e: "(Only affect rich people)", correct: false}] },
+            { q: "政治冷漠會帶來咩負面後果？", e: "(What negative consequence will political apathy bring?)", options: [{c: "令到社會資源分配變得唔公平", e: "(Makes the allocation of societal resources become unfair)", correct: true}, {c: "會令地球氣溫急劇下降", e: "(Will cause the Earth's temperature to drop sharply)", correct: false}, {c: "會令考試變得更難", e: "(Will make exams become harder)", correct: false}] },
+            { q: "「就算... 都」喺度鼓勵年輕人點做？", e: "(What is 'even if... still' encouraging young people to do here?)", options: [{c: "即使覺得個人力量細，都要勇於發聲投票", e: "(Even feeling individual power is small, still bravely speak up and vote)", correct: true}, {c: "就算落雨都要去打機", e: "(Even if it rains, still go play games)", correct: false}, {c: "就算病咗都要食雪糕", e: "(Even if sick, still eat ice cream)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Overcoming Procrastination", topic: "Pattern (每當... 就會 - Whenever... then)",
+        img: "https://images.unsplash.com/photo-1506784365847-bbad939e9335",
+        grammarDesc: "<strong>Habitual Pattern:</strong> Describing a repeating trigger and reaction.<br>每當 (mui5 dong1) [Trigger]... 就會 (zau6 wui5) [Reaction] means 'Whenever... then...'",
+        vocab: [
+            {c: "拖延症", j: "to1 jin4 zing3", e: "Procrastination"}, {c: "每當", j: "mui5 dong1", e: "Whenever"},
+            {c: "逃避", j: "tou4 bei6", e: "Escape / Avoid"}, {c: "藉口", j: "zik6 hau2", e: "Excuse"},
+            {c: "罪惡感", j: "zeoi6 ok3 gam2", e: "Guilt"}, {c: "拆分", j: "caak3 fan1", e: "Break down (into parts)"},
+            {c: "執行", j: "zap1 hang4", e: "Execute / Carry out"}, {c: "完美主義", j: "jyun4 mei5 zyu2 ji3", e: "Perfectionism"},
+            {c: "惡性循環", j: "ok3 sing3 ceon4 waan4", e: "Vicious cycle"}, {c: "行動力", j: "haang4 dung6 lik6", e: "Action-taking ability / Drive"}
+        ],
+        story: "拖延症係好多中學生嘅通病。每當面對一份好難嘅大功課，我哋大腦就會自動產生逃避嘅機制。<br>我哋會搵各種藉口，例如「睇多五分鐘YouTube先啦」或者「聽日先開始都未遲」。<br>但係，將事情拖到最後一刻，往往會伴隨住極大嘅焦慮同埋罪惡感，形成一個惡性循環。<br>要打破呢個局面，我哋可以嘗試將艱鉅嘅任務拆分成幾個容易執行嘅小步驟。<br>有時候，完美主義就係拖延嘅元兇。唔好要求一開始就做到最好，先完成，後完善。<br>只要踏出第一步，你嘅行動力就會慢慢返嚟。",
+        jyutping: "To1 jin4 zing3 hai6 hou2 do1 zung1 hok6 saang1 ge3 tung1 beng6. <span class='highlight'>Mui5 dong1</span> min6 deoi3 jat1 fan6 hou2 naan4 ge3 daai6 gung1 fo3, ngo5 dei6 daai6 nou5 <span class='highlight'>zau6 wui5</span> zi6 dung6 caan2 sang1 tou4 bei6 ge3 gei1 zai3.<br>Ngo5 dei6 wui5 wan2 gok3 zung2 zik6 hau2, lai6 jyu4 「tai2 do1 ng5 fan1 zung1 YouTube sin1 laa1」 waak6 ze2 「ting1 jat6 sin1 hoi1 ci2 dou1 mei6 ci4」。<br>Daan6 hai6, zoeng1 si6 cing4 to1 dou3 zeoi3 hau6 jat1 hak1, wong5 wong5 wui5 bun6 ceoi4 zyu6 gik6 daai6 ge3 ziu1 leoi6 tung4 maai4 zeoi6 ok3 gam2, jing4 sing4 jat1 go3 ok3 sing3 ceon4 waan4.<br>Jiu3 daa2 po3 ni1 go3 guk6 min6, ngo5 dei6 ho2 ji5 soeng4 si3 zoeng1 gaan1 geoi6 ge3 jam6 mou6 caak3 fan1 sing4 gei2 go3 jung4 ji6 zap1 hang4 ge3 siu2 bou6 zaau6.<br>Jau5 si4 hau6, jyun4 mei5 zyu2 ji3 zau6 hai6 to1 jin4 ge3 jyun4 hung1. M4 hou2 jiu1 kau4 jat1 hoi1 ci2 zau6 zou6 dou3 zeoi3 hou2, sin1 jyun4 sing4, hau6 jyun4 sin6.<br>Zi2 jiu3 daap6 ceot1 dai6 jat1 bou6, nei5 ge3 haang4 dung6 lik6 zau6 wui5 maan6 maan6 faan1 lei4.",
+        english: "Procrastination is a common illness among many middle schoolers. Whenever facing a very difficult big assignment, our brains will automatically generate an escape mechanism.<br>We will find all kinds of excuses, such as 'Watch 5 more minutes of YouTube first' or 'Starting tomorrow isn't too late'.<br>However, dragging things to the last minute is often accompanied by extreme anxiety and guilt, forming a vicious cycle.<br>To break this situation, we can try breaking the arduous task into several easily executable small steps.<br>Sometimes, perfectionism is the main culprit of procrastination. Don't demand doing it the best right from the start; finish it first, perfect it later.<br>As long as you take the first step, your drive to take action will slowly come back.",
+        quizzes: [
+            { q: "「每當... 就會」喺文章入面描述咗大腦嘅咩反應？", e: "(What brain reaction does 'whenever... then' describe in the text?)", options: [{c: "一遇到難嘅功課，就會自動產生逃避機制", e: "(Once encountering hard homework, will automatically generate an escape mechanism)", correct: true}, {c: "一見到食物，就會覺得肚餓", e: "(Once seeing food, will feel hungry)", correct: false}, {c: "一聽到歌，就會開始跳舞", e: "(Once hearing a song, will start dancing)", correct: false}] },
+            { q: "拖延到最後一刻會帶嚟咩負面情緒？", e: "(What negative emotions does procrastinating to the last minute bring?)", options: [{c: "極大嘅焦慮同罪惡感", e: "(Extreme anxiety and guilt)", correct: true}, {c: "非常興奮同開心", e: "(Very excited and happy)", correct: false}, {c: "極度嘅自信同驕傲", e: "(Extreme self-confidence and pride)", correct: false}] },
+            { q: "點樣可以有效打破拖延嘅惡性循環？", e: "(How can you effectively break the vicious cycle of procrastination?)", options: [{c: "將任務拆分成容易執行嘅小步驟", e: "(Break tasks into easily executable small steps)", correct: true}, {c: "直接放棄份功課", e: "(Directly give up on the homework)", correct: false}, {c: "一邊打機一邊做功課", e: "(Play games while doing homework)", correct: false}] },
+            { q: "文章提到拖延嘅「元兇」可能係咩？", e: "(What does the article mention might be the 'main culprit' of procrastination?)", options: [{c: "完美主義", e: "(Perfectionism)", correct: true}, {c: "互聯網", e: "(The Internet)", correct: false}, {c: "學校老師", e: "(The school teachers)", correct: false}] },
+            { q: "「先完成，後完善」建議我哋做嘢要有咩態度？", e: "(What attitude does 'finish first, perfect later' suggest we have when doing things?)", options: [{c: "唔好要求一開始就完美，最重要係踏出第一步", e: "(Don't demand perfection from the start, taking the first step is most important)", correct: true}, {c: "求其亂咁做完就算", e: "(Just finish it sloppily and leave it)", correct: false}, {c: "一定要做到100分先可以交", e: "(Must get 100 marks before handing it in)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Independent Travel/Gap Year", topic: "Expansion (唔單止... 甚至 - Not only... even)",
+        img: "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96",
+        grammarDesc: "<strong>Expansion:</strong> Escalating a point to a higher level.<br>唔單止 (m4 daan1 zi2) [A]... 甚至 (sam6 zi3) [B] means 'Not only [A]... even [B]'.",
+        vocab: [
+            {c: "畢業旅行", j: "bat1 jip6 leoi5 hang4", e: "Graduation trip"}, {c: "空檔年", j: "hung1 dong3 nin4", e: "Gap year"},
+            {c: "唔單止", j: "m4 daan1 zi2", e: "Not only"}, {c: "甚至", j: "sam6 zi3", e: "Even / Go so far as to"},
+            {c: "策劃", j: "caak3 waak6", e: "Plan / Strategize"}, {c: "預算", j: "jyu6 syun3", e: "Budget"},
+            {c: "突發狀況", j: "dat6 faat3 zong6 fong3", e: "Unexpected situations"}, {c: "舒適圈", j: "syu1 sik1 hyun1", e: "Comfort zone"},
+            {c: "包容", j: "baau1 jung4", e: "Tolerance / Inclusive"}, {c: "人生觀", j: "jan4 sang1 gun1", e: "Outlook on life"}
+        ],
+        story: "考完中學文憑試，好多同學都會同朋友策劃一次畢業旅行，有啲人甚至會考慮休學一年去體驗「空檔年」(Gap Year)。<br>自己去旅行，唔單止係為咗吃喝玩樂，甚至係一次自我成長嘅絕佳訓練。<br>由訂機票、控制預算，到應付各種行程上嘅突發狀況，全部都要靠自己解決。<br>踏出熟悉嘅舒適圈，去接觸唔同國家嘅文化同風俗，可以大幅度提升我哋對世界嘅包容度。<br>呢種獨立生活嘅體驗，往往會徹底改變一個年輕人嘅人生觀。<br>當你學識點樣照顧自己，你就真正準備好迎接大學甚至社會嘅挑戰。",
+        jyutping: "Haau2 jyun4 zung1 hok6 man4 ping4 si3, hou2 do1 tung4 hok6 dou1 wui5 tung4 pang4 jau5 caak3 waak6 jat1 ci3 bat1 jip6 leoi5 hang4, jau5 di1 jan4 sam6 zi3 wui5 haau2 leoi6 jau1 hok6 jat1 nin4 heoi3 tai2 jim6 「hung1 dong3 nin4」(Gap Year).<br>Zi6 gei2 heoi3 leoi5 hang4, <span class='highlight'>m4 daan1 zi2</span> hai6 wai6 zo2 hek3 hot3 waan2 lok6, <span class='highlight'>sam6 zi3</span> hai6 jat1 ci3 zi6 ngo5 sing4 zoeng2 ge3 zyut6 gaai1 fan3 lin6.<br>Jau4 deng6 gei1 piu3, hung3 zai3 jyu6 syun3, dou3 jing3 fu3 gok3 zung2 hing4 cing4 soeng6 ge3 dat6 faat3 zong6 fong3, cyun4 bou6 dou1 jiu3 kaau3 zi6 gei2 gaai2 kyut3.<br>Daap6 ceot1 suk6 sik1 ge3 syu1 sik1 hyun1, heoi3 zip3 zuk1 m4 tung4 gwok3 gaa1 ge3 man4 faa3 tung4 fung1 zuk6, ho2 ji5 daai6 fuk1 dou6 tai4 sing1 ngo5 dei6 deoi3 sai3 gaai3 ge3 baau1 jung4 dou6.<br>Ni1 zung2 duk6 laap6 sang1 wut6 ge3 tai2 jim6, wong5 wong5 wui5 cit3 dai2 goi2 bin3 jat1 go3 nin4 hing1 jan4 ge3 jan4 sang1 gun1.<br>Dong1 nei5 hok6 sik1 dim2 joeng2 ziu3 gu3 zi6 gei2, nei5 zau6 zan1 zing3 zeon2 bei6 hou2 jing4 zip3 daai6 hok6 sam6 zi3 se5 wui2 ge3 tiu1 zin3.",
+        english: "After finishing the secondary school diploma exams, many classmates will plan a graduation trip with friends; some people will even consider taking a year off school to experience a 'Gap Year'.<br>Traveling by yourself is not only for eating, drinking, and playing, it is even an excellent training for self-growth.<br>From booking flight tickets and controlling the budget, to coping with various unexpected situations on the itinerary, everything relies on you to solve.<br>Stepping out of the familiar comfort zone to come into contact with the cultures and customs of different countries can vastly improve our tolerance towards the world.<br>This kind of independent living experience often thoroughly changes a young person's outlook on life.<br>When you learn how to take care of yourself, you are truly ready to welcome the challenges of university or even society.",
+        quizzes: [
+            { q: "「唔單止... 甚至」喺文中帶出咗旅行嘅咩深層意義？", e: "(What deeper meaning of travel does 'not only... even' bring out in the text?)", options: [{c: "旅行不只是玩樂，更係自我成長嘅絕佳訓練", e: "(Travel is not just playing, but an excellent training for self-growth)", correct: true}, {c: "旅行不只是買嘢，更係為咗晒命", e: "(Travel is not just buying things, but showing off)", correct: false}, {c: "旅行不只是嘥錢，更係嘥時間", e: "(Travel is not just wasting money, but wasting time)", correct: false}] },
+            { q: "自己策劃旅行可以訓練到咩能力？", e: "(What abilities can planning a trip by yourself train?)", options: [{c: "控制預算同應付突發狀況嘅能力", e: "(Controlling budgets and coping with unexpected situations)", correct: true}, {c: "打字同畫畫嘅能力", e: "(Typing and drawing abilities)", correct: false}, {c: "煮飯同洗碗嘅能力", e: "(Cooking and dishwashing abilities)", correct: false}] },
+            { q: "接觸唔同國家嘅文化有咩好處？", e: "(What is the benefit of contacting cultures of different countries?)", options: [{c: "大幅度提升對世界嘅包容度", e: "(Vastly improves tolerance towards the world)", correct: true}, {c: "會忘記自己國家嘅語言", e: "(Will forget your own country's language)", correct: false}, {c: "可以買到好多平嘢", e: "(Can buy many cheap things)", correct: false}] },
+            { q: "咩叫做「空檔年」(Gap Year)？", e: "(What is a 'Gap Year'?)", options: [{c: "暫停學業一年去體驗生活或去旅行", e: "(Pausing academics for a year to experience life or travel)", correct: true}, {c: "完全唔做嘢喺屋企瞓覺嘅一年", e: "(A year of doing nothing and sleeping at home)", correct: false}, {c: "每日不停補習嘅一年", e: "(A year of continuous tutoring every day)", correct: false}] },
+            { q: "作者認為年輕人要準備好迎接社會挑戰，首先要點樣？", e: "(What does the author think young people must do first to be ready for society's challenges?)", options: [{c: "學識點樣獨立照顧自己", e: "(Learn how to independently take care of themselves)", correct: true}, {c: "考到車牌", e: "(Get a driver's license)", correct: false}, {c: "搵到一份高人工嘅工", e: "(Find a high-paying job)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Cyber Security & Privacy", topic: "Contingency (萬一... 就 - In case... then)",
+        img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113",
+        grammarDesc: "<strong>Contingency Planning:</strong> Preparing for the worst-case scenario.<br>萬一 (maan6 jat1) [Bad Event]... 就 (zau6) [Action] means 'In case [Bad Event] happens, then [Action]'.",
+        vocab: [
+            {c: "網絡安全", j: "mong5 lok3 on1 cyun4", e: "Cyber security"}, {c: "黑客", j: "hak1 haak3", e: "Hacker"},
+            {c: "密碼", j: "mat6 maa5", e: "Password"}, {c: "萬一", j: "maan6 jat1", e: "In case (1 in 10,000)"},
+            {c: "外洩", j: "ngoi6 sit3", e: "Leak / Breach"}, {c: "雙重認證", j: "soeng1 cung4 jing6 zing3", e: "Two-factor authentication (2FA)"},
+            {c: "防範", j: "fong4 faan6", e: "Prevent / Take precautions"}, {c: "釣魚網站", j: "diu3 jyu2 mong5 zaam6", e: "Phishing website"},
+            {c: "警覺", j: "ging2 gok3", e: "Vigilance"}, {c: "補救", j: "bou2 gau3", e: "Remedy / Salvage"}
+        ],
+        story: "隨住智能手機同網上銀行嘅普及，網絡安全已經成為我哋生活不可忽視嘅一部分。<br>好多人為咗貪方便，所有社交帳號同埋電郵都會用同一個簡單嘅密碼。<br>但係，萬一其中一個平台嘅數據外洩，黑客就輕而易舉咁盜用你所有嘅帳號。<br>為咗防範呢啲風險，我哋應該為重要帳號開啟雙重認證 (2FA)。<br>上網嗰陣亦要提高警覺，千祈唔好隨便點擊來歷不明嘅連結，避免入咗釣魚網站。<br>防患於未然，永遠好過出事之後先去補救。",
+        jyutping: "Ceoi4 zyu6 zi3 nang4 sau2 gei1 tung4 mong5 soeng6 ngan4 hong4 ge3 pou2 kap6, mong5 lok3 on1 cyun4 ji5 ging1 sing4 wai4 ngo5 dei6 sang1 wut6 bat1 ho2 fat1 si6 ge3 jat1 bou6 fan6.<br>Hou2 do1 jan4 wai6 zo2 taam1 fong1 bin6, so2 jau5 se5 gaau1 zoeng3 hou6 tung4 maai4 din6 jau4 dou1 wui5 jung6 tung4 jat1 go3 gaan2 daan1 ge3 mat6 maa5.<br>Daan6 hai6, <span class='highlight'>maan6 jat1</span> gei4 zung1 jat1 go3 ping4 toi4 ge3 sou3 geoi3 ngoi6 sit3, hak1 haak3 <span class='highlight'>zau6</span> hing1 ji4 ji6 geoi2 gam2 dou6 jung6 nei5 so2 jau5 ge3 zoeng3 hou6.<br>Wai6 zo2 fong4 faan6 ni1 di1 fung1 him2, ngo5 dei6 jing1 goi1 wai6 zung6 jiu3 zoeng3 hou6 hoi1 kai2 soeng1 cung4 jing6 zing3 (2FA).<br>Soeng5 mong5 go2 zan6 jik6 jiu3 tai4 gou1 ging2 gok3, cin1 kei4 m4 hou2 ceoi4 bin2 dim2 gik1 loi4 lik6 bat1 ming4 ge3 lin4 git3, bei6 min5 jap6 zo2 diu3 jyu2 mong5 zaam6.<br>Fong4 waan6 jyu1 mei6 jin4, wing5 jyun5 hou2 gwo3 ceot1 si6 zi1 hau6 sin1 heoi3 bou2 gau3.",
+        english: "With the popularization of smartphones and online banking, cyber security has become an unignorable part of our lives.<br>Many people, for the sake of convenience, will use the same simple password for all social accounts and emails.<br>However, in case the data of one of the platforms leaks, hackers will then easily hijack all your accounts.<br>To prevent these risks, we should enable Two-Factor Authentication (2FA) for important accounts.<br>When surfing the internet, one must also raise vigilance, absolutely not casually clicking links of unknown origin, to avoid entering phishing websites.<br>Taking precautions before a disaster happens is always better than trying to remedy it after an incident occurs.",
+        quizzes: [
+            { q: "點解全部帳號用同一個密碼係好危險嘅？", e: "(Why is it very dangerous to use the same password for all accounts?)", options: [{c: "萬一一個平台數據外洩，黑客就可以盜用所有帳號", e: "(In case one platform's data leaks, hackers can hijack all accounts)", correct: true}, {c: "因為密碼太長會唔記得", e: "(Because if the password is too long you will forget)", correct: false}, {c: "因為平台會自動刪除你", e: "(Because the platform will automatically delete you)", correct: false}] },
+            { q: "作者建議用咩方法防範帳號被盜用？", e: "(What method does the author suggest to prevent accounts from being hijacked?)", options: [{c: "為重要帳號開啟雙重認證 (2FA)", e: "(Enable two-factor authentication (2FA) for important accounts)", correct: true}, {c: "將密碼寫喺手心度", e: "(Write the password on the palm of your hand)", correct: false}, {c: "唔好上網", e: "(Don't go on the internet)", correct: false}] },
+            { q: "上網嗰陣點解唔好隨便點擊不明連結？", e: "(Why shouldn't you casually click unknown links when online?)", options: [{c: "為咗避免進入釣魚網站被騙", e: "(To avoid entering phishing websites and being scammed)", correct: true}, {c: "因為會浪費數據流量", e: "(Because it will waste data traffic)", correct: false}, {c: "因為會令電腦螢幕變黑", e: "(Because it will make the computer screen turn black)", correct: false}] },
+            { q: "「防患於未然」係咩意思？", e: "(What does 'take precautions before disaster strikes' mean?)", options: [{c: "喺災難發生之前及早做好防範措施", e: "(Take preventive measures early before a disaster happens)", correct: true}, {c: "出事之後即刻搵人幫手補救", e: "(Find someone to help remedy immediately after an incident)", correct: false}, {c: "當咩事都冇發生過", e: "(Pretend nothing ever happened)", correct: false}] },
+            { q: "「萬一... 就」呢個句型用嚟表達咩情況？", e: "(What situation does the 'in case... then' pattern express?)", options: [{c: "帶出一個極少發生但後果嚴重嘅假設情況", e: "(Brings up a rarely occurring hypothetical situation with severe consequences)", correct: true}, {c: "表達一件100%肯定會發生嘅事", e: "(Expresses a 100% certain event)", correct: false}, {c: "形容過去發生咗嘅客觀事實", e: "(Describes an objective fact that happened in the past)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Learning from Failure", topic: "Alternative Choice (既然... 不如 - Since... might as well)",
+        img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c",
+        grammarDesc: "<strong>Reframing:</strong> Choosing a positive action after an unavoidable event.<br>既然 (gei3 jin4) [Bad Fact]... 不如 (bat1 jyu4) [Positive Action] means 'Since [it happened]... might as well [learn from it]'.",
+        vocab: [
+            {c: "失敗", j: "sat1 baai6", e: "Failure"}, {c: "既然", j: "gei3 jin4", e: "Since / Given that"},
+            {c: "不如", j: "bat1 jyu4", e: "Might as well / Better to"}, {c: "怨天尤人", j: "jyun3 tin1 jau4 jan4", e: "Blame everyone and everything"},
+            {c: "反思", j: "faan2 si1", e: "Reflect"}, {c: "教訓", j: "gaau3 fan3", e: "Lesson"},
+            {c: "跌倒", j: "dit3 dou2", e: "Fall down / Stumble"}, {c: "成長", j: "sing4 zoeng2", e: "Growth"},
+            {c: "調整", j: "tiu4 zing2", e: "Adjust"}, {c: "重新出發", j: "cung4 san1 ceot1 faat3", e: "Start over fresh"}
+        ],
+        story: "喺中學生涯入面，無論係落選咗校隊、考試失手，定係比賽輸咗，每個人都會經歷失敗。<br>面對挫折，有人會一蹶不振，日日喺度怨天尤人。<br>但係，既然失敗已經成為咗無法改變嘅事實，與其沉浸喺痛苦入面，不如冷靜落嚟好好反思。<br>每一次跌倒，其實都係一個檢視自己不足嘅絕佳機會。<br>吸取今次嘅教訓，調整自己嘅策略同心態，然後重新出發。<br>真正嘅強者唔係永遠唔會輸，而係識得喺失敗嘅廢墟中企返起身，獲得更強大嘅成長。",
+        jyutping: "Hai2 zung1 hok6 sang1 ngaai4 jap6 min6, mou4 leon6 hai6 lok6 syun2 zo2 haau6 deoi2, haau2 si3 sat1 sau2, ding6 hai6 bei2 coi3 syu1 zo2, mui5 go3 jan4 dou1 wui5 ging1 lik6 sat1 baai6.<br>Min6 deoi3 co3 zit3, jau5 jan4 wui5 jat1 kyut3 bat1 zan3, jat6 jat6 hai2 dou6 jyun3 tin1 jau4 jan4.<br>Daan6 hai6, <span class='highlight'>gei3 jin4</span> sat1 baai6 ji5 ging1 sing4 wai4 zo2 mou4 faat3 goi2 bin3 ge3 si6 sat6, jyu5 kei4 cam4 zam3 hai2 tung3 fu2 jap6 min6, <span class='highlight'>bat1 jyu4</span> laang5 zing6 lok6 lei4 hou2 hou2 faan2 si1.<br>Mui5 jat1 ci3 dit3 dou2, kei4 sat6 dou1 hai6 jat1 go3 gim2 si6 zi6 gei2 bat1 zuk1 ge3 zyut6 gaai1 gei1 wui6.<br>Kap1 ceoi2 gam1 ci3 ge3 gaau3 fan3, tiu4 zing2 zi6 gei2 ge3 caak3 loek6 tung4 sam1 taai3, jin4 hau6 cung4 san1 ceot1 faat3.<br>Zan1 zing3 ge3 koeng4 ze2 m4 hai6 wing5 jyun5 m4 wui5 syu1, ji4 hai6 sik1 dak1 hai2 sat1 baai6 ge3 fai3 heoi1 zung1 kei5 faan1 hei2 san1, wok6 dak1 gang3 koeng4 daai6 ge3 sing4 zoeng2.",
+        english: "In middle school life, whether it is not being selected for the school team, messing up an exam, or losing a competition, everyone will experience failure.<br>Facing setbacks, some people will collapse after one blow, blaming everyone and everything every day.<br>However, since failure has already become an unchangeable fact, instead of wallowing in pain, you might as well calm down and reflect well.<br>Every time you fall, it is actually an excellent opportunity to examine your own shortcomings.<br>Absorb the lesson this time, adjust your strategy and mindset, and then start over fresh.<br>The truly strong are not those who never lose, but those who know how to stand back up from the ruins of failure, gaining much stronger growth.",
+        quizzes: [
+            { q: "面對失敗，作者認為最唔應該做咩？", e: "(Facing failure, what does the author think is the worst thing to do?)", options: [{c: "一蹶不振，怨天尤人", e: "(Collapse after one blow and blame everyone/everything)", correct: true}, {c: "冷靜落嚟好好反思", e: "(Calm down and reflect well)", correct: false}, {c: "調整策略重新出發", e: "(Adjust strategy and start fresh)", correct: false}] },
+            { q: "「既然... 不如」喺文中帶出咩積極態度？", e: "(What positive attitude does 'since... might as well' bring out in the text?)", options: [{c: "接受無法改變嘅事實，轉向反思同學習", e: "(Accept unchangeable facts, pivot to reflection and learning)", correct: true}, {c: "既然輸咗就放棄，不如返屋企瞓覺", e: "(Since you lost give up, might as well go home to sleep)", correct: false}, {c: "既然人哋叻啲，不如直接認輸", e: "(Since others are smarter, might as well directly concede)", correct: false}] },
+            { q: "跌倒喺作者眼中係咩機會？", e: "(In the author's eyes, what opportunity is falling down?)", options: [{c: "檢視自己不足嘅絕佳機會", e: "(An excellent opportunity to examine one's own shortcomings)", correct: true}, {c: "博取別人同情嘅機會", e: "(An opportunity to gain others' sympathy)", correct: false}, {c: "放棄所有目標嘅機會", e: "(An opportunity to give up all goals)", correct: false}] },
+            { q: "真正嘅強者有咩特質？", e: "(What trait does the truly strong possess?)", options: [{c: "識得喺失敗中企返起身，獲得成長", e: "(Knows how to stand back up from failure and gain growth)", correct: true}, {c: "永遠都唔會經歷失敗同挫折", e: "(Will never experience failure and setbacks)", correct: false}, {c: "輸咗之後會搵藉口推卸責任", e: "(Will find excuses to shirk responsibility after losing)", correct: false}] },
+            { q: "「重新出發」需要具備咩先決條件？", e: "(What prerequisite is needed to 'start over fresh'?)", options: [{c: "吸取教訓並調整策略同心態", e: "(Absorb the lesson and adjust strategy and mindset)", correct: true}, {c: "買一套全新嘅衫", e: "(Buy a brand new set of clothes)", correct: false}, {c: "忘記所有發生過嘅事", e: "(Forget everything that happened)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Future Planning", topic: "Conclusion (總括而言 - In conclusion)",
+        img: "https://images.unsplash.com/photo-1497366216548-37526070297c",
+        grammarDesc: "<strong>Summarizing:</strong> Wrapping up a complex thought.<br>總括而言 (zung2 kut3 ji4 jin4) means 'In conclusion' or 'To sum up'.",
+        vocab: [
+            {c: "規劃", j: "kwai1 waak6", e: "Plan / Planning"}, {c: "探索", j: "taam3 sok3", e: "Explore"},
+            {c: "潛能", j: "cim4 nang4", e: "Potential"}, {c: "裝備", j: "zong1 bei6", e: "Equip"},
+            {c: "適應力", j: "sik1 jing3 lik6", e: "Adaptability"}, {c: "不確定性", j: "bat1 kok3 ding6 sing3", e: "Uncertainty"},
+            {c: "韌性", j: "ngan6 sing3", e: "Resilience"}, {c: "總括而言", j: "zung2 kut3 ji4 jin4", e: "In conclusion"},
+            {c: "掌握", j: "zoeng2 ak1", e: "Grasp / Master"}, {c: "機遇", j: "gei1 jyu6", e: "Opportunity"}
+        ],
+        story: "中學階段係人生中最寶貴嘅探索期，亦都係為未來打好基礎嘅關鍵時刻。<br>喺呢幾年入面，我哋經歷咗學業上嘅挑戰，學識咗點樣理財、管理時間，甚至係處理人際關係嘅界線。<br>未來嘅世界充滿住不確定性，單靠課本上嘅知識係絕對唔夠應付嘅。<br>我哋必須不斷發掘自己嘅潛能，培養強大嘅心理韌性同埋適應力。<br>總括而言，青春就係要勇敢嘗試，唔怕犯錯。<br>只要好好裝備自己，主動掌握每一個機遇，你一定可以為自己創造出一個精彩嘅未來。",
+        jyutping: "Zung1 hok6 gaai1 dyun6 hai6 jan4 sang1 zung1 zeoi3 bou2 gwai3 ge3 taam3 sok3 kei4, jik6 dou1 hai6 wai6 mei6 loi4 daa2 hou2 gei1 co2 ge3 gwaan1 gin6 si4 hak1.<br>Hai2 ni1 gei2 nin4 jap6 min6, ngo5 dei6 ging1 lik6 zo2 hok6 jip6 soeng6 ge3 tiu1 zin3, hok6 sik1 zo2 dim2 joeng2 lei5 coi4, gun2 lei5 si4 gaan3, sam6 zi3 hai6 cyu2 lei5 jan4 zai3 gwaan1 hai6 ge3 gaai3 sin3.<br>Mei6 loi4 ge3 sai3 gaai3 cung1 mun5 zyu6 bat1 kok3 ding6 sing3, daan1 kaau3 fo3 bun2 soeng6 ge3 zi1 sik1 hai6 zyut6 deoi3 m4 gau3 jing3 fu3 ge3.<br>Ngo5 dei6 bit1 seoi1 bat1 dyun6 faat3 gwat6 zi6 gei2 ge3 cim4 nang4, pui4 joeng5 koeng4 daai6 ge3 sam1 lei5 ngan6 sing3 tung4 maai4 sik1 jing3 lik6.<br><span class='highlight'>Zung2 kut3 ji4 jin4</span>, cing1 ceon1 zau6 hai6 jiu3 jung5 gam2 soeng4 si3, m4 paa3 faan6 co3.<br>Zi2 jiu3 hou2 hou2 zong1 bei6 zi6 gei2, zyu2 dung6 zoeng2 ak1 mui5 jat1 go3 gei1 jyu6, nei5 jat1 ding6 ho2 ji5 wai6 zi6 gei2 cong3 zou6 ceot1 jat1 go3 zing1 coi2 ge3 mei6 loi4.",
+        english: "The middle/high school stage is the most precious exploration period in life, and also the crucial moment to lay a good foundation for the future.<br>In these few years, we have experienced academic challenges, learned how to manage finances, manage time, and even handle boundaries in interpersonal relationships.<br>The future world is full of uncertainty; relying solely on knowledge from textbooks is absolutely not enough to cope.<br>We must continuously discover our own potential, cultivating strong psychological resilience and adaptability.<br>In conclusion, youth is about bravely trying and not being afraid of making mistakes.<br>As long as you equip yourself well and proactively grasp every opportunity, you can definitely create a wonderful future for yourself.",
+        quizzes: [
+            { q: "中學階段對於人生有咩重要意義？", e: "(What important significance does the high school stage have for life?)", options: [{c: "係寶貴嘅探索期同為未來打好基礎嘅關鍵", e: "(A precious exploration period and the key to laying a foundation for the future)", correct: true}, {c: "係人生中最輕鬆唔使做嘢嘅時期", e: "(The easiest period in life with no need to work)", correct: false}, {c: "係專門用嚟賺錢嘅時期", e: "(The period dedicated solely to making money)", correct: false}] },
+            { q: "面對未來嘅不確定性，單靠課本知識點解唔夠？", e: "(Facing future uncertainty, why is relying solely on textbook knowledge not enough?)", options: [{c: "因為世界變化太快，需要適應力同心理韌性", e: "(Because the world changes too fast, adaptability and resilience are needed)", correct: true}, {c: "因為課本知識全部都係錯嘅", e: "(Because textbook knowledge is all wrong)", correct: false}, {c: "因為未來完全唔需要知識", e: "(Because the future absolutely doesn't need knowledge)", correct: false}] },
+            { q: "作者認為青春應該抱住咩態度？", e: "(What attitude does the author think youth should hold?)", options: [{c: "勇敢嘗試，唔怕犯錯", e: "(Bravely try, not afraid of making mistakes)", correct: true}, {c: "保守謹慎，千祈唔好試新嘢", e: "(Conservative and cautious, absolutely don't try new things)", correct: false}, {c: "咩都唔理，日日去玩", e: "(Ignore everything, go play every day)", correct: false}] },
+            { q: "「總括而言」通常放喺文章邊個位置，有咩作用？", e: "(Where is 'In conclusion' usually placed in an article, and what is its function?)", options: [{c: "放喺文章結尾，用嚟總結前文嘅觀點", e: "(Placed at the end of the article to summarize previous points)", correct: true}, {c: "放喺文章開頭，用嚟吸引讀者", e: "(Placed at the beginning to attract readers)", correct: false}, {c: "放喺句子中間，表示強烈反對", e: "(Placed in the middle of a sentence to express strong opposition)", correct: false}] },
+            { q: "點樣先可以為自己創造出精彩嘅未來？", e: "(How can you create a wonderful future for yourself?)", options: [{c: "好好裝備自己，主動掌握每一個機遇", e: "(Equip yourself well, proactively grasp every opportunity)", correct: true}, {c: "每日買六合彩等中獎", e: "(Buy lottery tickets every day waiting to win)", correct: false}, {c: "靠屋企人幫手鋪好所有路", e: "(Rely on family to pave all the roads for you)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>🎓 High School Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Story Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>

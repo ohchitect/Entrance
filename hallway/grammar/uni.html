@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Lesson: University Missions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 800px; /* Widened for university-level text */
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            padding: 35px 30px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.8rem; margin: 0 0 5px 0; color: #1a1a1a; }
+        .header p { font-size: 1rem; color: #666; margin: 0; }
+        .news-image {
+            width: 100%; height: 260px; border-radius: 12px;
+            object-fit: cover; margin-bottom: 20px; background-color: #ddd;
+        }
+        .action-btn {
+            background: #4527a0; color: white; border: none; border-radius: 12px;
+            padding: 16px; width: 100%; font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; margin-bottom: 20px; transition: transform 0.1s, background 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: #311b92; }
+        .prep-section {
+            background-color: #ede7f6; border-left: 4px solid #5e35b1;
+            padding: 18px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+        }
+        .prep-section h3 { margin-top: 0; color: #311b92; font-size: 1.2rem; margin-bottom: 10px; }
+        .prep-section p { font-size: 0.95rem; margin: 8px 0; line-height: 1.5; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .vocab-item {
+            background: white; padding: 12px 10px; border-radius: 8px; font-size: 0.95rem;
+            border: 2px solid #d1c4e9; cursor: pointer; text-align: left;
+            display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
+        }
+        .vocab-item:hover { background: #ede7f6; border-color: #7e57c2; }
+        .vocab-item:active { transform: scale(0.96); }
+        .vocab-item span.icon { font-size: 0.8rem; color: #5e35b1; margin-bottom: 2px; }
+        .script-box {
+            background-color: #f8f9fa; border-left: 4px solid #4527a0;
+            padding: 20px; margin-bottom: 30px; border-radius: 0 8px 8px 0;
+        }
+        .cantonese-text { font-weight: 700; font-size: 1.15rem; line-height: 2.0; margin-bottom: 15px; color: #1a1a1a; text-align: justify; }
+        .jyutping { color: #666; font-size: 0.95rem; line-height: 1.8; text-align: justify; }
+        .highlight { color: #4527a0; text-decoration: underline; background-color: #ede7f6; padding: 0 4px; border-radius: 4px; }
+        .quiz-section { border-top: 2px dashed #ddd; padding-top: 25px; }
+        .quiz-question { margin-bottom: 25px; }
+        .question-text { font-weight: 700; margin-bottom: 12px; font-size: 1.1rem; color: #1a1a1a; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 5px; line-height: 1.5; }
+        .play-btn-small { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; transition: transform 0.1s; }
+        .play-btn-small:hover { transform: scale(1.15); }
+        .play-btn-small:active { transform: scale(0.9); }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-row { display: flex; gap: 10px; align-items: stretch; }
+        .play-btn-option { background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.2rem; padding: 0 15px; transition: all 0.2s; }
+        .option-btn { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 14px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: left; flex-grow: 1; color: #333; transition: all 0.2s; line-height: 1.5; }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #f44336; color: #c62828; }
+        .eng-trans { font-size: 0.85rem; color: #666; font-weight: normal; display: block; width: 100%; margin-top: 6px; }
+        .translation-box { margin-top: 30px; font-size: 0.95rem; color: #555; background: #eee; padding: 20px; border-radius: 8px; line-height: 1.7; text-align: justify; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 25px; }
+        .nav-btn { background: #5e35b1; color: white; border: none; border-radius: 8px; padding: 14px 24px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<script>
+const missionsData = [
+    {
+        level: 1, title: "Lecture: Macroeconomics", topic: "Conclusion (歸根究底 - In the final analysis)",
+        img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3",
+        grammarDesc: "<strong>Academic Summarization:</strong> Drawing a fundamental conclusion.<br>歸根究底 (gwai1 gan1 gau3 dai2) means 'In the final analysis' or 'Ultimately'.",
+        vocab: [
+            {c: "經濟學", j: "ging1 zai3 hok6", e: "Economics"}, {c: "通貨膨脹", j: "tung1 fo3 paang4 zoeng3", e: "Inflation"},
+            {c: "供求關係", j: "gung1 kau4 gwaan1 hai6", e: "Supply and demand"}, {c: "購買力", j: "gau3 maai5 lik6", e: "Purchasing power"},
+            {c: "供應鏈", j: "gung1 jing3 lin2", e: "Supply chain"}, {c: "貨幣政策", j: "fo3 bai6 zing3 caak3", e: "Monetary policy"},
+            {c: "貶值", j: "bin2 zik6", e: "Depreciation / Devaluation"}, {c: "利率", j: "lei6 leot2", e: "Interest rate"},
+            {c: "歸根究底", j: "gwai1 gan1 gau3 dai2", e: "Ultimately"}, {c: "宏觀", j: "wang4 gun1", e: "Macro"}
+        ],
+        story: "各位同學，歡迎來到宏觀經濟學嘅課堂。今日我哋深入探討嘅主題係通貨膨脹。<br>喺日常生活中，我哋經常會感覺到物價越嚟越貴，呢個現象其實反映緊貨幣購買力嘅下降。<br>當市場上嘅貨幣供應增長速度快過商品同服務嘅增長時，通貨膨脹就會發生。<br>近年來，全球供應鏈受阻，導致生產成本大幅上升，企業唯有將成本轉嫁畀消費者。<br>各國嘅中央銀行通常會透過調整利率等貨幣政策嚟控制通脹。<br>如果加息，借錢嘅成本就會增加，從而減少市場上嘅流動資金，壓抑需求。<br>但係過度加息亦可能會導致經濟衰退，甚至引發失業潮。<br>歸根究底，經濟學就係一門研究資源點樣有效分配嘅科學。<br>決策者必須喺控制通脹同維持經濟增長之間，搵到一個微妙嘅平衡點。",
+        jyutping: "Gok3 wai2 tung4 hok6, fun1 jing4 loi4 dou3 wang4 gun1 ging1 zai3 hok6 ge3 fo3 tong4. Gam1 jat6 ngo5 dei6 sam1 jap6 taam3 tou2 ge3 zyu2 tai4 hai6 tung1 fo3 paang4 zoeng3.<br>Hai2 jat6 soeng4 sang1 wut6 zung1, ngo5 dei6 ging1 soeng4 wui5 gam2 gok3 dou3 mat6 gaa3 jyut6 lei4 jyut6 gwai3, ni1 go3 jin6 zoeng6 kei4 sat6 faan2 jing2 gan2 fo3 bai6 gau3 maai5 lik6 ge3 haa6 gong3.<br>Dong1 si5 coeng4 soeng6 ge3 fo3 bai6 gung1 jing3 zang1 zoeng2 cuk1 dou6 faai3 gwo3 soeng1 ban2 tung4 fuk6 mou6 ge3 zang1 zoeng2 si4, tung1 fo3 paang4 zoeng3 zau6 wui5 faat3 sang1.<br>Gan6 nin4 loi4, cyun4 kau4 gung1 jing3 lin2 sau6 zo2, dou6 zi3 sang1 caan2 sing4 bun2 daai6 fuk1 soeng5 sing1, kei5 jip6 wai4 jau5 zoeng1 sing4 bun2 zyun2 gaa3 bei2 siu1 fai3 ze2.<br>Gok3 gwok3 ge3 zung1 joeng1 ngan4 hong4 tung1 soeng4 wui5 tau3 gwo3 tiu4 zing2 lei6 leot2 dang2 fo3 bai6 zing3 caak3 lei4 hung3 zai3 tung1 zoeng3.<br>Jyu4 gwo2 gaa1 sik1, ze3 cin2 ge3 sing4 bun2 zau6 wui5 zang1 gaa1, cung4 ji4 gaam2 siu2 si5 coeng4 soeng6 ge3 lau4 dung6 zi1 gam1, aat3 jik1 kau4.<br>Daan6 hai6 gwo3 dou6 gaa1 sik1 jik6 ho2 nang4 wui5 dou6 zi3 ging1 zai3 seoi1 teoi3, sam6 zi3 jan5 faat3 sat1 jip6 ciu4.<br><span class='highlight'>Gwai1 gan1 gau3 dai2</span>, ging1 zai3 hok6 zau6 hai6 jat1 mun4 jin4 gau3 zi1 jyun4 dim2 joeng2 jau5 haau6 fan1 pui3 ge3 fo1 hok6.<br>Kyut3 caak3 ze2 bit1 seoi1 hai2 hung3 zai3 tung1 zoeng3 tung4 wai4 ci4 ging1 zai3 zang1 zoeng2 zi1 gaan1, wan2 dou2 jat1 go3 mei4 miu6 ge3 ping4 hang4 dim2.",
+        english: "Class, welcome to the macroeconomics lecture. The topic we are deeply exploring today is inflation.<br>In daily life, we often feel that prices are getting more and more expensive; this phenomenon actually reflects the decline of currency purchasing power.<br>When the growth rate of money supply in the market is faster than the growth of goods and services, inflation occurs.<br>In recent years, global supply chains have been disrupted, causing production costs to rise sharply, and enterprises have no choice but to pass the costs on to consumers.<br>Central banks of various countries usually control inflation by adjusting monetary policies such as interest rates.<br>If interest rates are raised, the cost of borrowing money will increase, thereby reducing liquidity in the market and suppressing demand.<br>However, excessive interest rate hikes might also lead to economic recession, or even trigger a wave of unemployment.<br>Ultimately, economics is a science that studies how resources are effectively allocated.<br>Decision-makers must find a delicate balance point between controlling inflation and maintaining economic growth.",
+        quizzes: [
+            { q: "通貨膨脹喺日常生活中最直接嘅表現係咩？", e: "(What is the most direct manifestation of inflation in daily life?)", options: [{c: "物價變貴同埋貨幣購買力下降", e: "(Prices getting expensive and purchasing power declining)", correct: true}, {c: "銀行派錢畀市民", e: "(Banks distributing money to citizens)", correct: false}, {c: "商店大減價", e: "(Stores having massive sales)", correct: false}] },
+            { q: "近年來導致生產成本大幅上升嘅原因係咩？", e: "(What is the cause of the sharp rise in production costs in recent years?)", options: [{c: "全球供應鏈受阻", e: "(Disruption of global supply chains)", correct: true}, {c: "太多人買股票", e: "(Too many people buying stocks)", correct: false}, {c: "科技發展太快", e: "(Technology developing too fast)", correct: false}] },
+            { q: "中央銀行加息嘅主要目的係咩？", e: "(What is the main purpose of the central bank raising interest rates?)", options: [{c: "增加借貸成本以壓抑需求同控制通脹", e: "(Increase borrowing costs to suppress demand and control inflation)", correct: true}, {c: "鼓勵市民大量消費", e: "(Encourage citizens to consume massively)", correct: false}, {c: "令到所有企業破產", e: "(Cause all enterprises to go bankrupt)", correct: false}] },
+            { q: "過度加息可能會帶嚟咩負面後果？", e: "(What negative consequences might excessive interest rate hikes bring?)", options: [{c: "經濟衰退甚至引發失業潮", e: "(Economic recession and potentially triggering unemployment)", correct: true}, {c: "所有貨品變成免費", e: "(All goods becoming free)", correct: false}, {c: "人口大幅增加", e: "(Massive population increase)", correct: false}] },
+            { q: "「歸根究底」喺學術討論入面有咩作用？", e: "(What is the function of 'gwai gan gau dai' in academic discussions?)", options: [{c: "用嚟帶出事物最根本嘅本質或結論", e: "(Used to bring out the most fundamental nature or conclusion of a matter)", correct: true}, {c: "用嚟提出一個新嘅問題", e: "(Used to pose a new question)", correct: false}, {c: "表示強烈反對對方嘅觀點", e: "(Expresses strong opposition to the opponent's view)", correct: false}] }
+        ]
+    },
+    {
+        level: 2, title: "Lecture: Cognitive Psychology", topic: "Re-evaluation (與其話... 不如話 - Rather than... it is better to)",
+        img: "https://images.unsplash.com/photo-1559757175-5700dde675bc",
+        grammarDesc: "<strong>Academic Re-evaluation:</strong> Correcting a common assumption.<br>與其話 (jyu5 kei4 waa6) [A]... 不如話 (bat1 jyu4 waa6) [B] means 'Rather than saying [A], it's more accurate to say [B]'.",
+        vocab: [
+            {c: "心理學", j: "sam1 lei5 hok6", e: "Psychology"}, {c: "認知偏差", j: "jing6 zi1 pin1 caa1", e: "Cognitive bias"},
+            {c: "確認偏誤", j: "kok3 jing6 pin1 ng6", e: "Confirmation bias"}, {c: "與其話", j: "jyu5 kei4 waa6", e: "Rather than saying"},
+            {c: "不如話", j: "bat1 jyu4 waa6", e: "It is better to say"}, {c: "客觀", j: "haak3 gun1", e: "Objective"},
+            {c: "篩選", j: "saai1 syun2", e: "Filter / Sift through"}, {c: "固有", j: "gu3 jau5", e: "Inherent / Pre-existing"},
+            {c: "盲點", j: "maang4 dim2", e: "Blind spot"}, {c: "批判性思考", j: "pai1 pun3 sing3 si1 haau2", e: "Critical thinking"}
+        ],
+        story: "今日心理學嘅課堂會探討人類大腦處理資訊嘅方式。<br>好多人以為人類係絕對理性嘅動物，每次做決定都會經過周密嘅分析。<br>但實際上，與其話我哋係客觀嘅觀察者，不如話我哋係偏見嘅俘虜。<br>其中一個最著名嘅心理現象叫做「確認偏誤」(Confirmation Bias)。<br>當我哋大腦接收到海量資訊嘅時候，往往會自動篩選並記住嗰啲支持我哋固有信念嘅證據。<br>同時，我哋會潛意識地忽略或者貶低嗰啲同我哋觀點相反嘅事實。<br>喺社交媒體演算法嘅推波助瀾之下，呢種認知偏差變得更加嚴重，形成同溫層。<br>要克服大腦嘅盲點，我哋必須時刻保持批判性思考，主動去尋找反方嘅論據。<br>承認自己嘅無知同埋偏見，先係邁向真正理性嘅第一步。",
+        jyutping: "Gam1 jat6 sam1 lei5 hok6 ge3 fo3 tong4 wui5 taam3 tou2 jan4 leoi6 daai6 nou5 cyu2 lei5 zi1 seon3 ge3 fong1 sik1.<br>Hou2 do1 jan4 ji5 wai4 jan4 leoi6 hai6 zyut6 deoi3 lei5 sing3 ge3 dung6 mat6, mui5 ci3 zou6 kyut3 ding6 dou1 wui5 ging1 gwo3 zau1 mat6 ge3 fan1 sik1.<br>Daan6 sat6 zai3 soeng6, <span class='highlight'>jyu5 kei4 waa6</span> ngo5 dei6 hai6 haak3 gun1 ge3 gun1 caat3 ze2, <span class='highlight'>bat1 jyu4 waa6</span> ngo5 dei6 hai6 pin1 gin3 ge3 fu1 lou5.<br>Kei4 zung1 jat1 go3 zeoi3 zyu3 ming4 ge3 sam1 lei5 jin6 zoeng6 giu3 zou6 「kok3 jing6 pin1 ng6」(Confirmation Bias).<br>Dong1 ngo5 dei6 daai6 nou5 zip3 sau1 dou3 hoi2 loeng6 zi1 seon3 ge3 si4 hau6, wong5 wong5 wui5 zi6 dung6 saai1 syun2 bing6 gei3 zyu6 go2 di1 zi1 ci4 ngo5 dei6 gu3 jau5 seon3 nim6 ge3 zing3 geoi3.<br>Tung4 si4, ngo5 dei6 wui5 cim4 ji3 sik1 dei6 fat1 loek6 waak6 ze2 bin2 dai1 go2 di1 tung4 ngo5 dei6 gun1 dim2 soeng1 faan2 ge3 si6 sat6.<br>Hai2 se5 gaau1 mui4 tai2 jin2 syun3 faat3 ge3 teoi1 bo1 zok6 laan6 zi1 haa6, ni1 zung2 jing6 zi1 pin1 caa1 bin3 dak1 gang3 gaa1 jim4 zung6, jing4 sing4 tung4 wan1 cang4.<br>Jiu3 hak1 fuk6 daai6 nou5 ge3 maang4 dim2, ngo5 dei6 bit1 seoi1 si4 hak1 bou2 ci4 pai1 pun3 sing3 si1 haau2, zyu2 dung6 heoi3 cam4 zaau2 faan2 fong1 ge3 leon6 geoi3.<br>Sing4 jing6 zi6 gei2 ge3 mou4 zi1 tung4 maai4 pin1 gin3, sin1 hai6 maai6 hoeng3 zan1 zing3 lei5 sing3 ge3 dai6 jat1 bou6.",
+        english: "Today's psychology lecture will explore the way the human brain processes information.<br>Many people assume humans are absolutely rational animals, and that every decision goes through meticulous analysis.<br>But in reality, rather than saying we are objective observers, it is more accurate to say we are captives of bias.<br>One of the most famous psychological phenomena is called 'Confirmation Bias'.<br>When our brains receive a massive amount of information, they often automatically filter and remember the evidence that supports our pre-existing beliefs.<br>At the same time, we subconsciously ignore or belittle the facts that oppose our viewpoints.<br>With the fuel added by social media algorithms, this cognitive bias becomes even more severe, forming echo chambers.<br>To overcome the brain's blind spots, we must constantly maintain critical thinking and proactively seek out opposing arguments.<br>Admitting one's own ignorance and bias is the true first step towards rationality.",
+        quizzes: [
+            { q: "「確認偏誤」係指大腦傾向點樣處理資訊？", e: "(How does 'Confirmation Bias' describe the brain's tendency to process information?)", options: [{c: "只會記住支持自己固有信念嘅證據，忽略反對事實", e: "(Only remembering evidence supporting pre-existing beliefs, ignoring opposing facts)", correct: true}, {c: "會公平客觀咁分析所有接收到嘅數據", e: "(Fairly and objectively analyzing all received data)", correct: false}, {c: "會忘記所有舊嘅記憶，只記新資訊", e: "(Forgetting all old memories, only remembering new info)", correct: false}] },
+            { q: "社交媒體演算法對認知偏差有咩影響？", e: "(What impact do social media algorithms have on cognitive bias?)", options: [{c: "推波助瀾，令偏見變得更嚴重，形成同溫層", e: "(Add fuel to the fire, making bias worse and forming echo chambers)", correct: true}, {c: "幫助用家打破偏見，提供客觀視角", e: "(Help users break biases, providing objective perspectives)", correct: false}, {c: "完全冇任何影響", e: "(Absolutely no impact whatsoever)", correct: false}] },
+            { q: "作者建議點樣去克服大腦嘅盲點？", e: "(How does the author suggest overcoming the brain's blind spots?)", options: [{c: "保持批判性思考，主動尋找反方論據", e: "(Maintain critical thinking, proactively seek opposing arguments)", correct: true}, {c: "聽從直覺，唔好諗太多", e: "(Follow intuition, don't think too much)", correct: false}, {c: "每日做靜觀冥想", e: "(Do mindfulness meditation every day)", correct: false}] },
+            { q: "邁向真正理性嘅第一步係咩？", e: "(What is the first step towards true rationality?)", options: [{c: "承認自己嘅無知同埋偏見", e: "(Admitting one's own ignorance and bias)", correct: true}, {c: "讀多啲心理學嘅書", e: "(Reading more psychology books)", correct: false}, {c: "喺辯論比賽中贏對手", e: "(Winning against opponents in debate competitions)", correct: false}] },
+            { q: "「與其話... 不如話」用嚟達到咩學術表達效果？", e: "(What academic expression effect does 'rather than... it is better to' achieve?)", options: [{c: "推翻一個普遍嘅錯覺，並提出更準確嘅本質描述", e: "(Overturning a common illusion and proposing a more accurate description of nature)", correct: true}, {c: "表示兩種講法都完全正確", e: "(Indicating both statements are completely correct)", correct: false}, {c: "純粹係為咗加長句子長度", e: "(Purely for the sake of lengthening the sentence)", correct: false}] }
+        ]
+    },
+    {
+        level: 3, title: "Lecture: Computer Science Ethics", topic: "Foundation (建立喺... 嘅基礎上 - Built on the foundation of)",
+        img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+        grammarDesc: "<strong>Systemic Basis:</strong> Describing what a system relies upon.<br>建立喺 (gin3 laap6 hai2) [A] 嘅基礎上 (ge3 gei1 co2 soeng6) means 'Built on the foundation of [A]'.",
+        vocab: [
+            {c: "演算法", j: "jin2 syun3 faat3", e: "Algorithm"}, {c: "機器學習", j: "gei1 hei3 hok6 zaap6", e: "Machine learning"},
+            {c: "數據庫", j: "sou3 geoi3 fu3", e: "Database"}, {c: "偏見", j: "pin1 gin3", e: "Bias"},
+            {c: "倫理", j: "leon4 lei5", e: "Ethics"}, {c: "建立喺", j: "gin3 laap6 hai2", e: "Built upon"},
+            {c: "基礎上", j: "ge3 gei1 co2 soeng6", e: "Foundation of"}, {c: "潛移默化", j: "cim4 ji4 mak6 faa3", e: "Imperceptibly influence"},
+            {c: "歧視", j: "kei4 si6", e: "Discrimination"}, {c: "透明度", j: "tau3 ming4 dou6", e: "Transparency"}
+        ],
+        story: "今日電腦科學系嘅講座，我哋會將焦點放喺人工智能嘅倫理問題。<br>好多人以為 AI 係絕對中立同埋客觀嘅，但其實機器學習模型嘅輸出，完全係建立喺人類提供嘅歷史數據嘅基礎上。<br>如果用嚟訓練 AI 嘅數據庫本身就包含咗社會對某個性別或者種族嘅偏見，個演算法就會潛移默化咁繼承呢啲歧視。<br>例如喺招聘系統或者批核貸款嘅 AI 入面，我哋已經見過唔少因為演算法偏見而導致不公平對待嘅案例。<br>作為未來嘅軟件工程師，你哋寫嘅代碼將會決定未來社會嘅運作方式。<br>我哋必須提高演算法嘅透明度，定期審查數據源。<br>科技發展得越快，我哋對科技倫理嘅要求就必須越嚴格。<br>確保 AI 技術造福全人類，而唔係加劇社會嘅不公義，係我哋不可推卸嘅責任。",
+        jyutping: "Gam1 jat6 din6 nou5 fo1 hok6 hai6 ge3 gong2 zo6, ngo5 dei6 wui5 zoeng1 ziu1 dim2 fong3 hai2 jan4 gung1 zi3 nang4 ge3 leon4 lei5 man6 tai4.<br>Hou2 do1 jan4 ji5 wai4 AI hai6 zyut6 deoi3 zung1 laap6 tung4 maai4 haak3 gun1 ge3, daan6 kei4 sat6 gei1 hei3 hok6 zaap6 mou4 jing4 ge3 syu1 ceot1, jyun4 cyun4 hai6 <span class='highlight'>gin3 laap6 hai2</span> jan4 leoi6 cung1 jing3 ge3 lik6 si2 sou3 geoi3 <span class='highlight'>ge3 gei1 co2 soeng6</span>.<br>Jyu4 gwo2 jung6 lei4 fan3 lin6 AI ge3 sou3 geoi3 fu3 bun2 san1 zau6 baau1 ham4 zo2 se5 wui2 deoi3 mau5 go3 sing3 bit6 waak6 ze2 zung2 zuk6 ge3 pin1 gin3, go3 jin2 syun3 faat3 zau6 wui5 cim4 ji4 mak6 faa3 gam2 gai3 sing4 ni1 di1 kei4 si6.<br>Lai6 jyu4 hai2 ziu1 ping3 hai6 tung2 waak6 ze2 pai1 hat6 taai3 fun2 ge3 AI jap6 min6, ngo5 dei6 ji5 ging1 gin3 gwo3 m4 siu2 jan1 wai6 jin2 syun3 faat3 pin1 gin3 ji4 dou6 zi3 bat1 gung1 ping4 deoi3 doi6 ge3 on3 lai6.<br>Zok3 wai4 mei6 loi4 ge3 jyun5 gin2 gung1 cing4 si1, nei5 dei6 se2 ge3 doi6 maa5 zoeng1 wui5 kyut3 ding6 mei6 loi4 se5 wui2 ge3 wan6 zok3 fong1 sik1.<br>Ngo5 dei6 bit1 seoi1 tai4 gou1 jin2 syun3 faat3 ge3 tau3 ming4 dou6, ding6 kei4 sam2 caa4 sou3 geoi3 jyun4.<br>Fo1 gei6 faat3 zin2 dak1 jyut6 faai3, ngo5 dei6 deoi3 fo1 gei6 leon4 lei5 ge3 jiu1 kau4 zau6 bit1 seoi1 jyut6 jim4 gaak3.<br>Kok3 bou2 AI gei6 seot6 zou6 fuk1 cyun4 jan4 leoi6, ji4 m4 hai6 gaa1 kek6 se5 wui2 ge3 bat1 gung1 ji6, hai6 ngo5 dei6 bat1 ho2 teoi1 se3 ge3 zaak3 jam6.",
+        english: "In today's Computer Science department lecture, we will focus on the ethical issues of Artificial Intelligence.<br>Many people assume AI is absolutely neutral and objective, but actually the output of machine learning models is completely built on the foundation of historical data provided by humans.<br>If the database used to train the AI inherently contains society's biases towards a certain gender or race, the algorithm will imperceptibly inherit this discrimination.<br>For example, in AI used for hiring systems or approving loans, we have already seen many cases of unfair treatment caused by algorithmic bias.<br>As future software engineers, the code you write will determine how future society operates.<br>We must increase the transparency of algorithms and regularly audit data sources.<br>The faster technology develops, the stricter our requirements for tech ethics must be.<br>Ensuring AI technology benefits all of humanity, rather than exacerbating social injustice, is our unavoidable responsibility.",
+        quizzes: [
+            { q: "點解 AI 唔係絕對客觀同中立嘅？", e: "(Why isn't AI absolutely objective and neutral?)", options: [{c: "因為機器學習模型係建立喺人類歷史數據嘅基礎上", e: "(Because machine learning models are built on the foundation of human historical data)", correct: true}, {c: "因為電腦會自己產生情緒", e: "(Because computers will generate their own emotions)", correct: false}, {c: "因為工程師故意寫錯代碼", e: "(Because engineers intentionally write wrong code)", correct: false}] },
+            { q: "如果訓練 AI 嘅數據庫本身有偏見，會發生咩事？", e: "(If the database training AI has bias itself, what happens?)", options: [{c: "演算法會潛移默化咁繼承呢啲歧視", e: "(The algorithm will imperceptibly inherit this discrimination)", correct: true}, {c: "AI 會自動修復並刪除偏見", e: "(AI will automatically fix and delete the bias)", correct: false}, {c: "電腦會因為錯誤而死機", e: "(The computer will crash due to errors)", correct: false}] },
+            { q: "文中提到演算法偏見曾導致邊方面嘅不公平對待？", e: "(In what areas does the text mention algorithmic bias has caused unfair treatment?)", options: [{c: "招聘系統同埋批核貸款", e: "(Hiring systems and loan approvals)", correct: true}, {c: "自動駕駛同交通燈控制", e: "(Autonomous driving and traffic light control)", correct: false}, {c: "天氣預報同地震警告", e: "(Weather forecasting and earthquake warnings)", correct: false}] },
+            { q: "為咗解決 AI 倫理問題，工程師必須點做？", e: "(To solve AI ethical issues, what must engineers do?)", options: [{c: "提高演算法透明度並定期審查數據源", e: "(Increase algorithm transparency and regularly audit data sources)", correct: true}, {c: "全面停止研發人工智能", e: "(Completely halt the development of AI)", correct: false}, {c: "將所有決定交畀 AI 自己做", e: "(Hand over all decisions to AI to make itself)", correct: false}] },
+            { q: "「建立喺... 嘅基礎上」呢個句型強調咗系統嘅咩特點？", e: "(What characteristic of a system does 'built on the foundation of' emphasize?)", options: [{c: "強調基礎材料決定咗最終產出嘅質量同屬性", e: "(Emphasizes that foundational materials determine the quality and attributes of the final output)", correct: true}, {c: "強調系統建築得非常之高大", e: "(Emphasizes the system is built very tall and large)", correct: false}, {c: "強調人類無法干預機器嘅運作", e: "(Emphasizes humans cannot interfere with machine operations)", correct: false}] }
+        ]
+    },
+    {
+        level: 4, title: "Lecture: Public Health", topic: "Necessity (唯有... 先可以 - Only by... can we)",
+        img: "https://images.unsplash.com/photo-1584483760252-a4f9104085eb",
+        grammarDesc: "<strong>Strict Necessity:</strong> Stating the sole solution to a problem.<br>唯有 (wai4 jau5) [Condition]... 先可以 (sin1 ho2 ji5) [Outcome] means 'Only by [doing X] can we [achieve Y]'.",
+        vocab: [
+            {c: "流行病學", j: "lau4 hang4 beng6 hok6", e: "Epidemiology"}, {c: "傳染病", j: "cyun4 jim5 beng6", e: "Infectious disease"},
+            {c: "疫苗", j: "jik6 miu4", e: "Vaccine"}, {c: "群體免疫", j: "kwan4 tai2 min5 jik6", e: "Herd immunity"},
+            {c: "變種", j: "bin3 zung2", e: "Mutation / Variant"}, {c: "抗體", j: "kong3 tai2", e: "Antibody"},
+            {c: "傳播鏈", j: "cyun4 bo3 lin2", e: "Chain of transmission"}, {c: "爆發", j: "baau3 faat3", e: "Outbreak"},
+            {c: "唯有", j: "wai4 jau5", e: "Only by / Only if"}, {c: "防範", j: "fong4 faan6", e: "Prevent / Guard against"}
+        ],
+        story: "今日醫學院嘅課堂，我哋將會討論流行病學入面一個非常核心嘅概念：群體免疫 (Herd Immunity)。<br>面對高傳染性嘅病毒，例如流感或者新冠病毒，單靠個人嘅衛生防護措施係遠遠唔夠嘅。<br>病毒喺傳播嘅過程中會不斷複製同埋產生變種，令到疫情更加難以控制。<br>要切斷病毒嘅傳播鏈，唯有當社會上有足夠比例嘅人口透過接種疫苗而產生咗抗體，先可以形成一道無形嘅保護屏障。<br>呢種屏障唔單止保護已經打咗針嘅人，更重要嘅係保護嗰啲因為身體原因而無法接種疫苗嘅弱勢社群，例如初生嬰兒或者免疫系統有缺陷嘅病人。<br>所以，打疫苗唔只係個人嘅健康選擇，更加係一種社會責任。<br>唯有全球各國通力合作，公平分配醫療資源，我哋先可以真正有效防範下一波全球大爆發。",
+        jyutping: "Gam1 jat6 ji1 hok6 jyun2 ge3 fo3 tong4, ngo5 dei6 zoeng1 wui5 tou2 leon6 lau4 hang4 beng6 hok6 jap6 min6 jat1 go3 fei1 soeng4 hat6 sam1 ge3 goi3 nim6: Kwan4 tai2 min5 jik6 (Herd Immunity).<br>Min6 deoi3 gou1 cyun4 jim5 sing3 ge3 beng6 duk6, lai6 jyu4 lau4 gam2 waak6 ze2 san1 gun1 beng6 duk6, daan1 kaau3 go3 jan4 ge3 wai6 sang1 fong4 wu6 cou3 si1 hai6 jyun5 jyun5 m4 gau3 ge3.<br>Beng6 duk6 hai2 cyun4 bo3 ge3 gwo3 cing4 zung1 wui5 bat1 dyun6 fuk1 zai3 tung4 maai4 caan2 sang1 bin3 zung2, ling6 dou3 jik6 cing4 gang3 gaa1 naan4 ji5 hung3 zai3.<br>Jiu3 cit3 dyun3 beng6 duk6 ge3 cyun4 bo3 lin2, <span class='highlight'>wai4 jau5</span> dong1 se5 wui2 soeng6 jau5 zuk1 gau3 bei2 lai6 ge3 jan4 hau2 tau3 gwo3 zip3 zung3 jik6 miu4 ji4 caan2 sang1 zo2 kong3 tai2, <span class='highlight'>sin1 ho2 ji5</span> jing4 sing4 jat1 dou6 mou4 jing4 ge3 bou2 wu6 ping4 zoeng3.<br>Ni1 zung2 ping4 zoeng3 m4 daan1 zi2 bou2 wu6 ji5 ging1 daa2 zo2 zam1 ge3 jan4, gang3 zung6 jiu3 ge3 hai6 bou2 wu6 go2 di1 jan1 wai6 san1 tai2 jyun4 jan1 ji4 mou4 faat3 zip3 zung3 jik6 miu4 ge3 joek6 sai3 se5 kwan4, lai6 jyu4 co1 sang1 jing1 ji4 waak6 ze2 min5 jik6 hai6 tung2 jau5 kyut3 ham6 ge3 beng6 jan4.<br>So2 ji5, daa2 jik6 miu4 m4 zi2 hai6 go3 jan4 ge3 gin6 hong1 syun2 zaak3, gang3 gaa1 hai6 jat1 zung2 se5 wui2 zaak3 jam6.<br><span class='highlight'>Wai4 jau5</span> cyun4 kau4 gok3 gwok3 tung1 lik6 hap6 zok3, gung1 ping4 fan1 pui3 ji1 liu4 zi1 jyun4, ngo5 dei6 <span class='highlight'>sin1 ho2 ji5</span> zan1 zing3 jau5 haau6 fong4 faan6 haa6 jat1 bo1 cyun4 kau4 daai6 baau3 faat3.",
+        english: "In today's medical school lecture, we will discuss a very core concept in epidemiology: Herd Immunity.<br>Facing highly infectious viruses, such as influenza or the novel coronavirus, relying solely on individual hygiene protection measures is far from enough.<br>In the process of transmission, viruses will continuously replicate and produce mutations, making the epidemic even harder to control.<br>To cut off the virus's chain of transmission, only when a sufficient proportion of the population in society has produced antibodies through vaccination, can an invisible protective barrier be formed.<br>This kind of barrier not only protects those who have already gotten the shot, but more importantly protects those vulnerable groups who cannot be vaccinated due to physical reasons, such as newborns or patients with immune system deficiencies.<br>Therefore, getting vaccinated is not just a personal health choice, but moreover a social responsibility.<br>Only if all countries globally cooperate fully and fairly distribute medical resources, can we truly and effectively guard against the next wave of global outbreak.",
+        quizzes: [
+            { q: "「群體免疫」係指社會要達到咩狀態先可以切斷病毒傳播鏈？", e: "(What state must society reach to achieve 'Herd Immunity' to cut the transmission chain?)", options: [{c: "足夠比例嘅人口透過疫苗產生咗抗體", e: "(A sufficient proportion of the population has produced antibodies via vaccines)", correct: true}, {c: "每個人都留喺屋企唔出街", e: "(Everyone stays home and doesn't go out)", correct: false}, {c: "所有病毒都停止複製同變種", e: "(All viruses stop replicating and mutating)", correct: false}] },
+            { q: "點解單靠個人衛生防護係唔夠嘅？", e: "(Why is relying solely on individual hygiene protection not enough?)", options: [{c: "因為高傳染性病毒會不斷傳播同產生變種", e: "(Because highly infectious viruses continuously transmit and mutate)", correct: true}, {c: "因為洗手液太過昂貴", e: "(Because hand soap is too expensive)", correct: false}, {c: "因為啲人唔識點樣戴口罩", e: "(Because people don't know how to wear masks)", correct: false}] },
+            { q: "群體免疫最主要係為咗保護社會上邊啲人？", e: "(Who is herd immunity primarily meant to protect in society?)", options: [{c: "因身體原因無法接種疫苗嘅弱勢社群", e: "(Vulnerable groups unable to be vaccinated due to physical reasons)", correct: true}, {c: "已經打齊所有疫苗嘅年輕人", e: "(Young people who have had all their vaccines)", correct: false}, {c: "研發疫苗嘅醫生同科學家", e: "(Doctors and scientists researching vaccines)", correct: false}] },
+            { q: "講者認為打疫苗唔單止係個人健康選擇，仲係咩嘢？", e: "(What does the speaker consider vaccination to be, besides a personal health choice?)", options: [{c: "一種社會責任", e: "(A social responsibility)", correct: true}, {c: "一種賺錢嘅商業手段", e: "(A commercial means to make money)", correct: false}, {c: "一種可有可無嘅消遣", e: "(An optional pastime)", correct: false}] },
+            { q: "「唯有... 先可以」喺醫學討論中強調咩邏輯？", e: "(What logic does 'Only by... can we' emphasize in medical discussions?)", options: [{c: "強調某個方案係解決危機嘅唯一或最關鍵途徑", e: "(Emphasizes a solution is the ONLY or most crucial pathway to resolve the crisis)", correct: true}, {c: "強調有好多種方法都可以解決問題", e: "(Emphasizes there are many methods to solve the problem)", correct: false}, {c: "強調醫學係一門好深奧嘅學問", e: "(Emphasizes medicine is a very profound discipline)", correct: false}] }
+        ]
+    },
+    {
+        level: 5, title: "Lecture: Criminal Law", topic: "Preference/Principles (寧願... 都唔願意 - Would rather... than)",
+        img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73",
+        grammarDesc: "<strong>Legal Philosophy:</strong> Choosing the lesser evil based on principles.<br>寧願 (ning4 jyun6) [A]... 都唔願意 (dou1 m4 jyun6 ji3) [B] means 'Would rather [A] than [B]'.",
+        vocab: [
+            {c: "法學", j: "faat3 hok6", e: "Law / Jurisprudence"}, {c: "無罪推定", j: "mou4 zeoi6 teoi1 ding6", e: "Presumption of innocence"},
+            {c: "舉證責任", j: "geoi2 zing3 zaak3 jam6", e: "Burden of proof"}, {c: "寧願", j: "ning4 jyun6", e: "Would rather"},
+            {c: "都唔願意", j: "dou1 m4 jyun6 ji3", e: "Than (not willing to)"}, {c: "疑點利益", j: "ji4 dim2 lei6 jik1", e: "Benefit of the doubt"},
+            {c: "冤枉", j: "jyun1 wong2", e: "Wrongfully accuse"}, {c: "檢控方", j: "gim2 hung3 fong1", e: "Prosecution"},
+            {c: "證據", j: "zing3 geoi3", e: "Evidence"}, {c: "裁決", j: "coi4 kyut3", e: "Verdict / Ruling"}
+        ],
+        story: "今日法律系嘅導修課，我哋探討現代刑事法嘅基石：「無罪推定」原則。<br>喺一個法治社會入面，任何被指控犯罪嘅人，喺法庭未作出最終裁決之前，都必須被假定為無罪。<br>呢個原則將舉證責任完全放喺檢控方嘅身上。<br>檢控方必須提出毫無合理疑點嘅證據去證明被告有罪。如果證據存在任何漏洞，法庭就必須將「疑點利益歸於被告」，判處無罪釋放。<br>英國著名法學家 Blackstone 曾經提出一個核心理念：「法律寧願放過十個有罪嘅人，都唔願意冤枉一個無辜嘅好人。」<br>呢句話深刻咁解釋咗刑事司法系統點解要設立咁高嘅定罪門檻。<br>因為剝奪一個人嘅自由同埋名譽係極之嚴重嘅懲罰，司法系統必須盡最大努力去防止冤假錯案嘅發生，從而彰顯真正嘅公義。",
+        jyutping: "Gam1 jat6 faat3 leot6 hai6 ge3 dou6 sau1 fo3, ngo5 dei6 taam3 tou2 jin6 doi6 jing4 si6 faat3 ge3 gei1 sek6: 「mou4 zeoi6 teoi1 ding6」 jyun4 zak1.<br>Hai2 jat1 go3 faat3 zi6 se5 wui2 jap6 min6, jam6 ho4 bei6 zi2 hung3 faan6 zeoi6 ge3 jan4, hai2 faat3 ting4 mei6 zok3 ceot1 zeoi3 zung1 coi4 kyut3 zi1 cin4, dou1 bit1 seoi1 bei6 gaa2 ding6 wai4 mou4 zeoi6.<br>Ni1 go3 jyun4 zak1 zoeng1 geoi2 zing3 zaak3 jam6 jyun4 cyun4 fong3 hai2 gim2 hung3 fong1 ge3 san1 soeng6.<br>Gim2 hung3 fong1 bit1 seoi1 tai4 ceot1 hou4 mou4 hap6 lei5 ji4 dim2 ge3 zing3 geoi3 heoi3 zing3 ming4 bei6 gou3 jau5 zeoi6. Jyu4 gwo2 zing3 geoi3 cyun4 zoi6 jam6 ho4 lau6 dung6, faat3 ting4 zau6 bit1 seoi1 zoeng1 「ji4 dim2 lei6 jik1 gwai1 jyu1 bei6 gou3」, pun3 cyu2 mou4 zeoi6 sik1 fong3.<br>Jing1 gwok3 zyu3 ming4 faat3 hok6 gaa1 Blackstone cang4 ging1 tai4 ceot1 jat1 go3 hat6 sam1 lei5 nim6: 「Faat3 leot6 <span class='highlight'>ning4 jyun6</span> fong3 gwo3 sap6 go3 jau5 zeoi6 ge3 jan4, <span class='highlight'>dou1 m4 jyun6 ji3</span> jyun1 wong2 jat1 go3 mou4 gu1 ge3 hou2 jan4.」<br>Ni1 geoi3 waa6 sam1 hak1 gam2 gaai2 sik1 zo2 jing4 si6 si1 faat3 hai6 tung2 dim2 gaai2 jiu3 cit3 laap6 gam3 gou1 ge3 ding6 zeoi3 mun4 laam5.<br>Jan1 wai6 mok1 dyut6 jat1 go3 jan4 ge3 zi6 jau4 tung4 maai4 ming4 jyu6 hai6 gik6 zi1 jim4 zung6 ge3 cing4 fat6, si1 faat3 hai6 tung2 bit1 seoi1 zeon6 zeoi3 daai6 nou5 lik6 heoi3 fong4 zi2 jyun1 gaa2 co3 on3 ge3 faat3 sang1, cung4 ji4 zoeng1 hin2 zan1 zing3 ge3 gung1 ji6.",
+        english: "In today's law department tutorial, we explore the cornerstone of modern criminal law: the 'Presumption of Innocence' principle.<br>In a society ruled by law, anyone accused of a crime must be presumed innocent until the court makes a final verdict.<br>This principle places the burden of proof entirely on the prosecution.<br>The prosecution must present evidence 'beyond reasonable doubt' to prove the defendant is guilty. If there are any loopholes in the evidence, the court must give the 'benefit of the doubt to the defendant', ruling for acquittal and release.<br>The famous English jurist Blackstone once proposed a core philosophy: 'The law would rather let ten guilty people go free, than wrongfully accuse one innocent good person.'<br>This sentence profoundly explains why the criminal justice system must establish such a high threshold for conviction.<br>Because depriving a person of their freedom and reputation is an extremely severe punishment, the justice system must try its utmost to prevent wrongful convictions, thereby manifesting true justice.",
+        quizzes: [
+            { q: "「無罪推定」原則嘅核心意思係咩？", e: "(What is the core meaning of the 'Presumption of Innocence' principle?)", options: [{c: "未經法庭最終裁決前，任何被控告嘅人都必須被視為無罪", e: "(Before a final court verdict, anyone accused must be seen as innocent)", correct: true}, {c: "只要警察拉人，嗰個人就一定有罪", e: "(As long as police arrest someone, that person is definitely guilty)", correct: false}, {c: "法官有權隨意判任何人有罪", e: "(Judges have the right to arbitrarily judge anyone guilty)", correct: false}] },
+            { q: "喺刑事法庭上，舉證責任落喺邊個身上？", e: "(In a criminal court, who does the burden of proof fall upon?)", options: [{c: "檢控方", e: "(The prosecution)", correct: true}, {c: "被告", e: "(The defendant)", correct: false}, {c: "陪審團", e: "(The jury)", correct: false}] },
+            { q: "如果檢控方嘅證據存在漏洞，法庭會點樣判決？", e: "(If there are loopholes in the prosecution's evidence, how will the court rule?)", options: [{c: "疑點利益歸於被告，判處無罪", e: "(Benefit of the doubt goes to defendant, rule acquittal)", correct: true}, {c: "暫時收監，等搵到新證據再審", e: "(Temporarily imprison, wait for new evidence to retry)", correct: false}, {c: "要求被告自己搵證據證明清白", e: "(Demand the defendant find evidence to prove innocence)", correct: false}] },
+            { q: "「法律寧願放過十個有罪嘅人，都唔願意冤枉一個無辜嘅好人」解釋咗咩？", e: "(What does 'Law would rather let 10 guilty go than falsely accuse 1 innocent' explain?)", options: [{c: "點解刑事司法系統要有咁高嘅定罪門檻", e: "(Why the criminal justice system needs such a high conviction threshold)", correct: true}, {c: "點解警察捉唔到賊", e: "(Why the police cannot catch thieves)", correct: false}, {c: "點解法律對犯罪分子咁寬容", e: "(Why the law is so lenient to criminals)", correct: false}] },
+            { q: "「寧願... 都唔願意」呢個語法結構表達咗咩價值觀選擇？", e: "(What value choice does the 'would rather... than' grammar structure express?)", options: [{c: "兩害取其輕，為堅守核心原則而接受某種代價", e: "(Choosing the lesser of two evils, accepting a cost to uphold a core principle)", correct: true}, {c: "咩都唔想做，選擇逃避", e: "(Not wanting to do anything, choosing to escape)", correct: false}, {c: "覺得兩件事都非常好，難以抉擇", e: "(Feeling both things are great, hard to choose)", correct: false}] }
+        ]
+    },
+    {
+        level: 6, title: "Lecture: Architecture", topic: "Simultaneous Attributes (既... 又... - Both... and...)",
+        img: "https://images.unsplash.com/photo-1517581177682-a085bc7fcb10",
+        grammarDesc: "<strong>Balancing Design:</strong> Describing dual functionalities or aesthetics.<br>既 (gei3) [Trait A]... 又 (jau6) [Trait B] means 'It is both [A] and [B]'.",
+        vocab: [
+            {c: "建築學", j: "gin3 zuk1 hok6", e: "Architecture"}, {c: "粗獷主義", j: "cou1 kwong3 zyu2 ji3", e: "Brutalism"},
+            {c: "既", j: "gei3", e: "Both / Since"}, {c: "又", j: "jau6", e: "And / Also"},
+            {c: "鋼筋水泥", j: "gong3 gan1 seoi2 nai4", e: "Reinforced concrete"}, {c: "實用性", j: "sat6 jung6 sing3", e: "Practicality"},
+            {c: "審美", j: "sam2 mei5", e: "Aesthetic"}, {c: "可持續性", j: "ho2 ci4 zuk6 sing3", e: "Sustainability"},
+            {c: "採光", j: "coi2 gwong1", e: "Natural lighting / Daylighting"}, {c: "通風", j: "tung1 fung1", e: "Ventilation"}
+        ],
+        story: "今日建築系嘅專題演講，我哋會剖析現代建築嘅演變同埋未來趨勢。<br>喺二十世紀中葉，「粗獷主義」(Brutalism) 曾經風靡一時。<br>呢種風格強調暴露建築嘅原始結構，大量使用未經修飾嘅鋼筋水泥，展現出一種既沉穩又粗糙嘅獨特審美。<br>不過，隨住時代進步，現代建築學嘅焦點已經由單純嘅視覺震撼，轉移到人類與自然嘅和諧共存。<br>而家嘅優秀設計，必須兼顧美感同埋可持續性 (Sustainability)。<br>例如，一棟好嘅綠色建築，既要充分利用自然採光同埋通風嚟減低冷氣嘅能源消耗，又要喺空間感上帶畀人舒適嘅體驗。<br>建築師嘅責任，就係喺實用性同藝術性之間，透過創新嘅物料同技術，打造出既環保又宜居嘅未來城市。",
+        jyutping: "Gam1 jat6 gin3 zuk1 hai6 ge3 zyun1 tai4 jin2 gong2, ngo5 dei6 wui5 pau2 sik1 jin6 doi6 gin3 zuk1 ge3 jin2 bin3 tung4 maai4 mei6 loi4 ceoi1 sai3.<br>Hai2 ji6 sap6 sai3 gei2 zung1 jip6, 「cou1 kwong3 zyu2 ji3」(Brutalism) cang4 ging1 fung1 mei5 jat1 si4.<br>Ni1 zung2 fung1 gaak3 koeng4 diu6 bou6 lou6 gin3 zuk1 ge3 jyun4 ci2 git3 gau3, daai6 loeng6 si2 jung6 mei6 ging1 sau1 sik1 ge3 gong3 gan1 seoi2 nai4, zin2 jin6 ceot1 jat1 zung2 <span class='highlight'>gei3</span> cam4 wan2 <span class='highlight'>jau6</span> cou1 cou3 ge3 duk6 dak6 sam2 mei5.<br>Bat1 gwo3, ceoi4 zyu6 si4 doi6 zeon3 bou6, jin6 doi6 gin3 zuk1 hok6 ge3 ziu1 dim2 ji5 ging1 jau4 daan1 seon4 ge3 si6 gok3 zan3 ham6, zyun2 ji4 dou3 jan4 leoi6 jyu5 zi6 jin4 ge3 wo4 haai4 gung6 cyun4.<br>Ji4 gaa1 ge3 jau1 sau3 cit3 gai3, bit1 seoi1 gim1 gu3 mei5 gam2 tung4 maai4 ho2 ci4 zuk6 sing3 (Sustainability).<br>Lai6 jyu4, jat1 dung6 hou2 ge3 luk6 sik1 gin3 zuk1, <span class='highlight'>gei3</span> jiu3 cung1 fan6 lei6 jung6 zi6 jin4 coi2 gwong1 tung4 maai4 tung1 fung1 lei4 gaam2 dai1 laang5 hei3 ge3 nang4 jyun4 siu1 haau3, <span class='highlight'>jau6</span> jiu3 hai2 hung1 gaan1 gam2 soeng6 daai3 bei2 jan4 syu1 sik1 ge3 tai2 jim6.<br>Gin3 zuk1 si1 ge3 zaak3 jam6, zau6 hai6 hai2 sat6 jung6 sing3 tung4 ji6 seot6 sing3 zi1 gaan1, tau3 gwo3 cong3 san1 ge3 mat6 liu2 tung4 gei6 seot6, daa2 zou6 ceot1 <span class='highlight'>gei3</span> waan4 bou2 <span class='highlight'>jau6</span> ji4 geoi1 ge3 mei6 loi4 sing4 si5.",
+        english: "In today's architecture department seminar, we will dissect the evolution and future trends of modern architecture.<br>In the mid-20th century, 'Brutalism' was once all the rage.<br>This style emphasized exposing the raw structure of buildings, massively using unpolished reinforced concrete, displaying a unique aesthetic that is both composed and rough.<br>However, with the progress of the times, the focus of modern architecture has shifted from pure visual shock to the harmonious coexistence of humans and nature.<br>Today's excellent designs must accommodate both beauty and sustainability.<br>For example, a good green building must both fully utilize natural daylighting and ventilation to reduce AC energy consumption, and also bring people a comfortable experience in its sense of space.<br>The responsibility of an architect is to, between practicality and artistry, through innovative materials and tech, forge future cities that are both eco-friendly and livable.",
+        quizzes: [
+            { q: "「粗獷主義」(Brutalism) 建築嘅主要特徵係咩？", e: "(What is the main characteristic of Brutalist architecture?)", options: [{c: "暴露原始結構，大量使用未修飾嘅鋼筋水泥", e: "(Exposes raw structures, massively uses unpolished reinforced concrete)", correct: true}, {c: "使用大量彩色玻璃同埋黃金裝飾", e: "(Uses a lot of stained glass and gold decorations)", correct: false}, {c: "將整棟建築起喺地底", e: "(Builds the entire building underground)", correct: false}] },
+            { q: "現代建築學嘅設計焦點發生咗咩轉變？", e: "(What shift has occurred in the design focus of modern architecture?)", options: [{c: "由單純嘅視覺震撼轉移到人類與自然和諧共存", e: "(From pure visual shock to harmonious coexistence of humans and nature)", correct: true}, {c: "由追求實用變成追求起得越高越好", e: "(From pursuing practicality to pursuing building as high as possible)", correct: false}, {c: "完全放棄審美，只顧平價物料", e: "(Completely abandoning aesthetics, only caring about cheap materials)", correct: false}] },
+            { q: "一棟好嘅「綠色建築」需要具備咩功能去減低能源消耗？", e: "(What functions must a good 'green building' have to reduce energy consumption?)", options: [{c: "充分利用自然採光同埋通風", e: "(Fully utilizing natural daylighting and ventilation)", correct: true}, {c: "安裝超級強大嘅冷氣機", e: "(Installing super powerful air conditioners)", correct: false}, {c: "將所有窗都封死", e: "(Sealing all the windows shut)", correct: false}] },
+            { q: "建築師喺設計未來城市時嘅最終責任係咩？", e: "(What is the ultimate responsibility of an architect when designing future cities?)", options: [{c: "打造出既環保又宜居嘅建築", e: "(Forging buildings that are both eco-friendly and livable)", correct: true}, {c: "起世界上最高嘅地標", e: "(Building the tallest landmark in the world)", correct: false}, {c: "為富豪設計最奢華嘅豪宅", e: "(Designing the most luxurious mansions for billionaires)", correct: false}] },
+            { q: "「既... 又...」呢個句型喺描述建築設計時表達咗咩？", e: "(What does the 'Both... and...' sentence pattern express when describing architectural design?)", options: [{c: "事物同時兼備兩種不同嘅優點或屬性", e: "(The subject simultaneously possesses two different merits or attributes)", correct: true}, {c: "兩種互相排斥嘅缺點", e: "(Two mutually exclusive flaws)", correct: false}, {c: "先後發生嘅兩個施工步驟", e: "(Two construction steps that happen sequentially)", correct: false}] }
+        ]
+    },
+    {
+        level: 7, title: "Lecture: Postmodern Literature", topic: "Rejection of Norms (唔再局限於... 反而 - No longer limited to... instead)",
+        img: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8",
+        grammarDesc: "<strong>Paradigm Shift:</strong> Describing a break from tradition.<br>唔再局限於 (m4 zoi3 guk6 haan6 jyu1) [A]... 反而 (faan2 ji4) [B] means 'No longer limited to [A]... instead [B]'.",
+        vocab: [
+            {c: "文學", j: "man4 hok6", e: "Literature"}, {c: "後現代主義", j: "hau6 jin6 doi6 zyu2 ji3", e: "Postmodernism"},
+            {c: "碎片化", j: "seoi3 pin2 faa3", e: "Fragmentation"}, {c: "敘事", j: "zeoi6 si6", e: "Narrative"},
+            {c: "解構", j: "gaai2 gau3", e: "Deconstruct"}, {c: "唔再局限於", j: "m4 zoi3 guk6 haan6 jyu1", e: "No longer limited to"},
+            {c: "反而", j: "faan2 ji4", e: "Instead / On the contrary"}, {c: "權威", j: "kyun4 wai1", e: "Authority"},
+            {c: "讀者", j: "duk6 ze2", e: "Reader"}, {c: "詮釋", j: "cyun4 sik1", e: "Interpretation"}
+        ],
+        story: "今日文學系嘅課題係「後現代主義文學」。<br>傳統嘅古典文學通常有一條非常清晰、線性嘅故事時間軸，並由一個全知全能嘅敘事者帶領讀者。<br>但係，後現代文學徹底顛覆咗呢種寫作手法。<br>作家嘅創作唔再局限於單一嘅宏大敘事，反而故意運用碎片化嘅結構同埋唔可靠嘅敘事者去講故事。<br>呢種文學流派試圖解構社會上固有嘅權威同埋絕對真理。<br>喺後現代文學入面，作者嘅意圖唔再係最重要，反而讀者喺閱讀過程中嘅個人詮釋先至係賦予作品意義嘅關鍵。<br>透過打破時間同空間嘅連貫性，後現代文學反映出二戰後人類對現實世界嘅迷惘同埋荒誕感。<br>閱讀呢類作品，就好似砌拼圖咁，每個人砌出嚟嘅畫面都可以唔同。",
+        jyutping: "Gam1 jat6 man4 hok6 hai6 ge3 fo3 tai4 hai6 「hau6 jin6 doi6 zyu2 ji3 man4 hok6」。<br>Cyun4 tung2 ge3 gu2 din2 man4 hok6 tung1 soeng4 jau5 jat1 tiu4 fei1 soeng4 cing1 sik1, sin3 sing3 ge3 gu3 si6 si4 gaan3 zuk6, bing6 jau4 jat1 go3 cyun4 zi1 cyun4 nang4 ge3 zeoi6 si6 ze2 daai3 ling5 duk6 ze2.<br>Daan6 hai6, hau6 jin6 doi6 man4 hok6 cit3 dai2 din1 fuk1 zo2 ni1 zung2 se2 zok3 sau2 faat3.<br>Zok3 gaa1 ge3 cong3 zok3 <span class='highlight'>m4 zoi3 guk6 haan6 jyu1</span> daan1 jat1 ge3 wang4 daai6 zeoi6 si6, <span class='highlight'>faan2 ji4</span> gu3 ji3 wan6 jung6 seoi3 pin2 faa3 ge3 git3 gau3 tung4 maai4 m4 ho2 kaau3 ge3 zeoi6 si6 ze2 heoi3 gong2 gu3 si6.<br>Ni1 zung2 man4 hok6 lau4 paai3 si3 tou4 gaai2 gau3 se5 wui2 soeng6 gu3 jau5 ge3 kyun4 wai1 tung4 maai4 zyut6 deoi3 zan1 lei5.<br>Hai2 hau6 jin6 doi6 man4 hok6 jap6 min6, zok3 ze2 ge3 ji3 tou4 <span class='highlight'>m4 zoi3</span> hai6 zeoi3 zung6 jiu3, <span class='highlight'>faan2 ji4</span> duk6 ze2 hai2 jyut6 duk6 gwo3 cing4 zung1 ge3 go3 jan4 cyun4 sik1 sin1 zi3 hai6 fu3 jyu5 zok3 ban2 ji3 ji6 ge3 gwaan1 gin6.<br>Tau3 gwo3 daa2 po3 si4 gaan3 tung4 hung1 gaan1 ge3 lin4 gun3 sing3, hau6 jin6 doi6 man4 hok6 faan2 jing2 ceot1 ji6 zin3 hau6 jan4 leoi6 deoi3 jin6 sat6 sai3 gaai3 ge3 mai4 mong5 tung4 maai4 wong1 daan6 gam2.<br>Jyut6 duk6 ni1 leoi6 zok3 ban2, zau6 hou2 ci5 cai3 ping3 tou4 gam2, mui5 go3 jan4 cai3 ceot1 lei4 ge3 waa2 min2 dou1 ho2 ji5 m4 tung4.",
+        english: "Today's literature department topic is 'Postmodern Literature'.<br>Traditional classical literature usually has a very clear, linear story timeline, and is led by an omniscient narrator.<br>However, postmodern literature completely subverted this writing technique.<br>Authors' creations are no longer limited to a single grand narrative; instead, they intentionally use fragmented structures and unreliable narrators to tell the story.<br>This literary school attempts to deconstruct inherent authority and absolute truth in society.<br>In postmodern literature, the author's intent is no longer the most important thing; instead, the reader's personal interpretation during the reading process is the key to endowing the work with meaning.<br>By breaking the continuity of time and space, postmodern literature reflects humanity's confusion and sense of absurdity toward the real world after WWII.<br>Reading this type of work is like doing a jigsaw puzzle; the picture everyone pieces together can be different.",
+        quizzes: [
+            { q: "傳統古典文學嘅敘事手法有咩特徵？", e: "(What is the characteristic of traditional classical literature's narrative technique?)", options: [{c: "有清晰線性嘅時間軸同全知全能嘅敘事者", e: "(Has a clear linear timeline and an omniscient narrator)", correct: true}, {c: "故事結構非常碎片化", e: "(The story structure is highly fragmented)", correct: false}, {c: "完全冇任何文字，只有插圖", e: "(Has absolutely no text, only illustrations)", correct: false}] },
+            { q: "後現代文學作家「反而」鍾意用咩手法講故事？", e: "(What technique do postmodern authors 'instead' like to use to tell stories?)", options: [{c: "故意運用碎片化結構同埋唔可靠嘅敘事者", e: "(Intentionally use fragmented structures and unreliable narrators)", correct: true}, {c: "用最簡單直接嘅對白講清楚個結局", e: "(Use the simplest direct dialogue to clarify the ending)", correct: false}, {c: "只會寫大團圓嘅喜劇結局", e: "(Only write happy comedy endings)", correct: false}] },
+            { q: "喺後現代文學入面，咩嘢先至係賦予作品意義嘅關鍵？", e: "(In postmodern literature, what is the key that endows the work with meaning?)", options: [{c: "讀者閱讀過程中嘅個人詮釋", e: "(The reader's personal interpretation during the reading process)", correct: true}, {c: "作者寫書時嘅原本意圖", e: "(The author's original intent when writing the book)", correct: false}, {c: "文學評論家嘅權威分析", e: "(The authoritative analysis of literary critics)", correct: false}] },
+            { q: "打破時間同空間嘅連貫性，反映咗人類對現實世界嘅咩感受？", e: "(Breaking time and space continuity reflects what human feeling towards the real world?)", options: [{c: "對現實世界嘅迷惘同荒誕感", e: "(Confusion and sense of absurdity towards the real world)", correct: true}, {c: "對未來充滿希望同熱情", e: "(Full of hope and passion for the future)", correct: false}, {c: "對科技發展嘅極度信任", e: "(Extreme trust in technological development)", correct: false}] },
+            { q: "「唔再局限於... 反而」表達咗文學發展上嘅咩轉變？", e: "(What shift in literary development does 'no longer limited to... instead' express?)", options: [{c: "打破傳統框架，轉向全新、甚至對立嘅寫作模式", e: "(Breaking traditional frameworks, pivoting to new, even opposing writing models)", correct: true}, {c: "完全退步，寫唔出好文章", e: "(Completely regressing, unable to write good articles)", correct: false}, {c: "將兩本書合埋一齊賣", e: "(Selling two books combined together)", correct: false}] }
+        ]
+    },
+    {
+        level: 8, title: "Lecture: Astrophysics", topic: "Extreme Hypothetical (即使... 亦無法 - Even if... still cannot)",
+        img: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564",
+        grammarDesc: "<strong>Absolute Limits:</strong> Describing physical impossibilities.<br>即使 (zik1 si2) [Extreme Condition]... 亦無法 (jik6 mou4 faat3) [Outcome] means 'Even if [X], one still cannot [Y]'.",
+        vocab: [
+            {c: "天文學", j: "tin1 man4 hok6", e: "Astronomy"}, {c: "黑洞", j: "hak1 dung6", e: "Black hole"},
+            {c: "廣義相對論", j: "gwong2 ji6 soeng1 deoi3 leon6", e: "General relativity"}, {c: "引力", j: "jan5 lik6", e: "Gravity"},
+            {c: "即使", j: "zik1 si2", e: "Even if"}, {c: "亦無法", j: "jik6 mou4 faat3", e: "Still cannot"},
+            {c: "事件視界", j: "si6 gin2 si6 gaai3", e: "Event horizon"}, {c: "坍縮", j: "taan3 suk1", e: "Collapse"},
+            {c: "逃逸速度", j: "tou4 jat6 cuk1 dou6", e: "Escape velocity"}, {c: "恆星", j: "hang4 sing1", e: "Star"}
+        ],
+        story: "今日天文學與物理學嘅聯合講座，我哋會探討宇宙中最神秘嘅天體——黑洞。<br>根據愛因斯坦嘅廣義相對論，當質量極大嘅恆星耗盡燃料並且發生重力坍縮之後，就會形成黑洞。<br>黑洞嘅核心有一個密度無限大嘅「奇點」，佢產生嘅引力強大到難以想像。<br>黑洞嘅邊界被稱為「事件視界」(Event Horizon)，呢條界線代表住一個不歸路嘅臨界點。<br>因為喺事件視界之內，逃逸速度大過光速。<br>所以，即使係宇宙中速度最快嘅光，一旦越過咗呢條界線，亦無法逃離黑洞嘅吞噬。<br>如果有一個太空人唔小心跌入黑洞，強大嘅潮汐力會將佢拉長，呢個恐怖嘅物理現象被科學家戲稱為「意大利粉化」(Spaghettification)。<br>黑洞唔單止扭曲咗空間，仲極大地減慢咗時間嘅流逝，徹底挑戰咗我哋對物理法則嘅常識。",
+        jyutping: "Gam1 jat6 tin1 man4 hok6 jyu5 mat6 lei5 hok6 ge3 lyun4 hap6 gong2 zo6, ngo5 dei6 wui5 taam3 tou2 jyu5 zau6 zung1 zeoi3 san4 bei3 ge3 tin1 tai2 —— hak1 dung6.<br>Gan1 geoi3 oi3 jan1 si1 taan2 ge3 gwong2 ji6 soeng1 deoi3 leon6, dong1 zat1 loeng6 gik6 daai6 ge3 hang4 sing1 hou3 zeon6 jin4 liu2 bing6 ce2 faat3 sang1 zung6 lik6 taan3 suk1 zi1 hau6, zau6 wui5 jing4 sing4 hak1 dung6.<br>Hak1 dung6 ge3 hat6 sam1 jau5 jat1 go3 mat6 dou6 mou4 haan6 daai6 ge3 「kei4 dim2」, keoi5 caan2 sang1 ge3 jan5 lik6 koeng4 daai6 dou3 naan4 ji5 soeng2 zoeng6.<br>Hak1 dung6 ge3 bin1 gaai3 bei6 cing1 wai4 「si6 gin2 si6 gaai3」(Event Horizon), ni1 tiu4 gaai3 sin3 doi6 biu2 zyu6 jat1 go3 bat1 gwai1 lou6 ge3 lam4 gaai3 dim2.<br>Jan1 wai6 hai2 si6 gin2 si6 gaai3 zi1 noi6, tou4 jat6 cuk1 dou6 daai6 gwo3 gwong1 cuk1.<br>So2 ji5, <span class='highlight'>zik1 si2</span> hai6 jyu5 zau6 zung1 cuk1 dou6 zeoi3 faai3 ge3 gwong1, jat1 daan3 jyut6 gwo3 zo2 ni1 tiu4 gaai3 sin3, <span class='highlight'>jik6 mou4 faat3</span> tou4 lei4 hak1 dung6 ge3 tan1 sai6.<br>Jyu4 gwo2 jau5 jat1 go3 taai3 hung1 jan4 m4 siu2 sam1 dit3 jap6 hak1 dung6, koeng4 daai6 ge3 ciu4 zik6 lik6 wui5 zoeng1 keoi5 laai1 coeng4, ni1 go3 hung2 bou3 ge3 mat6 lei5 jin6 zoeng6 bei6 fo1 hok6 gaa1 hei3 cing1 wai4 「ji3 daai6 lei6 fan2 faa3」(Spaghettification).<br>Hak1 dung6 m4 daan1 zi2 nau2 kuk1 zo2 hung1 gaan1, zung6 gik6 daai6 dei6 gaam2 maan6 zo2 si4 gaan3 ge3 lau4 sai3, cit3 dai2 tiu1 zin3 zo2 ngo5 dei6 deoi3 mat6 lei5 faat3 zak1 ge3 soeng4 sik1.",
+        english: "In today's joint astronomy and physics lecture, we will explore the most mysterious celestial body in the universe—the black hole.<br>According to Einstein's general relativity, when a star with enormous mass exhausts its fuel and undergoes gravitational collapse, a black hole is formed.<br>The core of a black hole has a 'singularity' of infinite density; the gravity it produces is unimaginably strong.<br>The boundary of a black hole is called the 'Event Horizon', this line represents the critical point of no return.<br>Because inside the event horizon, the escape velocity is greater than the speed of light.<br>Therefore, even if it is the fastest thing in the universe—light, once it crosses this boundary, it still cannot escape the black hole's engulfment.<br>If an astronaut accidentally fell into a black hole, the powerful tidal forces would stretch him out; this terrifying physical phenomenon is jokingly called 'Spaghettification' by scientists.<br>Black holes not only warp space, but also greatly slow down the passage of time, thoroughly challenging our common sense regarding the laws of physics.",
+        quizzes: [
+            { q: "黑洞係點樣形成嘅？", e: "(How is a black hole formed?)", options: [{c: "極大質量嘅恆星耗盡燃料並發生重力坍縮", e: "(Extremely massive stars exhausting fuel and undergoing gravitational collapse)", correct: true}, {c: "兩個太陽互相碰撞產生爆炸", e: "(Two suns colliding with each other causing an explosion)", correct: false}, {c: "外星人用超級武器製造出嚟", e: "(Aliens creating them using super weapons)", correct: false}] },
+            { q: "「事件視界」(Event Horizon) 代表咩意思？", e: "(What does the 'Event Horizon' represent?)", options: [{c: "一個不歸路嘅臨界點，入咗去就出唔返嚟", e: "(A critical point of no return, entering means never coming back out)", correct: true}, {c: "黑洞中心最光亮嘅地方", e: "(The brightest place at the center of the black hole)", correct: false}, {c: "一個可以時光倒流嘅安全地帶", e: "(A safe zone where time can flow backwards)", correct: false}] },
+            { q: "點解光都無法逃離黑洞？", e: "(Why can't even light escape a black hole?)", options: [{c: "因為事件視界之內嘅逃逸速度大過光速", e: "(Because the escape velocity inside the event horizon is greater than the speed of light)", correct: true}, {c: "因為光被黑洞嘅鏡子反射返轉頭", e: "(Because light is reflected back by the black hole's mirrors)", correct: false}, {c: "因為光本身冇質量", e: "(Because light itself has no mass)", correct: false}] },
+            { q: "跌入黑洞被拉長嘅物理現象被科學家戲稱為什麼？", e: "(What do scientists jokingly call the physical phenomenon of being stretched when falling into a black hole?)", options: [{c: "意大利粉化 (Spaghettification)", e: "(Spaghettification)", correct: true}, {c: "漢堡包化 (Hamburgerification)", e: "(Hamburgerification)", correct: false}, {c: "微波爐化 (Microwavification)", e: "(Microwavification)", correct: false}] },
+            { q: "「即使係光，亦無法逃離」呢句話強調咗黑洞嘅咩特性？", e: "(What characteristic of a black hole does 'Even light still cannot escape' emphasize?)", options: [{c: "引力強大到連宇宙最快嘅物質都無法克服", e: "(Gravity so strong that even the universe's fastest matter cannot overcome it)", correct: true}, {c: "黑洞入面充滿住好多水", e: "(The black hole is full of a lot of water)", correct: false}, {c: "黑洞其實係一個巨大嘅電燈膽", e: "(The black hole is actually a giant lightbulb)", correct: false}] }
+        ]
+    },
+    {
+        level: 9, title: "Lecture: Political Science", topic: "Basis of Theory (基於... 嘅考量 - Based on the consideration of)",
+        img: "https://images.unsplash.com/photo-1526433544605-e117a2fb6435",
+        grammarDesc: "<strong>Theoretical Basis:</strong> Explaining the underlying logic of a decision.<br>基於 (gei1 jyu1) [X] 嘅考量 (ge3 haau2 loeng4) means 'Based on the consideration of [X]'.",
+        vocab: [
+            {c: "政治學", j: "zing3 zi6 hok6", e: "Political science"}, {c: "社會契約", j: "se5 wui2 gai3 joek3", e: "Social contract"},
+            {c: "權利", j: "kyun4 lei6", e: "Rights"}, {c: "讓步", j: "joeng6 bou6", e: "Concession / Yield"},
+            {c: "基於", j: "gei1 jyu1", e: "Based on"}, {c: "考量", j: "haau2 loeng4", e: "Consideration"},
+            {c: "秩序", j: "zit6 zeoi6", e: "Order"}, {c: "統治者", j: "tung2 zi6 ze2", e: "Ruler"},
+            {c: "合法性", j: "hap6 faat3 sing3", e: "Legitimacy"}, {c: "保障", j: "bou2 zoeng3", e: "Guarantee / Protect"}
+        ],
+        story: "歡迎嚟到政治學概論。今日我哋討論近代西方政治哲學嘅核心：社會契約論。<br>喺哲學家霍布斯 (Hobbes) 同洛克 (Locke) 嘅假設入面，人類原本生活喺一個冇政府嘅「自然狀態」。<br>喺呢個狀態下，雖然人人都有絕對嘅自由，但同時亦充滿住危險同埋暴力。<br>基於對生命安全同財產保障嘅考量，人們決定互相達成協議，建立政府。<br>人民自願讓步，放棄一部分嘅個人權利同絕對自由，交畀一個最高嘅統治者或者國家機構。<br>而政府嘅責任，就係要制定法律，維持社會秩序，並且保護公民嘅基本權利。<br>呢種權力嘅交換，就係政府「合法性」嘅來源。<br>如果統治者背叛咗呢份社會契約，變成暴君，公民就有權力推翻佢，重新建立一個新嘅政府。",
+        jyutping: "Fun1 jing4 lei4 dou3 zing3 zi6 hok6 koi3 leon6. Gam1 jat6 ngo5 dei6 tou2 leon6 gan6 doi6 sai1 fong1 zing3 zi6 zit3 hok6 ge3 hat6 sam1: se5 wui2 gai3 joek3 leon6.<br>Hai2 zit3 hok6 gaa1 fok3 bou3 si1 (Hobbes) tung4 lok3 hak1 (Locke) ge3 gaa2 cit3 jap6 min6, jan4 leoi6 jyun4 bun2 sang1 wut6 hai2 jat1 go3 mou5 zing3 fu2 ge3 「zi6 jin4 zong6 taai3」。<br>Hai2 ni1 go3 zong6 taai3 haa6, seoi1 jin4 jan4 jan4 dou1 jau5 zyut6 deoi3 ge3 zi6 jau4, daan6 tung4 si4 jik6 cung1 mun5 zyu6 ngai4 him2 tung4 maai4 bou6 lik6.<br><span class='highlight'>Gei1 jyu1</span> deoi3 sang1 ming6 on1 cyun4 tung4 coi4 caan2 bou2 zoeng3 <span class='highlight'>ge3 haau2 loeng4</span>, jan4 mun4 kyut3 ding6 wu6 soeng1 daat6 sing4 hip3 ji5, gin3 laap6 zing3 fu2.<br>Jan4 man4 zi6 jyun6 joeng6 bou6, fong3 hei3 jat1 bou6 fan6 ge3 go3 jan4 kyun4 lei6 tung4 zyut6 deoi3 zi6 jau4, gaau1 bei2 jat1 go3 zeoi3 gou1 ge3 tung2 zi6 ze2 waak6 ze2 gwok3 gaa1 gei1 gau3.<br>Ji4 zing3 fu2 ge3 zaak3 jam6, zau6 hai6 jiu3 zai3 ding6 faat3 leot6, wai4 ci4 se5 wui2 zit6 zeoi6, bing6 ce2 bou2 wu6 gung1 man4 ge3 gei1 bun2 kyun4 lei6.<br>Ni1 zung2 kyun4 lik6 ge3 gaau1 wun6, zau6 hai6 zing3 fu2 「hap6 faat3 sing3」 ge3 loi4 jyun4.<br>Jyu4 gwo2 tung2 zi6 ze2 bui3 bun6 zo2 ni1 fan6 se5 wui2 gai3 joek3, bin3 sing4 bou6 gwan1, gung1 man4 zau6 jau5 kyun4 lei6 teoi1 faan1 keoi5, cung4 san1 gin3 laap6 jat1 go3 san1 ge3 zing3 fu2.",
+        english: "Welcome to Intro to Political Science. Today we discuss the core of modern Western political philosophy: Social Contract Theory.<br>In the hypotheses of philosophers Hobbes and Locke, humanity originally lived in a 'state of nature' without government.<br>Under this state, although everyone had absolute freedom, it was simultaneously full of danger and violence.<br>Based on considerations for the safety of life and protection of property, people decided to mutually reach an agreement to establish a government.<br>Citizens voluntarily yielded, giving up a portion of personal rights and absolute freedom, handing them over to a supreme ruler or state institution.<br>And the government's responsibility is to formulate laws, maintain social order, and protect citizens' basic rights.<br>This exchange of power is the source of the government's 'legitimacy'.<br>If the ruler betrays this social contract and becomes a tyrant, the citizens have the power to overthrow them and re-establish a new government.",
+        quizzes: [
+            { q: "喺「自然狀態」下，人類嘅生活特徵係咩？", e: "(In the 'state of nature', what is the characteristic of human life?)", options: [{c: "有絕對自由但充滿危險同暴力", e: "(Has absolute freedom but is full of danger and violence)", correct: true}, {c: "非常和平同埋安全", e: "(Very peaceful and safe)", correct: false}, {c: "受制於非常嚴格嘅法律", e: "(Restricted by very strict laws)", correct: false}] },
+            { q: "基於咩嘢考量，人們決定建立政府？", e: "(Based on what considerations did people decide to establish a government?)", options: [{c: "對生命安全同財產保障嘅考量", e: "(Considerations for the safety of life and protection of property)", correct: true}, {c: "為咗免費得到食物同房屋", e: "(In order to get food and housing for free)", correct: false}, {c: "為咗去外國侵略其他人", e: "(In order to invade other people in foreign countries)", correct: false}] },
+            { q: "根據社會契約論，政府嘅「合法性」來源於咩？", e: "(According to social contract theory, what does the government's 'legitimacy' originate from?)", options: [{c: "人民自願放棄部分權利以換取保護嘅交換", e: "(Citizens voluntarily giving up some rights in exchange for protection)", correct: true}, {c: "統治者天生擁有統治嘅權力", e: "(The ruler possessing the power to rule innately)", correct: false}, {c: "軍隊強大嘅武力鎮壓", e: "(The powerful military suppression by the army)", correct: false}] },
+            { q: "如果統治者變成暴君背叛契約，公民有咩權利？", e: "(If the ruler becomes a tyrant betraying the contract, what right do citizens have?)", options: [{c: "有權力推翻佢，重新建立新政府", e: "(Have the power to overthrow them and re-establish a new government)", correct: true}, {c: "只能夠默默忍受", e: "(Can only endure it in silence)", correct: false}, {c: "必須交更多嘅稅畀暴君", e: "(Must pay more taxes to the tyrant)", correct: false}] },
+            { q: "「基於... 嘅考量」喺分析政治決定時發揮咩作用？", e: "(What function does 'based on the consideration of' play when analyzing political decisions?)", options: [{c: "解釋做某個決定背後嘅核心動機同邏輯", e: "(Explains the core motivation and logic behind making a certain decision)", correct: true}, {c: "表示對某個決定嘅強烈反對", e: "(Expresses strong opposition to a certain decision)", correct: false}, {c: "表示呢個決定係完全隨機嘅", e: "(Indicates this decision was completely random)", correct: false}] }
+        ]
+    },
+    {
+        level: 10, title: "Environmental Systems", topic: "Domino Effect (牽一髮動全身 - Pull one hair, whole body moves)",
+        img: "https://images.unsplash.com/photo-1416879598555-21ff0f2bb381",
+        grammarDesc: "<strong>Systemic Impact:</strong> Describing a delicate balance where one change affects everything.<br>牽一髮動全身 (hin1 jat1 faat3 dung6 cyun4 san1) is a proverb meaning 'a slight change affects the whole system'.",
+        vocab: [
+            {c: "生態系統", j: "sang1 taai3 hai6 tung2", e: "Ecosystem"}, {c: "生物多樣性", j: "sang1 mat6 do1 joeng6 sing3", e: "Biodiversity"},
+            {c: "食物鏈", j: "sik6 mat6 lin2", e: "Food chain"}, {c: "滅絕", j: "mit6 zyut6", e: "Extinction"},
+            {c: "棲息地", j: "cai1 sik1 dei6", e: "Habitat"}, {c: "依賴", j: "ji1 laai6", e: "Rely on / Depend on"},
+            {c: "崩潰", j: "bang1 kui2", e: "Collapse"}, {c: "授粉", j: "sau6 fan2", e: "Pollination"},
+            {c: "牽一髮動全身", j: "hin1 jat1 faat3 dung6 cyun4 san1", e: "A slight change affects the whole system"}, {c: "關鍵物種", j: "gwaan1 gin6 mat6 zung2", e: "Keystone species"}
+        ],
+        story: "環境科學強調大自然係一個錯綜複雜嘅網絡，生物多樣性就係維持呢個網絡穩定嘅基石。<br>喺一個健康嘅生態系統入面，動植物之間喺食物鏈上互相依賴，形成一個完美嘅平衡。<br>人類嘅過度開發導致大量棲息地被破壞，好多物種面臨滅絕嘅危機。<br>你要明白，生態系統係牽一髮動全身嘅。<br>如果某一種被稱為「關鍵物種」(Keystone Species) 嘅動物，例如幫植物授粉嘅蜜蜂消失咗，就會引發骨牌效應。<br>冇咗蜜蜂，大量農作物就會無法結果，食草動物會餓死，最終整個生態系統就會面臨全面崩潰。<br>保護環境絕對唔係為咗救某幾隻得意嘅動物咁簡單，而係為咗拯救支撐住人類生存嘅大自然系統。",
+        jyutping: "Waan4 ging2 fo1 hok6 koeng4 diu6 daai6 zi6 jin4 hai6 jat1 go3 cok3 zung1 fuk1 zaap6 ge3 mong5 lok3, sang1 mat6 do1 joeng6 sing3 zau6 hai6 wai4 ci4 ni1 go3 mong5 lok3 wan2 ding6 ge3 gei1 sek6.<br>Hai2 jat1 go3 gin6 hong1 ge3 sang1 taai3 hai6 tung2 jap6 min6, dung6 zik6 mat6 zi1 gaan1 hai2 sik6 mat6 lin2 soeng6 wu6 soeng1 ji1 laai6, jing4 sing4 jat1 go3 jyun4 mei5 ge3 ping4 hang4.<br>Jan4 leoi6 ge3 gwo3 dou6 hoi1 faat3 dou6 zi3 daai6 loeng6 cai1 sik1 dei6 bei6 po3 waai6, hou2 do1 mat6 zung2 min6 lam4 mit6 zyut6 ge3 ngai4 gei1.<br>Nei5 jiu3 ming4 baak6, sang1 taai3 hai6 tung2 hai6 <span class='highlight'>hin1 jat1 faat3 dung6 cyun4 san1</span> ge3.<br>Jyu4 gwo2 mau5 jat1 zung2 bei6 cing1 wai4 「gwaan1 gin6 mat6 zung2」(Keystone Species) ge3 dung6 mat6, lai6 jyu4 bong1 zik6 mat6 sau6 fan2 ge3 mat6 fung1 siu1 sat1 zo2, zau6 wui5 jan5 faat3 gwat1 paai2 haau6 jing3.<br>Mou5 zo2 mat6 fung1, daai6 loeng6 nung4 zok3 mat6 zau6 wui5 mou4 faat3 git3 gwo2, sik6 cou2 dung6 mat6 wui5 ngo6 sei2, zeoi3 zung1 zing2 go3 sang1 taai3 hai6 tung2 zau6 wui5 min6 lam4 cyun4 min6 bang1 kui2.<br>Bou2 wu6 waan4 ging2 zyut6 deoi3 m4 hai6 wai6 zo2 gau3 mau5 gei2 zek3 dak1 ji3 ge3 dung6 mat6 gam3 gaan2 daan1, ji4 hai6 wai6 zo2 cing2 gau3 zi1 caang1 zyu6 jan4 leoi6 sang1 cyun4 ge3 daai6 zi6 jin4 hai6 tung2.",
+        english: "Environmental science emphasizes that nature is an intricately complex network, and biodiversity is the cornerstone maintaining the stability of this network.<br>In a healthy ecosystem, plants and animals mutually depend on each other on the food chain, forming a perfect balance.<br>Humanity's over-development has caused a massive amount of habitats to be destroyed, and many species face the crisis of extinction.<br>You must understand, an ecosystem is a situation where pulling one hair moves the whole body (interconnected).<br>If a certain animal called a 'Keystone Species', such as the bee that helps plants pollinate, disappears, it will trigger a domino effect.<br>Without bees, a massive amount of crops would be unable to bear fruit, herbivores would starve to death, and ultimately the entire ecosystem would face total collapse.<br>Protecting the environment is absolutely not as simple as saving a few cute animals; rather, it is to save the natural system that supports human survival.",
+        quizzes: [
+            { q: "維持生態系統網絡穩定嘅基石係咩？", e: "(What is the cornerstone maintaining the stability of the ecosystem network?)", options: [{c: "生物多樣性", e: "(Biodiversity)", correct: true}, {c: "人類嘅科技發展", e: "(Human technological development)", correct: false}, {c: "動物園嘅數量", e: "(The number of zoos)", correct: false}] },
+            { q: "「關鍵物種」消失會帶嚟咩嚴重後果？", e: "(What serious consequence does the disappearance of a 'keystone species' bring?)", options: [{c: "引發骨牌效應，最終導致整個生態系統崩潰", e: "(Triggers a domino effect, ultimately leading to the entire ecosystem collapsing)", correct: true}, {c: "淨係嗰種動物自己絕種，其他冇事", e: "(Only that animal goes extinct, everything else is fine)", correct: false}, {c: "會有新嘅變種動物即刻代替佢", e: "(A new mutant animal will immediately replace it)", correct: false}] },
+            { q: "冇咗蜜蜂授粉，食物鏈會點樣斷裂？", e: "(Without bees pollinating, how will the food chain break?)", options: [{c: "農作物無法結果，導致食草動物餓死", e: "(Crops cannot bear fruit, leading to herbivores starving)", correct: true}, {c: "老虎會冇肉食", e: "(Tigers will have no meat to eat)", correct: false}, {c: "海入面嘅魚會死晒", e: "(Fish in the sea will all die)", correct: false}] },
+            { q: "作者指出保護環境嘅真正終極目的係咩？", e: "(What does the author point out is the true ultimate goal of protecting the environment?)", options: [{c: "拯救支撐住人類生存嘅大自然系統", e: "(Saving the natural system that supports human survival)", correct: true}, {c: "為咗救某幾隻得意嘅動物", e: "(In order to save a few cute animals)", correct: false}, {c: "為咗令公園睇落去更加靚", e: "(In order to make parks look prettier)", correct: false}] },
+            { q: "「牽一髮動全身」呢個成語完美形容咗生態系統嘅咩特點？", e: "(What characteristic of an ecosystem does the idiom 'pull one hair, whole body moves' perfectly describe?)", options: [{c: "高度依賴同互相連結，一個微小嘅改變會影響全部", e: "(Highly dependent and interconnected, a tiny change affects everything)", correct: true}, {c: "動物嘅毛髮好長", e: "(Animals have very long hair)", correct: false}, {c: "系統非常堅固，點破壞都冇事", e: "(The system is very sturdy, no matter how you destroy it nothing happens)", correct: false}] }
+        ]
+    },
+    {
+        level: 11, title: "Lecture: Ethics (Trolley Problem)", topic: "Dilemma (究竟係... 定係 - Is it X... or Y?)",
+        img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73",
+        grammarDesc: "<strong>Moral Dilemma:</strong> Framing a difficult philosophical question.<br>究竟係 (gau3 ging2 hai6) [A]... 定係 (ding6 hai6) [B] means 'Is it exactly [A]... or is it [B]?'",
+        vocab: [
+            {c: "哲學", j: "zit3 hok6", e: "Philosophy"}, {c: "倫理學", j: "leon4 lei5 hok6", e: "Ethics"},
+            {c: "效益主義", j: "haau6 jik1 zyu2 ji3", e: "Utilitarianism"}, {c: "義務論", j: "ji6 mou6 leon6", e: "Deontology"},
+            {c: "兩難", j: "loeng5 naan4", e: "Dilemma"}, {c: "究竟", j: "gau3 ging2", e: "Exactly / After all"},
+            {c: "定係", j: "ding6 hai6", e: "Or (in a question)"}, {c: "犧牲", j: "hei1 sang1", e: "Sacrifice"},
+            {c: "利益最大化", j: "lei6 jik1 zeoi3 daai6 faa3", e: "Maximization of benefits"}, {c: "道德底線", j: "dou6 dak1 dai2 sin3", e: "Moral bottom line"}
+        ],
+        story: "今日哲學系嘅倫理學課堂，我哋會討論一個非常經典嘅思想實驗：「電車難題」(Trolley Problem)。<br>想像一架失控嘅火車衝緊去五個被綁喺路軌上嘅工人度。你手上面有個掣，可以將火車轉去另一條只有一個工人嘅路軌。<br>面對呢個道德兩難，你究竟係會㩒個掣犧牲一個人去救五個人，定係咩都唔做任由五個人死？<br>如果你選擇㩒掣，你嘅思想就傾向「效益主義」(Utilitarianism)，認為道德嘅標準在於實現整體利益最大化。<br>但如果你拒絕㩒掣，你可能更傾向康德嘅「義務論」(Deontology)。<br>義務論者認為，主動殺人呢個行為本身就係錯嘅，無論帶嚟咩結果，我哋都唔可以將人當成達成目的嘅工具。<br>呢個思想實驗逼使我哋去反思，道德究竟係睇結果，定係睇行為本身嘅正當性。<br>喺現實生活中，例如醫療資源分配或者自動駕駛汽車嘅設定，工程師同醫生每日都要面對類似嘅抉擇。",
+        jyutping: "Gam1 jat6 zit3 hok6 hai6 ge3 leon4 lei5 hok6 fo3 tong4, ngo5 dei6 wui5 tou2 leon6 jat1 go3 fei1 soeng4 ging1 din2 ge3 si1 soeng2 sat6 jim6: 「din6 ce1 naan4 tai4」(Trolley Problem).<br>Soeng2 zoeng6 jat1 gaa3 sat1 hung3 ge3 fo2 ce1 cung1 gan2 heoi3 ng5 go3 bei6 bong2 hai2 lou6 gwai2 soeng6 ge3 gung1 jan4 dou6. Nei5 sau2 soeng6 min6 jau5 go3 zai3, ho2 ji5 zoeng1 fo2 ce1 zyun3 heoi3 ling6 jat1 tiu4 zi2 jau5 jat1 go3 gung1 jan4 ge3 lou6 gwai2.<br>Min6 deoi3 ni1 go3 dou6 dak1 loeng5 naan4, nei5 <span class='highlight'>gau3 ging2 hai6</span> wui5 gam6 go3 zai3 hei1 sang1 jat1 go3 jan4 heoi3 gau3 ng5 go3 jan4, <span class='highlight'>ding6 hai6</span> me1 dou1 m4 zou6 jam6 jau4 ng5 go3 jan4 sei2?<br>Jyu4 gwo2 nei5 syun2 zaak3 gam6 zai3, nei5 ge3 si1 soeng2 zau6 king1 hoeng3 「haau6 jik1 zyu2 ji3」(Utilitarianism), jing6 wai4 dou6 dak1 ge3 biu1 zeon2 zoi6 jyu1 sat6 jin6 zing2 tai2 lei6 jik1 zeoi3 daai6 faa3.<br>Daan6 jyu4 gwo2 nei5 keoi5 zyut6 gam6 zai3, nei5 ho2 nang4 gang3 king1 hoeng3 hong1 dak1 ge3 「ji6 mou6 leon6」(Deontology).<br>Ji6 mou6 leon6 ze2 jing6 wai4, zyu2 dung6 saat3 jan4 ni1 go3 haang4 wai4 bun2 san1 zau6 hai6 co3 ge3, mou4 leon6 daai3 lei4 me1 git3 gwo2, ngo5 dei6 dou1 m4 ho2 ji5 zoeng1 jan4 dong3 sing4 daat6 sing4 muk6 dik1 ge3 gung1 geoi6.<br>Ni1 go3 si1 soeng2 sat6 jim6 bik1 si2 ngo5 dei6 heoi3 faan2 si1, dou6 dak1 <span class='highlight'>gau3 ging2 hai6</span> tai2 git3 gwo2, <span class='highlight'>ding6 hai6</span> tai2 haang4 wai4 bun2 san1 ge3 zing3 dong3 sing3.<br>Hai2 jin6 sat6 sang1 wut6 zung1, lai6 jyu4 ji1 liu4 zi1 jyun4 fan1 pui3 waak6 ze2 zi6 dung6 gaa3 sai2 hei3 ce1 ge3 cit3 ding6, gung1 cing4 si1 tung4 ji1 sang1 mui5 jat6 dou1 jiu3 min6 deoi3 leoi6 ci5 ge3 kyut3 zaak6.",
+        english: "In today's philosophy department ethics lecture, we will discuss a very classic thought experiment: the 'Trolley Problem'.<br>Imagine an out-of-control train rushing towards five workers tied to the tracks. You have a switch in your hand that can divert the train to another track with only one worker.<br>Facing this moral dilemma, will you exactly press the switch sacrificing one person to save five, or do nothing and let the five people die?<br>If you choose to press the switch, your thinking leans towards 'Utilitarianism', believing the standard of morality lies in realizing the maximization of overall benefits.<br>But if you refuse to press the switch, you might lean more towards Kant's 'Deontology'.<br>Deontologists believe the act of proactively killing someone is inherently wrong; no matter what results it brings, we cannot treat humans as tools to achieve a goal.<br>This thought experiment forces us to reflect on whether morality is exactly looking at the outcome, or looking at the legitimacy of the act itself.<br>In real life, such as the allocation of medical resources or the programming of self-driving cars, engineers and doctors must face similar choices every day.",
+        quizzes: [
+            { q: "「電車難題」嘅核心道德兩難係咩？", e: "(What is the core moral dilemma of the 'Trolley Problem'?)", options: [{c: "決定犧牲一個人去救五個人，定係咩都唔做", e: "(Deciding to sacrifice one person to save five, or do nothing)", correct: true}, {c: "決定偷火車定係偷路軌", e: "(Deciding to steal the train or steal the tracks)", correct: false}, {c: "決定要唔要去返工", e: "(Deciding whether to go to work or not)", correct: false}] },
+            { q: "效益主義 (Utilitarianism) 點樣定義道德標準？", e: "(How does Utilitarianism define the standard of morality?)", options: [{c: "實現整體利益最大化", e: "(Realizing the maximization of overall benefits)", correct: true}, {c: "絕對唔可以做任何傷害人嘅事", e: "(Absolutely cannot do anything that hurts people)", correct: false}, {c: "以神嘅旨意為準", e: "(Based on the will of God)", correct: false}] },
+            { q: "義務論 (Deontology) 點解反對為咗救五個人而殺一個人？", e: "(Why does Deontology oppose killing one person to save five?)", options: [{c: "因為主動殺人行為本身係錯，唔可以將人當成工具", e: "(Because the act of actively killing is inherently wrong, cannot treat humans as tools)", correct: true}, {c: "因為一個人嘅命比五個人貴", e: "(Because one person's life is more expensive than five)", correct: false}, {c: "因為唔夠力去㩒個掣", e: "(Because there's not enough strength to press the switch)", correct: false}] },
+            { q: "電車難題喺現代社會有咩實際應用？", e: "(What practical application does the Trolley Problem have in modern society?)", options: [{c: "自動駕駛汽車嘅設定同醫療資源分配", e: "(The programming of self-driving cars and medical resource allocation)", correct: true}, {c: "點樣起地鐵站", e: "(How to build subway stations)", correct: false}, {c: "點樣賣火車飛", e: "(How to sell train tickets)", correct: false}] },
+            { q: "「究竟係... 定係...」呢個語法結構通常用嚟做咩？", e: "(What is the grammar structure 'is it exactly... or is it...' usually used for?)", options: [{c: "逼使聽眾喺兩個截然不同嘅選項中作出深刻反思同抉擇", e: "(Forcing the listener to make a profound reflection and choice between two distinct options)", correct: true}, {c: "隨便問下今日食咩", e: "(Casually asking what to eat today)", correct: false}, {c: "表示完全同意對方", e: "(Expressing total agreement with the other party)", correct: false}] }
+        ]
+    },
+    {
+        level: 12, title: "Lecture: Sociology", topic: "Trend Analysis (隨住... 變得 - As... becomes)",
+        img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+        grammarDesc: "<strong>Sociological Trends:</strong> Describing a changing societal condition.<br>隨住 (ceoi4 zyu6) [Trend]... 變得 (bin3 dak1) [State] means 'As [Trend occurs]... it becomes [State]'.",
+        vocab: [
+            {c: "社會學", j: "se5 wui2 hok6", e: "Sociology"}, {c: "社會流動", j: "se5 wui2 lau4 dung6", e: "Social mobility"},
+            {c: "階層固化", j: "gaai1 cang4 gu3 faa3", e: "Social stratification / Rigid class structure"}, {c: "隨住", j: "ceoi4 zyu6", e: "As / Along with"},
+            {c: "變得", j: "bin3 dak1", e: "Becomes"}, {c: "資本", j: "zi1 bun2", e: "Capital"},
+            {c: "跨代貧窮", j: "kwaa1 doi6 pan4 kung4", e: "Intergenerational poverty"}, {c: "結構性", j: "git3 gau3 sing3", e: "Structural"},
+            {c: "向上流", j: "hoeng3 soeng6 lau4", e: "Upward mobility"}, {c: "資源分配", j: "zi1 jyun4 fan1 pui3", e: "Resource allocation"}
+        ],
+        story: "今日社會學嘅課堂，我哋會剖析「社會流動」(Social Mobility) 同埋貧富懸殊嘅問題。<br>傳統觀念認為，只要一個人肯努力讀書同工作，就可以實現向上流動。<br>但係，隨住全球資本主義嘅高度發展，財富同資源越來越集中喺少數人手上，社會流動變得越嚟越困難。<br>呢個現象被稱為「階層固化」。富裕家庭可以將龐大嘅經濟資本同埋文化資本傳畀下一代，例如俾仔女讀國際學校或者出國留學。<br>相反，基層家庭嘅子女因為缺乏資源，好容易陷入「跨代貧窮」嘅困局。<br>教育原本被視為促進平權嘅階梯，但而家往往反而強化咗原本嘅不平等。<br>要解決呢個結構性嘅問題，政府必須透過改革稅制同埋優化資源分配，為基層提供更多實質嘅支援。",
+        jyutping: "Gam1 jat6 se5 wui2 hok6 ge3 fo3 tong4, ngo5 dei6 wui5 pau2 sik1 「se5 wui2 lau4 dung6」(Social Mobility) tung4 maai4 pan4 fu3 jyun4 syu4 ge3 man6 tai4.<br>Cyun4 tung2 gun1 nim6 jing6 wai4, zi2 jiu3 jat1 go3 jan4 hang2 nou5 lik6 duk6 syu1 tung4 gung1 zok3, zau6 ho2 ji5 sat6 jin6 hoeng3 soeng6 lau4 dung6.<br>Daan6 hai6, <span class='highlight'>ceoi4 zyu6</span> cyun4 kau4 zi1 bun2 zyu2 ji3 ge3 gou1 dou6 faat3 zin2, coi4 fu3 tung4 zi1 jyun4 jyut6 loi4 jyut6 zaap6 zung1 hai2 siu2 sou3 jan4 sau2 soeng6, se5 wui2 lau4 dung6 <span class='highlight'>bin3 dak1</span> jyut6 lei4 jyut6 kwan3 naan4.<br>Ni1 go3 jin6 zoeng6 bei6 cing1 wai4 「gaai1 cang4 gu3 faa3」。 Fu3 jyu6 gaa1 ting4 ho2 ji5 zoeng1 pong4 daai6 ge3 ging1 zai3 zi1 bun2 tung4 maai4 man4 faa3 zi1 bun2 cyun4 bei2 haa6 jat1 doi6, lai6 jyu4 bei2 zai2 neoi5 duk6 gwok3 zai3 hok6 haau6 waak6 ze2 ceot1 gwok3 lau4 hok6.<br>Soeng1 faan2, gei1 cang4 gaa1 ting4 ge3 zi2 neoi5 jan1 wai6 kyut3 fat6 zi1 jyun4, hou2 jung4 ji6 ham6 jap6 「kwaa1 doi6 pan4 kung4」 ge3 kwan3 guk6.<br>Gaau3 juk6 jyun4 bun2 bei6 si6 wai4 cuk1 zeon3 ping4 kyun4 ge3 gaai1 tai1, daan6 ji4 gaa1 wong5 wong5 faan2 ji4 koeng4 faa3 zo2 jyun4 bun2 ge3 bat1 ping4 dang2.<br>Jiu3 gaai2 kyut3 ni1 go3 git3 gau3 sing3 ge3 man6 tai4, zing3 fu2 bit1 seoi1 tau3 gwo3 goi2 gaak3 seoi3 zai3 tung4 maai4 jau1 faa3 zi1 jyun4 fan1 pui3, wai4 gei1 cang4 ti4 gung1 gang3 do1 sat6 zat1 ge3 zi1 jyun4.",
+        english: "In today's sociology class, we will dissect the problems of 'Social Mobility' and the wealth gap.<br>Traditional concepts believe that as long as a person is willing to study and work hard, they can achieve upward mobility.<br>However, as global capitalism highly develops, wealth and resources become increasingly concentrated in the hands of a few, and social mobility becomes more and more difficult.<br>This phenomenon is called 'Social Stratification'. Wealthy families can pass immense economic and cultural capital to the next generation, such as letting their children attend international schools or study abroad.<br>Conversely, children from grassroots families, lacking resources, easily fall into the predicament of 'intergenerational poverty'.<br>Education was originally viewed as a ladder promoting equality, but now it often instead reinforces the original inequality.<br>To solve this structural problem, the government must, through reforming the tax system and optimizing resource allocation, provide more substantial support to the grassroots level.",
+        quizzes: [
+            { q: "傳統觀念對「社會流動」有咩睇法？", e: "(What is the traditional view on 'social mobility'?)", options: [{c: "只要肯努力讀書同工作就可以向上流", e: "(As long as you study and work hard, you can move upward)", correct: true}, {c: "命運一出世就注定，唔可以改變", e: "(Fate is decided at birth, cannot be changed)", correct: false}, {c: "靠買六合彩先可以發達", e: "(Relying on lottery tickets is the only way to get rich)", correct: false}] },
+            { q: "「階層固化」係點樣發生嘅？", e: "(How does 'social stratification' happen?)", options: [{c: "財富資源集中喺少數人手上，富裕家庭將資本傳畀下一代", e: "(Wealth and resources concentrate in a few, wealthy families pass capital to next gen)", correct: true}, {c: "因為地球重力太大", e: "(Because the Earth's gravity is too strong)", correct: false}, {c: "因為啲人唔肯出街", e: "(Because people refuse to go outside)", correct: false}] },
+            { q: "基層家庭子女面臨嘅最大困局係咩？", e: "(What is the biggest predicament facing grassroots children?)", options: [{c: "缺乏資源而陷入跨代貧窮", e: "(Lacking resources and falling into intergenerational poverty)", correct: true}, {c: "唔知道點樣搭巴士", e: "(Not knowing how to take the bus)", correct: false}, {c: "玩具唔夠多", e: "(Not having enough toys)", correct: false}] },
+            { q: "現代社會嘅「教育」發生咗咩反效果？", e: "(What opposite effect has 'education' had in modern society?)", options: [{c: "由促進平權變成強化原本嘅不平等", e: "(From promoting equality it became reinforcing original inequality)", correct: true}, {c: "令人變得越嚟越蠢", e: "(Makes people become stupider and stupider)", correct: false}, {c: "令到學校執笠", e: "(Causes schools to close down)", correct: false}] },
+            { q: "「隨住... 變得」呢個語法通常用嚟描述咩社會學現象？", e: "(What sociological phenomenon does the 'As... becomes' grammar usually describe?)", options: [{c: "描述一個宏觀趨勢點樣導致社會狀態發生轉變", e: "(Describing how a macro trend leads to a shift in societal state)", correct: true}, {c: "描述兩個人之間嘅感情變好", e: "(Describing two people's feelings getting better)", correct: false}, {c: "描述天氣突然落雨", e: "(Describing the weather suddenly raining)", correct: false}] }
+        ]
+    },
+    {
+        level: 13, title: "Lecture: Linguistics", topic: "Bilateral Impact (唔單止反映... 更會形塑 - Not only reflects... but also shapes)",
+        img: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8",
+        grammarDesc: "<strong>Bilateral Impact:</strong> Explaining a two-way relationship.<br>唔單止反映 (m4 daan1 zi2 faan2 jing2) [A]... 更會形塑 (gang3 wui5 jing4 sou3) [B] means 'Not only reflects [A]... but also shapes [B]'.",
+        vocab: [
+            {c: "語言學", j: "jyu5 jin4 hok6", e: "Linguistics"}, {c: "薩丕爾沃夫假說", j: "saat3 pei1 ji5 juk1 fu1 gaa2 syut3", e: "Sapir-Whorf hypothesis"},
+            {c: "反映", j: "faan2 jing2", e: "Reflect"}, {c: "形塑", j: "jing4 sou3", e: "Shape / Mold"},
+            {c: "認知", j: "jing6 zi1", e: "Cognition"}, {c: "詞彙", j: "ci4 wui6", e: "Vocabulary"},
+            {c: "語法", j: "jyu5 faat3", e: "Grammar"}, {c: "思考模式", j: "si1 haau2 mou4 sik1", e: "Thinking pattern"},
+            {c: "雙語", j: "soeng1 jyu5", e: "Bilingual"}, {c: "概念", j: "goi3 nim6", e: "Concept"}
+        ],
+        story: "今日語言學嘅課堂會探討一個非常有趣嘅話題：究竟係我哋控制語言，定係語言控制我哋？<br>「薩丕爾-沃夫假說」(Sapir-Whorf Hypothesis) 提出咗語言相對論嘅觀點。<br>呢個理論認為，人類使用嘅語言，唔單止反映咗文化嘅差異，更會深遠咁形塑我哋嘅大腦認知同埋思考模式。<br>例如，有啲原住民語言入面冇「左」同「右」嘅詞彙，佢哋只會用東南西北去描述方向。<br>結果發現，呢啲部落嘅人喺空間定位嘅能力上遠超其他人類。<br>又例如，有啲語言對唔同深淺嘅藍色有獨立嘅專有名詞，講呢種語言嘅人喺視覺上就可以更快分辨出顏色嘅微細差異。<br>對於掌握雙語或者多語嘅人嚟講，當佢哋切換唔同語言嗰陣，性格同埋分析問題嘅角度甚至都會產生微妙嘅變化。<br>語言，絕對唔只係一種溝通工具，佢係一副決定我哋點樣睇呢個世界嘅眼鏡。",
+        jyutping: "Gam1 jat6 jyu5 jin4 hok6 ge3 fo3 tong4 wui5 taam3 tou2 jat1 go3 fei1 soeng4 jau5 ceoi3 ge3 waa6 tai4: gau3 ging2 hai6 ngo5 dei6 hung3 zai3 jyu5 jin4, ding6 hai6 jyu5 jin4 hung3 zai3 ngo5 dei6?<br>「Saat3 pei1 ji5 - juk1 fu1 gaa2 syut3」(Sapir-Whorf Hypothesis) tai4 ceot1 zo2 jyu5 jin4 soeng1 deoi3 leon6 ge3 gun1 dim2.<br>Ni1 go3 lei5 leon4 jing6 wai4, jan4 leoi6 si2 jung6 ge3 jyu5 jin4, <span class='highlight'>m4 daan1 zi2 faan2 jing2</span> zo2 man4 faa3 ge3 caa1 ji6, <span class='highlight'>gang3 wui5 jing4 sou3</span> ngo5 dei6 ge3 daai6 nou5 jing6 zi1 tung4 maai4 si1 haau2 mou4 sik1.<br>Lai6 jyu4, jau5 di1 jyun4 zyu6 man4 jyu5 jin4 jap6 min6 mou5 「zo2」 tung4 「jau6」 ge3 ci4 wui6, keoi5 dei6 zi2 wui5 jung6 dung1 naam4 sai1 bak1 heoi3 miu4 seot6 fong1 hoeng3.<br>Git3 gwo2 faat3 jin6, ni1 di1 bou6 lok6 ge3 jan4 hai2 hung1 gaan1 ding6 wai6 ge3 nang4 lik6 soeng6 jyun5 ciu1 kei4 taa1 jan4 leoi6.<br>Jau6 lai6 jyu4, jau5 di1 jyu5 jin4 deoi3 m4 tung4 sam1 cin2 ge3 laam4 sik1 jau5 duk6 laap6 ge3 zyun1 jau5 ming4 ci4, gong2 ni1 zung2 jyu5 jin4 ge3 jan4 hai2 si6 gok3 soeng6 zau6 ho2 ji5 gang3 faai3 fan1 bin6 ceot1 ngaan4 sik1 ge3 mei4 sai3 caa1 ji6.<br>Deoi3 jyu1 zoeng2 ak1 soeng1 jyu5 waak6 ze2 do1 jyu5 ge3 jan4 lei4 gong2, dong1 keoi5 dei6 cit3 wun6 m4 tung4 jyu5 jin4 go2 zan6, sing3 gaak3 tung4 maai4 fan1 sik1 man6 tai4 ge3 gok3 dou6 sam6 zi3 dou1 wui5 caan2 sang1 mei4 miu6 ge3 bin3 faa3.<br>Jyu5 jin4, zyut6 deoi3 m4 zi2 hai6 jat1 zung2 gau1 tung1 gung1 geoi6, keoi5 hai6 jat1 fu3 kyut3 ding6 ngo5 dei6 dim2 joeng2 tai2 ni1 go3 sai3 gaai3 ge3 ngaan5 geng2.",
+        english: "Today's linguistics lecture will explore a very interesting topic: do we control language, or does language control us?<br>The 'Sapir-Whorf Hypothesis' proposes the viewpoint of linguistic relativity.<br>This theory believes that the languages humans use not only reflect cultural differences, but moreover profoundly shape our brain's cognition and thinking patterns.<br>For example, some Indigenous languages do not have the vocabulary for 'left' and 'right'; they only use north, south, east, and west to describe direction.<br>As a result, it was found that the people of these tribes far surpass other humans in spatial orientation abilities.<br>Also for example, some languages have independent proper nouns for different shades of blue; people speaking this language can visually distinguish minute differences in color much faster.<br>For people who have mastered bilingualism or multilingualism, when they switch between different languages, their personalities and angles of analyzing problems will even undergo subtle changes.<br>Language is absolutely not just a communication tool; it is a pair of glasses that determines how we see this world.",
+        quizzes: [
+            { q: "「薩丕爾-沃夫假說」嘅核心觀點係咩？", e: "(What is the core viewpoint of the 'Sapir-Whorf hypothesis'?)", options: [{c: "語言會深遠咁形塑人類嘅大腦認知同思考模式", e: "(Language profoundly shapes human brain cognition and thinking patterns)", correct: true}, {c: "全世界嘅語言最終都會變成同一種", e: "(All languages in the world will eventually become one)", correct: false}, {c: "動物都可以學識講人類語言", e: "(Animals can also learn to speak human language)", correct: false}] },
+            { q: "冇「左」同「右」詞彙嘅原住民，喺邊方面能力特別強？", e: "(Indigenous people without 'left' and 'right' vocabulary are particularly strong in what ability?)", options: [{c: "空間定位能力", e: "(Spatial orientation ability)", correct: true}, {c: "數學計算能力", e: "(Math calculation ability)", correct: false}, {c: "畫畫嘅能力", e: "(Drawing ability)", correct: false}] },
+            { q: "對藍色有更細緻專有名詞嘅語言，會令使用者有咩視覺優勢？", e: "(Languages with more detailed proper nouns for blue give users what visual advantage?)", options: [{c: "可以更快分辨出顏色嘅微細差異", e: "(Can faster distinguish minute differences in color)", correct: true}, {c: "喺黑暗中睇嘢睇得更清楚", e: "(Can see much more clearly in the dark)", correct: false}, {c: "視力永遠唔會衰退", e: "(Eyesight will never decline)", correct: false}] },
+            { q: "掌握雙語嘅人切換語言時可能會發生咩奇妙變化？", e: "(What magical change might happen when bilingual people switch languages?)", options: [{c: "性格同分析問題嘅角度會產生微妙變化", e: "(Personality and angle of problem analysis will undergo subtle changes)", correct: true}, {c: "頭髮嘅顏色會改變", e: "(The color of their hair will change)", correct: false}, {c: "會突然唔記得自己個名", e: "(Will suddenly forget their own name)", correct: false}] },
+            { q: "「唔單止反映... 更會形塑」帶出咗語言嘅邊兩種功能？", e: "(What two functions of language does 'not only reflects... but also shapes' bring out?)", options: [{c: "被動展示文化差異，以及主動構造人類思維", e: "(Passively showing cultural differences, and actively constructing human thought)", correct: true}, {c: "用嚟鬧人同埋用嚟讚人", e: "(Used to scold people and used to praise people)", correct: false}, {c: "寫文章同埋唱歌", e: "(Writing articles and singing songs)", correct: false}] }
+        ]
+    },
+    {
+        level: 14, title: "Lecture: Art History", topic: "Historical Marker (標誌住... 嘅開端 - Marks the beginning of)",
+        img: "https://images.unsplash.com/photo-1578305698881-8ec8930f3c5f",
+        grammarDesc: "<strong>Historical Significance:</strong> Describing a paradigm shift in history.<br>標誌住 (biu1 zi3 zyu6) [A] 嘅開端 (ge3 hoi1 dyun1) means 'Marks the beginning of [A]'.",
+        vocab: [
+            {c: "文藝復興", j: "man4 ngai6 fuk6 hing1", e: "Renaissance"}, {c: "人本主義", j: "jan4 bun2 zyu2 ji3", e: "Humanism"},
+            {c: "中世紀", j: "zung1 sai3 gei2", e: "Middle Ages"}, {c: "標誌住", j: "biu1 zi3 zyu6", e: "Marks / Signifies"},
+            {c: "開端", j: "hoi1 dyun1", e: "Beginning / Dawn"}, {c: "透視法", j: "tau3 si6 faat3", e: "Linear perspective"},
+            {c: "解剖學", j: "gaai2 pau2 hok6", e: "Anatomy"}, {c: "宗教", j: "zung1 gaau3", e: "Religion"},
+            {c: "世俗", j: "sai3 zuk6", e: "Secular"}, {c: "覺醒", j: "gok3 sing2", e: "Awakening"}
+        ],
+        story: "今日藝術史嘅課程，我哋會走入十四世紀嘅意大利，探討「文藝復興」(Renaissance) 嘅偉大變革。<br>漫長而黑暗嘅中世紀藝術，幾乎全部都係為宗教服務，畫作入面嘅人物缺乏立體感同埋真實嘅情感。<br>但係，文藝復興嘅出現，標誌住「人本主義」(Humanism) 思想嘅開端。<br>藝術家開始將目光由天堂轉向凡間，重新發現古希臘同古羅馬文化中對人類自身嘅讚美。<br>達文西同米開朗基羅等大師，將科學、數學同埋解剖學融入藝術創作入面。<br>佢哋發明咗線性透視法，令到畫布上嘅空間展現出前所未有嘅三維深度。<br>畫中嘅聖母同耶穌唔再係高高在上嘅神明，而係擁有真實骨骼肌肉同埋世俗情感嘅人類。<br>呢場運動唔單止係藝術技巧上嘅飛躍，更加係人類思想上嘅一次偉大覺醒。",
+        jyutping: "Gam1 jat6 ji6 seot6 si2 ge3 fo3 cing4, ngo5 dei6 wui5 zau2 jap6 sap6 sei3 sai3 gei2 ge3 ji3 daai6 lei6, taam3 tou2 「man4 ngai6 fuk6 hing1」(Renaissance) ge3 wai5 daai6 bin3 gaak3.<br>Maan6 coeng4 ji4 hak1 am3 ge3 zung1 sai3 gei2 ji6 seot6, gei1 fu4 cyun4 bou6 dou1 hai6 wai6 zung1 gaau3 fuk6 mou6, waa2 zok3 jap6 min6 ge3 jan4 mat6 kyut3 fat6 laap6 tai2 gam2 tung4 maai4 zan1 sat6 ge3 cing4 gam2.<br>Daan6 hai6, man4 ngai6 fuk6 hing1 ge3 ceot1 jin6, <span class='highlight'>biu1 zi3 zyu6</span> 「jan4 bun2 zyu2 ji3」(Humanism) si1 soeng2 <span class='highlight'>ge3 hoi1 dyun1</span>.<br>Ji6 seot6 gaa1 hoi1 ci2 zoeng1 muk6 gwong1 jau4 tin1 tong4 zyun3 hoeng3 faan4 gaan1, cung4 san1 faat3 jin6 gu2 hei1 laap6 tung4 gu2 lo4 maa5 man4 faa3 zung1 deoi3 jan4 leoi6 zi6 san1 ge3 zaan3 mei5.<br>Daat6 man4 sai1 tung4 mai5 hoi1 long5 gei1 lo4 dang2 daai6 si1, zoeng1 fo1 hok6, sou3 hok6 tung4 maai4 gaai2 pau2 hok6 jung4 jap6 ji6 seot6 cong3 zok3 jap6 min6.<br>Keoi5 dei6 faat3 ming4 zo2 sin3 sing3 tau3 si6 faat3, ling6 dou3 waa2 bou3 soeng6 ge3 hung1 gaan1 zin2 jin6 ceot1 cin4 so2 mei6 jau5 ge3 saam1 wai4 sam1 dou6.<br>Waa2 zung1 ge3 sing3 mou5 tung4 je4 sou1 m4 zoi3 hai6 gou1 gou1 zoi6 soeng6 ge3 san4 ming4, ji4 hai6 jung2 jau5 zan1 sat6 gwat1 gaak3 gei1 juk6 tung4 maai4 sai3 zuk6 cing4 gam2 ge3 jan4 leoi6.<br>Ni1 coeng4 wan6 dung6 m4 daan1 zi2 hai6 ji6 seot6 gei6 haau2 soeng6 ge3 fei1 joek3, gang3 gaa1 hai6 jan4 leoi6 si1 soeng2 soeng6 ge3 jat1 ci3 wai5 daai6 gok3 sing2.",
+        english: "In today's art history course, we will step into 14th-century Italy to explore the great transformation of the 'Renaissance'.<br>The art of the long and dark Middle Ages was almost entirely to serve religion; the figures in the paintings lacked a sense of three-dimensionality and true emotion.<br>However, the emergence of the Renaissance marks the dawn of 'Humanism' thought.<br>Artists began to turn their gaze from heaven to the mortal realm, rediscovering the praise of humanity itself in ancient Greek and Roman culture.<br>Masters like Da Vinci and Michelangelo integrated science, math, and anatomy into artistic creation.<br>They invented linear perspective, making the space on the canvas display an unprecedented three-dimensional depth.<br>The Madonna and Jesus in the paintings were no longer lofty deities, but humans possessing real skeletal muscles and secular emotions.<br>This movement was not only a leap in artistic technique, but moreover a great awakening in human thought.",
+        quizzes: [
+            { q: "中世紀藝術最大嘅局限係咩？", e: "(What was the biggest limitation of Middle Ages art?)", options: [{c: "主要為宗教服務，人物缺乏立體感同真實情感", e: "(Mainly served religion, figures lacked 3D depth and true emotion)", correct: true}, {c: "只可以用黑白色畫畫", e: "(Could only draw in black and white)", correct: false}, {c: "只准畫風景唔准畫人", e: "(Only allowed to paint landscapes, not people)", correct: false}] },
+            { q: "文藝復興時期嘅藝術家將目光轉向邊度？", e: "(Where did Renaissance artists turn their gaze?)", options: [{c: "由天堂轉向凡間，讚美人類自身", e: "(From heaven to the mortal realm, praising humanity itself)", correct: true}, {c: "由地球轉向上太空", e: "(From Earth to outer space)", correct: false}, {c: "由城市轉向沙漠", e: "(From the city to the desert)", correct: false}] },
+            { q: "達文西等大師將咩科學知識融入藝術？", e: "(What scientific knowledge did masters like Da Vinci integrate into art?)", options: [{c: "數學、線性透視法同埋解剖學", e: "(Math, linear perspective, and anatomy)", correct: true}, {c: "化學同埋量子力學", e: "(Chemistry and quantum mechanics)", correct: false}, {c: "電腦編程同演算法", e: "(Computer programming and algorithms)", correct: false}] },
+            { q: "畫作入面嘅宗教人物喺文藝復興時期有咩改變？", e: "(How did religious figures in paintings change during the Renaissance?)", options: [{c: "變成擁有真實骨骼肌肉同世俗情感嘅人類", e: "(Became humans with real skeletal muscles and secular emotions)", correct: true}, {c: "變成透明睇唔見", e: "(Became transparent and invisible)", correct: false}, {c: "變成幾何圖形", e: "(Became geometric shapes)", correct: false}] },
+            { q: "「標誌住... 嘅開端」通常用嚟形容咩歷史事件？", e: "(What kind of historical event is 'marks the dawn of' usually used to describe?)", options: [{c: "一個具有劃時代意義、開創全新思想或時代嘅重要轉捩點", e: "(An epoch-making, important turning point creating a new thought or era)", correct: true}, {c: "一件每日都會發生嘅普通小事", e: "(An ordinary small thing that happens every day)", correct: false}, {c: "一個時代嘅終結同埋毀滅", e: "(The end and destruction of an era)", correct: false}] }
+        ]
+    },
+    {
+        level: 15, title: "Lecture: Structural Engineering", topic: "Irrefutable Fact (無可否認 - Undeniably)",
+        img: "https://images.unsplash.com/photo-1544252890-575db2cd85e7",
+        grammarDesc: "<strong>Irrefutable Conclusion:</strong> Stating a fact that cannot be debated.<br>無可否認 (mou4 ho2 fau2 jing6) means 'Undeniably' or 'It cannot be denied that'.",
+        vocab: [
+            {c: "工程學", j: "gung1 cing4 hok6", e: "Engineering"}, {c: "共振", j: "gung6 zan3", e: "Resonance"},
+            {c: "頻率", j: "pan4 leot2", e: "Frequency"}, {c: "結構", j: "git3 gau3", e: "Structure"},
+            {c: "倒塌", j: "dou2 taap3", e: "Collapse"}, {c: "無可否認", j: "mou4 ho2 fau2 jing6", e: "Undeniably"},
+            {c: "氣動力學", j: "hei3 dung6 lik6 hok6", e: "Aerodynamics"}, {c: "減震", j: "gaam2 zan3", e: "Damping / Shock absorption"},
+            {c: "災難", j: "zoi1 naan6", e: "Disaster"}, {c: "塔科馬海峽吊橋", j: "taap3 fo1 maa5 hoi2 haap6 diu3 kiu4", e: "Tacoma Narrows Bridge"}
+        ],
+        story: "今日土木工程系嘅最後一課，我哋會透過歷史災難嚟學習物理學中嘅「共振」現象。<br>1940年，美國塔科馬海峽吊橋 (Tacoma Narrows Bridge) 喺一場強風中劇烈搖晃，最終斷裂倒塌。<br>當時嘅工程師只係考慮咗橋樑承載重物嘅靜態力學，卻忽略咗氣動力學 (Aerodynamics) 嘅影響。<br>強風吹過橋面產生嘅氣旋頻率，啱啱好同橋樑本身嘅固有頻率吻合，引發咗極具破壞性嘅「共振」效應。<br>橋面嘅扭曲幅度越嚟越大，超出了鋼筋同混凝土嘅承受極限。<br>無可否認，呢場災難係現代橋樑工程史上最慘痛嘅教訓。<br>自此之後，所有嘅大型建築同橋樑設計，都必須經過嚴格嘅風洞測試。<br>工程師亦開始喺結構入面加入各種減震器 (Dampers)，確保建築物能夠抵禦大自然嘅無形力量。",
+        jyutping: "Gam1 jat6 tou2 muk6 gung1 cing4 hai6 ge3 zeoi3 hau6 jat1 fo3, ngo5 dei6 wui5 tau3 gwo3 lik6 si2 zoi1 naan6 lei4 hok6 zaap6 mat6 lei5 hok6 zung1 ge3 「gung6 zan3」 jin6 zoeng6.<br>1940 nin4, Mei5 gwok3 taap3 fo1 maa5 hoi2 haap6 diu3 kiu4 (Tacoma Narrows Bridge) hai2 jat1 coeng4 koeng4 fung1 zung1 kek6 lit6 jiu4 fong3, zeoi3 zung1 dyun6 lit6 dou2 taap3.<br>Dong1 si4 ge3 gung1 cing4 si1 zi2 hai6 haau2 leoi6 zo2 kiu4 loeng4 sing4 zoi3 zung5 mat6 ge3 zing6 taai3 lik6 hok6, koek3 fat1 loek6 zo2 hei3 dung6 lik6 hok6 (Aerodynamics) ge3 jing2 hoeng2.<br>Koeng4 fung1 ceoi1 gwo3 kiu4 min6 caan2 sang1 ge3 hei3 syun4 pan4 leot2, ngaam1 ngaam1 hou2 tung4 kiu4 loeng4 bun2 san1 ge3 gu3 jau5 pan4 leot2 man5 hap6, jan5 faat3 zo2 gik6 geoi6 po3 waai6 sing3 ge3 「gung6 zan3」 haau6 jing3.<br>Kiu4 min6 ge3 nau2 kuk1 fuk1 dou6 jyut6 lei4 jyut6 daai6, ciu1 ceot1 zo2 gong3 gan1 tung4 wan6 ning4 tou2 ge3 sing4 sau6 gik6 haan6.<br><span class='highlight'>Mou4 ho2 fau2 jing6</span>, ni1 coeng4 zoi1 naan6 hai6 jin6 doi6 kiu4 loeng4 gung1 cing4 si2 soeng6 zeoi3 caam2 tung3 ge3 gaau3 fan3.<br>Zi6 ci2 zi1 hau6, so2 jau5 ge3 daai6 jing4 gin3 zuk1 tung4 kiu4 loeng4 cit3 gai3, dou1 bit1 seoi1 ging1 gwo3 jim4 gaak3 ge3 fung1 dung6 cak1 si3.<br>Gung1 cing4 si1 jik6 hoi1 ci2 hai2 git3 gau3 jap6 min6 gaa1 jap6 gok3 zung2 gaam2 zan3 hei3 (Dampers), kok3 bou2 gin3 zuk1 mat6 nang4 gau3 dai2 jyu6 daai6 zi6 jin4 ge3 mou4 jing4 lik6 loeng6.",
+        english: "In today's final Civil Engineering lecture, we will learn about the physics phenomenon of 'resonance' through a historical disaster.<br>In 1940, the Tacoma Narrows Bridge in the USA swayed violently in a strong wind and eventually broke and collapsed.<br>The engineers at the time only considered the static mechanics of the bridge bearing heavy loads, but neglected the impact of aerodynamics.<br>The frequency of the vortices created by the strong wind blowing across the bridge deck perfectly matched the bridge's own natural frequency, triggering an extremely destructive 'resonance' effect.<br>The twisting amplitude of the bridge deck grew larger and larger, exceeding the tolerance limit of the reinforced concrete.<br>Undeniably, this disaster is the most painful lesson in the history of modern bridge engineering.<br>Since then, all large-scale building and bridge designs must undergo strict wind tunnel testing.<br>Engineers also began incorporating various dampers into structures to ensure buildings can withstand the invisible forces of nature.",
+        quizzes: [
+            { q: "塔科馬海峽吊橋倒塌嘅主要物理原因係咩？", e: "(What was the main physical reason for the collapse of the Tacoma Narrows Bridge?)", options: [{c: "風產生嘅頻率同橋嘅固有頻率吻合，引發共振", e: "(The wind's frequency matched the bridge's natural frequency, triggering resonance)", correct: true}, {c: "橋上面太多大貨車同時經過", e: "(Too many large trucks passing over the bridge at the same time)", correct: false}, {c: "地震令到橋躉斷裂", e: "(An earthquake caused the bridge piers to break)", correct: false}] },
+            { q: "當時嘅工程師犯咗咩致命嘅錯誤？", e: "(What fatal mistake did the engineers at the time make?)", options: [{c: "只考慮靜態力學，忽略咗氣動力學嘅影響", e: "(Only considered static mechanics, ignored the impact of aerodynamics)", correct: true}, {c: "用咗好平嘅假鋼筋同英泥", e: "(Used very cheap fake rebar and cement)", correct: false}, {c: "唔記得畫設計圖", e: "(Forgot to draw the design blueprints)", correct: false}] },
+            { q: "呢場災難之後，現代橋樑設計必須強制加入咩測試？", e: "(After this disaster, what test must modern bridge designs mandatorily include?)", options: [{c: "嚴格嘅風洞測試", e: "(Strict wind tunnel testing)", correct: true}, {c: "防火測試", e: "(Fireproof testing)", correct: false}, {c: "防磁測試", e: "(Anti-magnetic testing)", correct: false}] },
+            { q: "現代工程師為咗防止共振，會喺建築結構加入咩裝置？", e: "(To prevent resonance, what device do modern engineers add to building structures?)", options: [{c: "各種減震器 (Dampers)", e: "(Various dampers)", correct: true}, {c: "巨型風扇", e: "(Giant fans)", correct: false}, {c: "避雷針", e: "(Lightning rods)", correct: false}] },
+            { q: "「無可否認」喺學術結論入面代表咩意思？", e: "(What does 'undeniably' mean in an academic conclusion?)", options: [{c: "表示一個絕對真實、不容置疑嘅客觀事實同結論", e: "(Represents an absolutely true, unquestionable objective fact and conclusion)", correct: true}, {c: "表示事情仲有好多討論空間", e: "(Represents that the matter still has a lot of room for discussion)", correct: false}, {c: "表示講者自己都唔肯定", e: "(Represents that the speaker themselves are not sure)", correct: false}] }
+        ]
+    }
+];
+
+let currentLevel = 0;
+
+function playText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        const voices = window.speechSynthesis.getVoices();
+        const hkVoice = voices.find(voice => voice.lang.includes('zh-HK') || voice.lang.includes('yue'));
+        if (hkVoice) utterance.voice = hkVoice;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function checkAnswer(buttonElement, isCorrect) {
+    const optionsContainer = buttonElement.closest('.options');
+    const allButtons = optionsContainer.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+        buttonElement.classList.add('correct');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ✅ </span>');
+    } else {
+        buttonElement.classList.add('wrong');
+        buttonElement.innerHTML = buttonElement.innerHTML.replace('</span>', ' ❌ </span>');
+        allButtons.forEach(btn => {
+            if (btn.dataset.correct === "true") btn.classList.add('correct');
+        });
+    }
+}
+
+function loadMission(index) {
+    if(index < 0 || index >= missionsData.length) return;
+    currentLevel = index;
+    const m = missionsData[index];
+    const app = document.getElementById('app');
+
+    let vocabHtml = m.vocab.map((v, i) => `
+        <button class="vocab-item" onclick="playText('${v.c}')">
+            <span class="icon">🔊</span>
+            <div><strong>${i+1}. ${v.c}</strong> (${v.j}) - ${v.e}</div>
+        </button>
+    `).join('');
+
+    let quizHtml = m.quizzes.map((q, qIndex) => `
+        <div class="quiz-question">
+            <div class="question-text">
+                ${qIndex + 1}. ${q.q}
+                <button class="play-btn-small" onclick="playText('${q.q}')">🔊</button>
+                <span class="eng-trans">${q.e}</span>
+            </div>
+            <div class="options">
+                ${q.options.map((opt, oIndex) => `
+                    <div class="option-row">
+                        <button class="play-btn-option" onclick="playText('${opt.c}')">🔊</button>
+                        <button class="option-btn" data-correct="${opt.correct}" onclick="checkAnswer(this, ${opt.correct})">
+                            ${String.fromCharCode(65 + oIndex)}. ${opt.c} <span class="eng-trans">${opt.e}</span>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    app.innerHTML = `
+        <div class="header">
+            <h1>🏛️ University Mission ${m.level} / 15</h1>
+            <p>${m.title} (${m.topic})</p>
+        </div>
+
+        <img src="${m.img}" class="news-image">
+
+        <div class="prep-section">
+            <h3>📚 Grammar & Vocabulary Prep</h3>
+            <p>${m.grammarDesc}</p>
+            <p><strong>10 Key Academic Vocabulary Words:</strong></p>
+            <div class="vocab-grid">${vocabHtml}</div>
+        </div>
+
+        <button class="action-btn" onclick="playText('${m.story.replace(/<[^>]*>?/gm, '')}')">
+            🔊 Play Full Lecture Audio
+        </button>
+
+        <div class="script-box">
+            <div class="cantonese-text">${m.story}</div>
+            <div class="jyutping">${m.jyutping}</div>
+        </div>
+
+        <div class="quiz-section">
+            <h3>📝 Academic Knowledge Check</h3>
+            ${quizHtml}
+        </div>
+
+        <div class="translation-box">
+            <strong>English Translation:</strong><br>
+            ${m.english}
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
+        </div>
+    `;
+    window.scrollTo(0, 0);
+}
+
+window.onload = () => loadMission(0);
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
