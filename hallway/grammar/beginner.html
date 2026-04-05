@@ -520,6 +520,7 @@ function loadMission(index) {
 
         <div class="nav-buttons">
             <button class="nav-btn" ${currentLevel === 0 ? 'disabled' : ''} onclick="loadMission(currentLevel - 1)">⬅️ Previous</button>
+            <button class="nav-btn" onclick="href="grammar.html"> Home</button>
             <button class="nav-btn" ${currentLevel === missionsData.length - 1 ? 'disabled' : ''} onclick="loadMission(currentLevel + 1)">Next ➡️</button>
         </div>
     `;
